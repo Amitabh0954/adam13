@@ -13,3 +13,6 @@ class CartService:
 
     def remove_from_cart(self, user_id: int, cart_item_id: int):
         return self.cart_repository.remove_from_cart(user_id, cart_item_id)
+
+    def update_cart_item_quantity(self, user_id: int, cart_item_id: int, quantity: int):
+        return self.cart_repository.update_cart_item_quantity(user_id, cart_item_id, quantity)
