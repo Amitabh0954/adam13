@@ -1,10 +1,9 @@
-Based on the new user story for implementing a password recovery feature, which includes sending a password reset link that expires after 24 hours and verifying the user's identity via email, the folder hierarchy and the necessary files will be created under `user_management/authentication`.
+Given the user story for updating product details, where the product can only be updated by an admin, price must be a numeric value, and the description can be modified but not removed, we will implement this under the `product_management/catalog` directory.
 
-Here’s the implementation plan:
+The implementation steps are as follows:
 
-1. Create a model for tracking password reset tokens.
-2. Implement the password recovery API to generate and verify reset tokens.
-3. Implement email sending functionality to send password reset links.
-4. Update the SQL schema for the necessary fields to support the password recovery feature.
+1. Define and update the `Product` model if necessary.
+2. Create API endpoints for updating product details, ensuring only admins can perform this operation.
+3. Ensure proper validations for price and description fields.
 
-Here we go:
+Let's generate the files sequentially:
