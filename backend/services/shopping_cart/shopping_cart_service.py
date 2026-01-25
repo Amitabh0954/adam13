@@ -25,7 +25,10 @@ class ShoppingCartService:
         cart.update_total_price()
         return cart_item
 
-    def remove_product_from_cart(self, user_id: int, session_id: str, product_id: int):
+    def modify_product_quantity(self, user_id: int, session_id: str, product_id: int, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Quantity must be a positive integer")
+
         if user_id:
             cart = self.shopping_cart_repository.get_cart_by_user_id(user_id)
         else:
@@ -34,10 +37,10 @@ class ShoppingCartService:
         if not cart:
             raise ValueError("Shopping cart not found")
 
-        self.shopping_cart_repository.remove_item_from_cart(cart.id, product_id)
+        cart_item = self.shopping_cart_repository.update_item_quantity(cart.id, product_id, quantity)
         cart.update_total_price()
         
         self.shopping_cart_repository.add_cart(cart)  # Update cart to refresh total price
-        return cart
+        return cart_item
 
-#### 4. Implement a controller to expose the API for managing the removal of products from the shopping cart
+#### 4. Implement a controller to expose the API for modifying the quantity of products in the shopping cart
