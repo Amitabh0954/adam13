@@ -25,3 +25,29 @@ class CartRepository:
         
         db.session.commit()
         return cart
+
+    def remove_from_cart(self, user_id: int, product_id: int) -> Cart:
+        cart = self.get_cart(user_id)
+        if not cart:
+            raise ValueError("Cart not found")
+        
+        cart_item = CartItem.query.filter_by(cart_id=cart.id, product_id=product_id).first()
+        if not cart_item:
+            raise ValueError("Product not in cart")
+        
+        db.session.delete(cart_item)
+        db.session.commit()
+        return cart
+
+    def modify_cart_item(self, user_id: int, product_id: int, quantity: int) -> Cart:
+        cart = self.get_cart(user_id)
+        if not cart:
+            raise ValueError("Cart not found")
+        
+        cart_item = CartItem.query.filter_by(cart_id=cart.id, product_id=product_id).first()
+        if not cart_item:
+            raise ValueError("Product not in cart")
+        
+        cart_item.quantity = quantity
+        db.session.commit()
+        return cart
