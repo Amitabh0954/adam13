@@ -5,3 +5,4 @@ Structured-logging==1.0.0
 Flask-Login==0.5.0
 SQLAlchemy==1.4.25
 Werkzeug==2.0.3
+smtplib==2.2.0
