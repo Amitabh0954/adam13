@@ -9,9 +9,6 @@ class ShoppingCartRepository:
     def get_cart_by_user_id(self, user_id: int) -> ShoppingCart:
         return self.session.query(ShoppingCart).filter_by(user_id=user_id).first()
 
-    def get_cart_by_session_id(self, session_id: str) -> ShoppingCart:
-        return self.session.query(ShoppingCart).filter_by(session_id=session_id).first()
-
     def add_cart(self, cart: ShoppingCart):
         self.session.add(cart)
         self.session.commit()
@@ -22,13 +19,10 @@ class ShoppingCartRepository:
         self.session.commit()
         return cart_item
 
-    def update_item_quantity(self, cart_id: int, product_id: int, quantity: int):
-        item = self.session.query(ShoppingCartItem).filter_by(cart_id=cart_id, product_id=product_id).first()
-        if item:
-            item.quantity = quantity
-            self.session.commit()
-            return item
-        else:
-            raise ValueError("Item not found in cart")
+    def get_cart_by_session_id(self, session_id: str) -> ShoppingCart:
+        return self.session.query(ShoppingCart).filter_by(session_id=session_id).first()
 
-#### 3. Implement services for modifying the quantity of products in the shopping cart
+    def get_cart_items(self, cart_id: int) -> list:
+        return self.session.query(ShoppingCartItem).filter_by(cart_id=cart_id).all()
+
+#### 3. Implement services for saving and retrieving the shopping cart state for logged-in users
