@@ -78,3 +78,20 @@ def get_cart_total():
     total_price = sum(item.quantity * item.product.price for item in cart.items)
 
     return jsonify({'total_price': total_price}), 200
+
+@cart_bp.route('/cart/item/<int:item_id>', methods=['PUT'])
+def update_cart_item(item_id: int):
+    quantity = request.json.get('quantity')
+
+    if quantity is None or quantity <= 0:
+        return jsonify({'message': 'Quantity must be a positive integer'}), 400
+
+    cart_item = CartItem.query.get(item_id)
+    if not cart_item:
+        return jsonify({'message': 'Cart item not found'}), 404
+
+    cart_item.quantity = quantity
+    db.session.commit()
+
+    logger.info(f"Updated quantity for product {cart_item.product.name} in cart to {quantity}")
+    return jsonify({'message': 'Cart item quantity updated successfully'}), 200
