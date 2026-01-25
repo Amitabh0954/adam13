@@ -44,3 +44,16 @@ class CartRepository:
         db.session.delete(cart_item)
         db.session.commit()
         logger.info(f"Cart item with ID '{cart_item_id}' removed for user '{user_id}'")
+
+    def update_cart_item_quantity(self, user_id: int, cart_item_id: int, quantity: int) -> CartItem:
+        cart_item = CartItem.query.get(cart_item_id)
+        if not cart_item or cart_item.cart.user_id != user_id:
+            raise ValueError("Cart item not found for user")
+        
+        if quantity <= 0:
+            raise ValueError("Quantity must be a positive integer")
+        
+        cart_item.quantity = quantity
+        db.session.commit()
+        logger.info(f"Quantity for cart item ID '{cart_item_id}' updated to '{quantity}'")
+        return cart_item
