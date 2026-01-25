@@ -22,4 +22,10 @@ class ShoppingCartRepository:
         self.session.commit()
         return cart_item
 
-#### 3. Implement services for adding products to the shopping cart
+    def remove_item_from_cart(self, cart_id: int, product_id: int):
+        item = self.session.query(ShoppingCartItem).filter_by(cart_id=cart_id, product_id=product_id).first()
+        if item:
+            self.session.delete(item)
+            self.session.commit()
+
+#### 3. Implement services for removing products from the shopping cart
