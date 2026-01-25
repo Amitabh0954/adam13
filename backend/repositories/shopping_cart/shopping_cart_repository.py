@@ -22,10 +22,13 @@ class ShoppingCartRepository:
         self.session.commit()
         return cart_item
 
-    def remove_item_from_cart(self, cart_id: int, product_id: int):
+    def update_item_quantity(self, cart_id: int, product_id: int, quantity: int):
         item = self.session.query(ShoppingCartItem).filter_by(cart_id=cart_id, product_id=product_id).first()
         if item:
-            self.session.delete(item)
+            item.quantity = quantity
             self.session.commit()
+            return item
+        else:
+            raise ValueError("Item not found in cart")
 
-#### 3. Implement services for removing products from the shopping cart
+#### 3. Implement services for modifying the quantity of products in the shopping cart
