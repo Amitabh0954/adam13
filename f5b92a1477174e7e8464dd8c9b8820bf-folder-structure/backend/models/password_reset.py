@@ -1,8 +1,8 @@
-from datetime import datetime
 from backend.database import db
+from datetime import datetime
 
 class PasswordReset(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(120), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    token = db.Column(db.String(200), unique=True, nullable=False)
-    expires_at = db.Column(db.DateTime, nullable=False)
+    expiry = db.Column(db.DateTime, nullable=False)
+    user = db.relationship('User')
