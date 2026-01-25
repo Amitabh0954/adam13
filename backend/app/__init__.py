@@ -25,4 +25,4 @@ if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
 
-#### 8. Update requirements.txt if any new dependencies are required
+#### 7. Update requirements.txt if any new dependencies are required
