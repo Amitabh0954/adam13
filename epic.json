@@ -1,0 +1,76 @@
+{
+  "epics": [
+    [
+      {
+        "dependencies": [],
+        "id": "EPIC-1",
+        "summary": "Develop a user account system that allows customers to create, manage, and authenticate their accounts. This includes registration, login, password recovery, and profile management functionalities.",
+        "title": "User Account Management"
+      },
+      {
+        "dependencies": [],
+        "id": "EPIC-2",
+        "summary": "Create a system for managing the product catalog, including adding, updating, and deleting products. This epic encompasses product categorization, attributes, and search functionality.",
+        "title": "Product Catalog Management"
+      },
+      {
+        "dependencies": [],
+        "id": "EPIC-3",
+        "summary": "Implement a shopping cart system that allows users to add, remove, and modify products in their cart. This includes saving the cart state for logged-in users and guest checkouts.",
+        "title": "Shopping Cart Functionality"
+      }
+    ],
+    [
+      {
+        "dependencies": ["EPIC-3"],
+        "id": "EPIC-4",
+        "summary": "Develop a seamless checkout process that integrates with the shopping cart. This epic includes payment processing, shipping options, order validation, and confirmation functionalities.",
+        "title": "Checkout Process"
+      },
+      {
+        "dependencies": ["EPIC-1", "EPIC-4"],
+        "id": "EPIC-5",
+        "summary": "Create an order management system that allows users to view their order history, track current orders, and manage returns or exchanges. This epic also includes admin functionalities for order processing.",
+        "title": "Order Management System"
+      }
+    ],
+    [
+      {
+        "dependencies": ["EPIC-2"],
+        "id": "EPIC-6",
+        "summary": "Implement a system that allows users to leave reviews and ratings for products. This epic will include moderation functionalities and display of user feedback on product pages.",
+        "title": "User Reviews and Ratings"
+      },
+      {
+        "dependencies": ["EPIC-2"],
+        "id": "EPIC-7",
+        "summary": "Create a system for managing promotional campaigns and discounts that can be applied to products or orders. This epic includes features for creating, editing, and activating promotions.",
+        "title": "Promotions and Discounts Management"
+      }
+    ],
+    [
+      {
+        "dependencies": ["EPIC-5"],
+        "id": "EPIC-8",
+        "summary": "Develop an analytics and reporting system to track user behavior, sales performance, and inventory levels. This epic will enable data-driven decision-making for the business.",
+        "title": "Analytics and Reporting"
+      },
+      {
+        "dependencies": ["EPIC-1", "EPIC-2", "EPIC-3"],
+        "id": "EPIC-9",
+        "summary": "Ensure the ecommerce application is fully responsive and optimized for mobile devices, providing a seamless shopping experience across different screen sizes.",
+        "title": "Mobile Responsiveness and Optimization"
+      }
+    ],
+    [
+      {
+        "dependencies": ["EPIC-1"],
+        "id": "EPIC-10",
+        "summary": "Integrate customer support features, including live chat, FAQs, and support ticket systems. This epic aims to enhance user experience and provide timely assistance.",
+        "title": "Customer Support Integration"
+      }
+    ]
+  ],
+  "techstack": "Flask",
+  "database": "mysql"
+}
