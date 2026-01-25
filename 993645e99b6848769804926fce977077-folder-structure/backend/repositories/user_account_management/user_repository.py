@@ -5,7 +5,7 @@ from backend.database import db
 logger = logging.getLogger(__name__)
 
 class UserRepository:
-    
+
     def get_user_by_email(self, email: str) -> User:
         return User.query.filter_by(email=email).first()
     
