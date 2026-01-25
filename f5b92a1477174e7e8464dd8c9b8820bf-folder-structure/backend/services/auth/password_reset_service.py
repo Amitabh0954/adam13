@@ -1,51 +1,54 @@
-from backend.repositories.user_account_management.user_repository import UserRepository
-from backend.repositories.user_account_management.password_reset_token_repository import PasswordResetTokenRepository
-from backend.models.user import User
-from backend.models.password_reset_token import PasswordResetToken
 from werkzeug.security import generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
+from datetime import datetime
+from backend.repositories.user_account_management.user_repository import UserRepository
+from backend.repositories.user_account_management.password_reset_repository import PasswordResetRepository
+from backend.models.user import User
 import smtplib
-import logging
-from email.message import EmailMessage
-
-logger = logging.getLogger(__name__)
 
 class PasswordResetService:
     
     def __init__(self):
         self.user_repository = UserRepository()
-        self.password_reset_token_repository = PasswordResetTokenRepository()
-        self.serializer = URLSafeTimedSerializer("secret-key")  # Replace "secret-key" with a real secret key
+        self.password_reset_repository = PasswordResetRepository()
+        self.serializer = URLSafeTimedSerializer('SECRET_KEY')
 
-    def send_password_reset_email(self, email: str) -> None:
+    def create_password_reset_request(self, email: str) -> None:
         user = self.user_repository.get_user_by_email(email)
         if not user:
             raise ValueError("Email not found")
 
-        token = self.password_reset_token_repository.create_token(user.id)
-        reset_link = f"https://your-domain.com/reset-password/{token.token}"
+        token = self.serializer.dumps(email, salt='password-reset-salt')
+        self.password_reset_repository.create_password_reset(user.id, token)
+        self.send_password_reset_email(user.email, token)
+
+    def send_password_reset_email(self, email: str, token: str) -> None:
+        reset_url = f"http://localhost:5000/password-reset/reset?token={token}"
+        subject = "Password Reset Requested"
+        body = f"Please click the link to reset your password: {reset_url}"
         
-        self._send_email(user.email, reset_link)
+        # Example of sending email - replace with actual SMTP configuration
+        sender = "noreply@example.com"
+        password = "examplepassword"
+
+        with smtplib.SMTP("smtp.example.com", 587) as server:
+            server.starttls()
+            server.login(sender, password)
+            server.sendmail(sender, email, f"Subject: {subject}\n\n{body}")
 
     def reset_password(self, token: str, new_password: str) -> None:
-        token_record = self.password_reset_token_repository.get_token(token)
-        if not token_record or token_record.is_expired():
-            raise ValueError("Invalid or expired token")
+        password_reset = self.password_reset_repository.get_password_reset_by_token(token)
+        if not password_reset:
+            raise ValueError("Invalid token")
 
-        user = self.user_repository.get_user_by_id(token_record.user_id)
+        if password_reset.expires_at < datetime.utcnow():
+            self.password_reset_repository.delete_password_reset(password_reset)
+            raise ValueError("Token has expired")
+
+        user = self.user_repository.get_user_by_id(password_reset.user_id)
+        if not user:
+            raise ValueError("User not found")
+
         user.password = generate_password_hash(new_password)
         self.user_repository.save_user(user)
-        self.password_reset_token_repository.delete_token(token_record)
-
-    def _send_email(self, recipient_email: str, reset_link: str) -> None:
-        sender_email = "no-reply@your-domain.com"
-        message = EmailMessage()
-        message.set_content(f"Click the link to reset your password: {reset_link}")
-        message["Subject"] = "Password Reset Request"
-        message["From"] = sender_email
-        message["To"] = recipient_email
-
-        with smtplib.SMTP("smtp.your-email-server.com") as server:
-            server.login("your-email-username", "your-email-password")
-            server.send_message(message)
-        logger.info(f"Password reset email sent to {recipient_email}")
+        self.password_reset_repository.delete_password_reset(password_reset)
