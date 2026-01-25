@@ -25,12 +25,3 @@ class ProductRepository:
     def save_product(self, product: Product) -> None:
         db.session.commit()
         logger.info(f"Product updated with ID: {product.id}")
-
-    def delete_product(self, product_id: int) -> None:
-        product = self.get_product_by_id(product_id)
-        if not product:
-            raise ValueError("Product not found")
-        
-        db.session.delete(product)
-        db.session.commit()
-        logger.info(f"Product deleted with ID: {product_id}")
