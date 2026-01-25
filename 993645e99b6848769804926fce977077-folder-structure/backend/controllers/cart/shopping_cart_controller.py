@@ -92,3 +92,11 @@ def modify_cart():
             return jsonify({"message": "Product not found in cart"}), 404
 
     return jsonify({"message": "Product quantity modified"}), 200
+
+@login_required
+@cart_bp.route('/get-cart', methods=['GET'])
+def get_cart():
+    user_id = current_user.id
+    cart = shopping_cart_service.get_cart(user_id)
+    logger.info(f"Shopping cart retrieved for user {user_id}")
+    return jsonify(cart), 200
