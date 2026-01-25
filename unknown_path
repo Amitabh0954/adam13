@@ -1,9 +1,9 @@
-Given the user story about modifying the quantity of products in the shopping cart, which involves ensuring the quantity is a positive integer and recalculating the total price, we need to implement this functionality under the `cart_management` directory.
+Given the user story about saving the shopping cart state for logged-in users and ensuring it's retrievable across multiple sessions, we need to implement this functionality under the `cart_management` directory and potentially update the `user_management` directory to handle the saved cart state in the user's profile.
 
 The implementation steps are as follows:
 
-1. Update the `CartItem` model if necessary.
-2. Create API endpoints for modifying the quantity of products in the cart.
-3. Implement logic for recalculating the total price.
+1. Ensure the `Cart` and `CartItem` models already support user-specific carts.
+2. Create API endpoints for saving and retrieving the cart state.
+3. Integrate functionality to link the cart with the logged-in user's profile upon login.
 
 Let's generate the files sequentially:
