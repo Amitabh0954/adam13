@@ -1,7 +1,6 @@
 CREATE TABLE password_reset_tokens (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    token VARCHAR(36) NOT NULL PRIMARY KEY,
     user_id INT NOT NULL,
-    token VARCHAR(36) UNIQUE NOT NULL,
-    expiration DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
