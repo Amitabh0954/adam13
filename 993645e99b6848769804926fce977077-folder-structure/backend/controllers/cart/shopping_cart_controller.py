@@ -32,3 +32,33 @@ def add_to_cart():
         logger.info(f"Product {product_id} added to guest's cart")
 
     return jsonify({"message": "Product added to cart"}), 200
+
+@cart_bp.route('/remove-from-cart', methods=['POST'])
+def remove_from_cart():
+    data = request.get_json()
+    product_id = data.get('product_id')
+    confirmation = data.get('confirmation')
+
+    if not product_id:
+        logger.warning("Product ID is required")
+        return jsonify({"message": "Product ID is required"}), 400
+
+    if confirmation != "CONFIRM":
+        logger.warning("Removal not confirmed")
+        return jsonify({"message": "Confirmation is required"}), 400
+
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        shopping_cart_service.remove_product_from_cart(user_id, product_id)
+        logger.info(f"Product {product_id} removed from user {user_id}'s cart")
+    else:
+        cart = session.get('cart', {})
+        if product_id in cart:
+            del cart[product_id]
+            session['cart'] = cart
+            logger.info(f"Product {product_id} removed from guest's cart")
+        else:
+            logger.warning(f"Product {product_id} not found in guest's cart")
+            return jsonify({"message": "Product not found in cart"}), 404
+
+    return jsonify({"message": "Product removed from cart"}), 200
