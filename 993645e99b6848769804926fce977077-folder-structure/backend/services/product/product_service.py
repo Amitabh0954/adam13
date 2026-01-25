@@ -1,17 +1,16 @@
 from backend.repositories.product.product_repository import ProductRepository
+from backend.repositories.product.delete_product_repository import DeleteProductRepository
 from backend.models.product import Product
 
 class ProductService:
-    
+
     def __init__(self):
         self.product_repository = ProductRepository()
+        self.delete_product_repository = DeleteProductRepository()
 
-    def add_product(self, name: str, price: float, description: str) -> None:
-        if self.product_repository.get_product_by_name(name):
-            raise ValueError("Product name already exists")
+    def delete_product(self, product_id: int) -> None:
+        product = self.delete_product_repository.get_product_by_id(product_id)
+        if not product:
+            raise ValueError("Product not found")
 
-        if price <= 0:
-            raise ValueError("Product price must be a positive number")
-
-        new_product = Product(name=name, price=price, description=description)
-        self.product_repository.save_product(new_product)
+        self.delete_product_repository.delete_product(product)
