@@ -95,3 +95,26 @@ def update_cart_item(item_id: int):
 
     logger.info(f"Updated quantity for product {cart_item.product.name} in cart to {quantity}")
     return jsonify({'message': 'Cart item quantity updated successfully'}), 200
+
+@cart_bp.route('/cart', methods=['GET'])
+def get_cart():
+    cart = None
+    if 'user_id' in session:
+        user_id = session['user_id']
+        cart = Cart.query.filter_by(user_id=user_id).first()
+    elif 'session_id' in session:
+        session_id = session['session_id']
+        cart = Cart.query.filter_by(session_id=session_id).first()
+
+    if not cart:
+        return jsonify({'message': 'Cart is empty'}), 200
+
+    cart_items = [{
+        'product_id': item.product.id,
+        'name': item.product.name,
+        'quantity': item.quantity,
+        'price': item.product.price,
+        'total_price': item.quantity * item.product.price
+    } for item in cart.items]
+
+    return jsonify({'cart_items': cart_items}), 200
