@@ -5,8 +5,17 @@ class Product(db.Model):
     name = db.Column(db.String(120), nullable=False, unique=True)
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text, nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     category = db.relationship('Category', back_populates='products')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "price": self.price,
+            "description": self.description,
+            "category_name": self.category.name
+        }
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
