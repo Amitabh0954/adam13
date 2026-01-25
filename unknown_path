@@ -1,9 +1,9 @@
-Given the user story for updating product details, where the product can only be updated by an admin, price must be a numeric value, and the description can be modified but not removed, we will implement this under the `product_management/catalog` directory.
+Given the user story for deleting products, where only admins can perform the deletion, a confirmation is required, and deleted products must not appear in the catalog, we will implement this under the `product_management/catalog` directory.
 
 The implementation steps are as follows:
 
-1. Define and update the `Product` model if necessary.
-2. Create API endpoints for updating product details, ensuring only admins can perform this operation.
-3. Ensure proper validations for price and description fields.
+1. Define and update the `Product` model if necessary to handle deletion.
+2. Create API endpoints for deleting products.
+3. Ensure proper validations and admin checks.
 
 Let's generate the files sequentially:
