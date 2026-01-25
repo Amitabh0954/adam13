@@ -1,25 +1,14 @@
-from backend.repositories.auth.login_repository import LoginRepository
-from backend.models.user import User
-import datetime
+from werkzeug.security import check_password_hash
+from backend.repositories.user_account_management.user_repository import UserRepository
+from flask_login import UserMixin
 
 class LoginService:
-    MAX_LOGIN_ATTEMPTS = 5
-
+    
     def __init__(self):
-        self.login_repository = LoginRepository()
+        self.user_repository = UserRepository()
 
-    def authenticate(self, email: str, password: str) -> User:
-        user = self.login_repository.get_user_by_email(email)
-        
-        if not user:
-            raise ValueError("Invalid email or password")
-
-        if user.login_attempts >= self.MAX_LOGIN_ATTEMPTS:
-            raise ValueError("Account locked due to too many invalid login attempts")
-        
-        if user.password != password:
-            self.login_repository.update_login_attempts(user)
-            raise ValueError("Invalid email or password")
-        
-        self.login_repository.reset_login_attempts(user)
-        return user
+    def authenticate_user(self, email: str, password: str):
+        user = self.user_repository.get_user_by_email(email)
+        if user and check_password_hash(user.password, password):
+            return user
+        return None
