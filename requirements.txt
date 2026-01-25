@@ -6,11 +6,11 @@ werkzeug==2.0.2
 
 ### Summary
 
-This implementation of removing products from the shopping cart ensures that:
-- Removing an item updates the total price automatically.
-- Users see a confirmation before removing an item.
-- Necessary API endpoints are provided for managing the removal of products from the shopping cart.
+This implementation of modifying the quantity of products in the shopping cart ensures that:
+- The quantity is a positive integer.
+- Modifying the quantity recalculates the total price.
+- Necessary API endpoints are provided for managing the modification of product quantities in the shopping cart.
 - The MySQL database schema supports fields for managing shopping carts and cart items.
 - The application initializes properly with the new feature and necessary dependencies.
 
-This implementation aligns with the user stories and provides a production-ready solution for removing products from the shopping cart.
+This implementation aligns with the user stories and provides a production-ready solution for modifying the quantity of products in the shopping cart.
