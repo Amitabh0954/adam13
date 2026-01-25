@@ -18,6 +18,10 @@ def add_to_cart():
     if not product_id:
         logger.warning("Product ID is required")
         return jsonify({"message": "Product ID is required"}), 400
+    
+    if quantity <= 0:
+        logger.warning("Quantity must be a positive integer")
+        return jsonify({"message": "Quantity must be a positive integer"}), 400
 
     try:
         cart_service.add_to_cart(current_user.id, product_id, quantity)
@@ -51,4 +55,22 @@ def remove_from_cart(cart_item_id: int):
         return jsonify({"message": "Cart item removed successfully"}), 200
     except ValueError as e:
         logger.warning(f"Failed to remove cart item: {str(e)}")
+        return jsonify({"message": str(e)}), 400
+
+@cart_bp.route('/cart/<int:cart_item_id>', methods=['PATCH'])
+@login_required
+def update_cart_item_quantity(cart_item_id: int):
+    data = request.get_json()
+    quantity = data.get('quantity')
+    
+    if quantity is None or quantity <= 0:
+        logger.warning("Quantity must be a positive integer")
+        return jsonify({"message": "Quantity must be a positive integer"}), 400
+
+    try:
+        cart_service.update_cart_item_quantity(current_user.id, cart_item_id, quantity)
+        logger.info(f"Quantity for cart item ID '{cart_item_id}' updated to '{quantity}' for user '{current_user.id}'")
+        return jsonify({"message": "Cart item quantity updated successfully"}), 200
+    except ValueError as e:
+        logger.warning(f"Failed to update cart item quantity: {str(e)}")
         return jsonify({"message": str(e)}), 400
