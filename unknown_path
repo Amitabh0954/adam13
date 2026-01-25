@@ -1,16 +1,19 @@
-To implement the functionality for modifying the quantity of products in the shopping cart, ensuring that the quantity is a positive integer and recalculating the total price, follow these steps:
+To implement the functionality for saving the shopping cart state to the user's profile and ensuring the cart can be retrievable across multiple sessions for logged-in users, follow these steps:
 
 ### Implementation Plan:
 
-1. **Extend the ShoppingCart and ShoppingCartItem models with necessary methods for updating total price.**
-2. **Create repositories for managing the modification of cart items.**
-3. **Implement services for modifying the quantity of products in the shopping cart.**
-4. **Implement a controller to expose the API for modifying the quantity of products in the shopping cart.**
-5. **Update routes to include endpoints for modifying the quantity of products in the shopping cart.**
-6. **Update MySQL database schema if needed.**
-7. **Ensure this feature works by initializing it in the application.**
-8. **Update requirements.txt if any new dependencies are required.**
+1. **Extend the ShoppingCart model if necessary.**
+2. **Create repositories for managing the saving and retrieval of the shopping cart state.**
+3. **Implement services for saving and retrieving the shopping cart state for logged-in users.**
+4. **Implement a controller to expose the API for saving and retrieving the shopping cart state.**
+5. **Update routes to include endpoints for saving and retrieving the shopping cart state.**
+6. **Ensure this feature works by initializing it in the application.**
+7. **Update requirements.txt if any new dependencies are required.**
 
 ### Implementation:
 
-#### 1. Extend the ShoppingCart and ShoppingCartItem models with necessary methods for updating total price
+#### 1. Extend the ShoppingCart model if necessary
+
+The current ShoppingCart model already supports the necessary fields, including user_id and session_id, which allows linking the cart to a user.
+
+#### 2. Create repositories for managing the saving and retrieval of the shopping cart state
