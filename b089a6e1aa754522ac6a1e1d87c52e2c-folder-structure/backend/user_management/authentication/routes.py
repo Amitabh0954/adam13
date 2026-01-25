@@ -1,8 +1,10 @@
 import logging
 from datetime import datetime, timedelta
-from flask import Blueprint, request, jsonify, session
+from uuid import uuid4
+from flask import Blueprint, request, jsonify, session, render_template, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
-from .models import db, User
+from .models import db, User, PasswordResetToken
+from flask_mail import Mail, Message
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -11,6 +13,9 @@ auth_bp = Blueprint('auth_bp', __name__)
 MAX_FAILED_ATTEMPTS = 5
 LOCK_DURATION = timedelta(minutes=15)
 SESSION_TIMEOUT = 1800  # in seconds (30 minutes)
+TOKEN_EXPIRATION = timedelta(hours=24)
+
+mail = Mail()
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -63,6 +68,70 @@ def login():
 
     logger.info(f"User {email} logged in successfully")
     return jsonify({'message': 'Logged in successfully'}), 200
+
+@auth_bp.route('/password-reset', methods=['POST'])
+def password_reset_request():
+    data = request.get_json()
+    email = data.get('email')
+
+    user = User.query.filter_by(email=email).first()
+
+    if user is None:
+        return jsonify({'message': 'Email not found'}), 404
+
+    token = str(uuid4())
+    expires_at = datetime.utcnow() + TOKEN_EXPIRATION
+
+    reset_token = PasswordResetToken(
+        user_id=user.id,
+        token=token,
+        expires_at=expires_at
+    )
+
+    db.session.add(reset_token)
+    db.session.commit()
+
+    reset_url = url_for('auth_bp.password_reset_confirm', token=token, _external=True)
+    send_password_reset_email(user.email, reset_url)
+
+    logger.info(f"Password reset link sent to {email}")
+    return jsonify({'message': 'Password reset link sent'}), 200
+
+@auth_bp.route('/password-reset/<token>', methods=['GET', 'POST'])
+def password_reset_confirm(token):
+    reset_token = PasswordResetToken.query.filter_by(token=token).first()
+
+    if reset_token is None or reset_token.expires_at < datetime.utcnow():
+        return jsonify({'message': 'Invalid or expired token'}), 400
+
+    if request.method == 'POST':
+        data = request.get_json()
+        password = data.get('password')
+
+        if not password:
+            return jsonify({'message': 'Password is required'}), 400
+
+        user = User.query.get(reset_token.user_id)
+        user.password_hash = generate_password_hash(password)
+
+        db.session.delete(reset_token)
+        db.session.commit()
+
+        logger.info(f"User {user.email} has reset the password successfully")
+        return jsonify({'message': 'Password reset successfully'}), 200
+
+    return render_template('password_reset_confirm.html', token=token)
+
+def send_password_reset_email(to_email, reset_url):
+    msg = Message('Password Reset Request',
+                  sender='noreply@yourapp.com',
+                  recipients=[to_email])
+    msg.body = fTo reset your password, visit the following link:
+{reset_url}
+
+If you did not make this request, simply ignore this email and no changes will be made.
+
+    mail.send(msg)
 
 @auth_bp.before_request
 def before_request():
