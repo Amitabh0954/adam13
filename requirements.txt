@@ -6,11 +6,12 @@ werkzeug==2.0.2
 
 ### Summary
 
-This implementation of user registration ensures that:
-- Email is unique.
-- Password meets security criteria (at least 8 characters, contains a letter, and a number).
-- API endpoints are provided to register a new user.
-- The MySQL database schema supports necessary constraints for user management.
+This implementation of searching for products ensures that:
+- Search results are based on product names, categories, or attributes.
+- Search results are pageable.
+- Relevant search terms are highlighted in the results.
+- Necessary API endpoints are provided for searching products.
+- The MySQL database schema supports fields for product catalog management.
 - The application initializes properly with the new feature and necessary dependencies.
 
-This implementation aligns with the user stories and provides a production-ready solution for user registration functionality.
+This implementation aligns with the user stories and provides a production-ready solution for searching products in the catalog.
