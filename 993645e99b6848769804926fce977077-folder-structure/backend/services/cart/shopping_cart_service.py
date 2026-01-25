@@ -32,3 +32,9 @@ class ShoppingCartService:
         
         cart.items[product_id] = quantity
         self.shopping_cart_repository.save_cart(cart)
+
+    def get_cart(self, user_id: int) -> dict:
+        cart = self.shopping_cart_repository.get_cart_by_user_id(user_id)
+        if not cart:
+            return {"items": {}}
+        return {"items": cart.items}
