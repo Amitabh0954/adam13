@@ -6,11 +6,11 @@ werkzeug==2.0.2
 
 ### Summary
 
-This implementation of modifying the quantity of products in the shopping cart ensures that:
-- The quantity is a positive integer.
-- Modifying the quantity recalculates the total price.
-- Necessary API endpoints are provided for managing the modification of product quantities in the shopping cart.
+This implementation of saving the shopping cart state ensures that:
+- The cart state is saved to the user's profile.
+- The saved cart is retrievable across multiple sessions.
+- Necessary API endpoints are provided for saving and retrieving the shopping cart state.
 - The MySQL database schema supports fields for managing shopping carts and cart items.
 - The application initializes properly with the new feature and necessary dependencies.
 
-This implementation aligns with the user stories and provides a production-ready solution for modifying the quantity of products in the shopping cart.
+This implementation aligns with the user stories and provides a production-ready solution for saving and retrieving the shopping cart state.
