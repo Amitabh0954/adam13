@@ -13,3 +13,6 @@ class UserRepository:
         db.session.add(user)
         db.session.commit()
         logger.info(f"User saved with email: {user.email}")
+
+    def get_user_by_id(self, user_id: int) -> User:
+        return User.query.get(user_id)
