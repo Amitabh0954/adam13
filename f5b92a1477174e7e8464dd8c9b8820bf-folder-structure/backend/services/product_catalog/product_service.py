@@ -25,6 +25,3 @@ class ProductService:
             product.description = description
 
         self.product_repository.save_product(product)
-
-    def delete_product(self, product_id: int) -> None:
-        self.product_repository.delete_product(product_id)
