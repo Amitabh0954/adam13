@@ -16,3 +16,11 @@ class ShoppingCartService:
             else:
                 cart.items[product_id] = quantity
         self.shopping_cart_repository.save_cart(cart)
+    
+    def remove_product_from_cart(self, user_id: int, product_id: int) -> None:
+        cart = self.shopping_cart_repository.get_cart_by_user_id(user_id)
+        if not cart or product_id not in cart.items:
+            raise ValueError("Product not found in cart")
+        
+        del cart.items[product_id]
+        self.shopping_cart_repository.save_cart(cart)
