@@ -63,3 +63,18 @@ def update_product(product_id: int):
 
     logger.info(f"Product {product.name} updated successfully")
     return jsonify({'message': 'Product updated successfully'}), 200
+
+@catalog_bp.route('/products/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id: int):
+    if not is_admin():
+        return jsonify({'message': 'Not authorized'}), 403
+
+    product = Product.query.get(product_id)
+    if not product or product.is_deleted:
+        return jsonify({'message': 'Product not found or already deleted'}), 404
+
+    db.session.delete(product)
+    db.session.commit()
+
+    logger.info(f"Product {product.name} marked as deleted")
+    return jsonify({'message': 'Product marked as deleted and will not appear in the catalog'}), 200
