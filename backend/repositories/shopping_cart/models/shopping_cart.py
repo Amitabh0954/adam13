@@ -19,4 +19,4 @@ class ShoppingCart(Base):
     def update_total_price(self):
         self.total_price = sum(item.price * item.quantity for item in self.items)
 
-#### 2. Create repositories for managing the removal of cart items
+#### 2. Create repositories for managing the modification of cart items
