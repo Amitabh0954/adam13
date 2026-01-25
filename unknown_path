@@ -1,12 +1,12 @@
-To implement the functionality for removing products from the shopping cart, updating the total price automatically, and providing a confirmation before removing an item, follow these steps:
+To implement the functionality for modifying the quantity of products in the shopping cart, ensuring that the quantity is a positive integer and recalculating the total price, follow these steps:
 
 ### Implementation Plan:
 
 1. **Extend the ShoppingCart and ShoppingCartItem models with necessary methods for updating total price.**
-2. **Create repositories for managing the removal of cart items.**
-3. **Implement services for removing products from the shopping cart.**
-4. **Implement a controller to expose the API for managing the removal of products from the shopping cart.**
-5. **Update routes to include endpoints for removing products from the shopping cart.**
+2. **Create repositories for managing the modification of cart items.**
+3. **Implement services for modifying the quantity of products in the shopping cart.**
+4. **Implement a controller to expose the API for modifying the quantity of products in the shopping cart.**
+5. **Update routes to include endpoints for modifying the quantity of products in the shopping cart.**
 6. **Update MySQL database schema if needed.**
 7. **Ensure this feature works by initializing it in the application.**
 8. **Update requirements.txt if any new dependencies are required.**
