@@ -2,7 +2,6 @@ import logging
 from flask import Blueprint, request, jsonify, session
 from .models import db, Cart, CartItem
 from backend.product_management.catalog.models import Product
-from backend.user_management.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,3 +44,37 @@ def add_to_cart():
 
     logger.info(f"Product {product_id} added to cart")
     return jsonify({'message': 'Product added to cart successfully'}), 201
+
+@cart_bp.route('/cart/item/<int:item_id>', methods=['DELETE'])
+def remove_from_cart(item_id: int):
+    confirm = request.args.get('confirm', 'false').lower() == 'true'
+    if not confirm:
+        return jsonify({'message': 'Confirmation required to remove item'}), 400
+
+    cart_item = CartItem.query.get(item_id)
+    if not cart_item:
+        return jsonify({'message': 'Cart item not found'}), 404
+
+    product_name = cart_item.product.name
+    db.session.delete(cart_item)
+    db.session.commit()
+
+    logger.info(f"Product {product_name} removed from cart")
+    return jsonify({'message': 'Product removed from cart successfully'}), 200
+
+@cart_bp.route('/cart/total', methods=['GET'])
+def get_cart_total():
+    cart = None
+    if 'user_id' in session:
+        user_id = session['user_id']
+        cart = Cart.query.filter_by(user_id=user_id).first()
+    elif 'session_id' in session:
+        session_id = session['session_id']
+        cart = Cart.query.filter_by(session_id=session_id).first()
+
+    if not cart:
+        return jsonify({'total_price': 0.0}), 200
+
+    total_price = sum(item.quantity * item.product.price for item in cart.items)
+
+    return jsonify({'total_price': total_price}), 200
