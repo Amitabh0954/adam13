@@ -8,11 +8,13 @@ class UserRepository:
     
     def get_user_by_email(self, email: str) -> User:
         return User.query.filter_by(email=email).first()
-    
-    def save_user(self, user: User) -> None:
+
+    def create_user(self, email: str, password: str) -> User:
+        user = User(email=email, password=password)
         db.session.add(user)
         db.session.commit()
-        logger.info(f"User saved with email: {user.email}")
-
-    def get_user_by_id(self, user_id: int) -> User:
-        return User.query.get(user_id)
+        logger.info(f"User created with email: {email}")
+        return user
+    
+    def verify_password(self, user: User, password: str) -> bool:
+        return user.password == password
