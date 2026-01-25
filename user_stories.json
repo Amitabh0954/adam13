@@ -1,0 +1,797 @@
+{
+  "download_url": "https://elevancepocacdb.blob.core.windows.net/user-stories/user_stories.csv?sp=r&st=2025-09-10T09:17:44Z&se=2026-05-01T17:32:44Z&sv=2024-11-04&sr=b&sig=UGFaKPvLaaHeaj%2BNG2t4WGVEDx4WSIs%2Bvuc9nae9LHE%3D",
+  "user_stories": [
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must validate the email and password format",
+            "The user must receive a confirmation email after registration",
+            "The account must be created successfully after all information is validated"
+          ],
+          "scenario": "Successful Registration"
+        },
+        {
+          "criteria": [
+            "The system must check the email against existing accounts",
+            "An error message should be displayed if the email is already in use"
+          ],
+          "scenario": "Registration with Existing Email"
+        },
+        {
+          "criteria": [
+            "The system must prompt for a valid email format",
+            "The system must enforce password complexity requirements"
+          ],
+          "scenario": "Registration with Invalid Data"
+        }
+      ],
+      "attributes_and_rules": [
+        "Email must be unique",
+        "Password must meet security criteria"
+      ],
+      "core_domain_objects": ["User", "Account"],
+      "description": "As a user, I want to register for an account, so that I can create a personalized profile and access my data.",
+      "epic_title": "User Account Management",
+      "number": 1,
+      "priority_business_value": "High | Essential for enabling further account interactions",
+      "test_cases": [
+        {
+          "feature": "User Registration",
+          "scenarios": [
+            {
+              "name": "Successful Registration",
+              "steps": [
+                "Given the user is on the registration page",
+                "When the user enters valid details and submits the form",
+                "Then the user should receive a confirmation email",
+                "And their account should be created"
+              ]
+            },
+            {
+              "name": "Registration with Existing Email",
+              "steps": [
+                "Given the user is on the registration page",
+                "When the user enters an email that is already registered",
+                "Then an error message should be displayed indicating the email is taken"
+              ]
+            },
+            {
+              "name": "Registration with Invalid Data",
+              "steps": [
+                "Given the user is on the registration page",
+                "When the user enters an invalid email or password",
+                "Then an error message should be displayed with specific guidance"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "User Registration"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must validate user credentials correctly",
+            "The user must be redirected to the dashboard upon successful login"
+          ],
+          "scenario": "Successful Login"
+        },
+        {
+          "criteria": [
+            "The system must display an error message for invalid credentials",
+            "The user must remain on the login page after a failed attempt"
+          ],
+          "scenario": "Failed Login"
+        },
+        {
+          "criteria": [
+            "The account should be temporarily locked after 5 failed login attempts",
+            "A notification email should be sent to the user for account recovery"
+          ],
+          "scenario": "Account Lockout"
+        }
+      ],
+      "attributes_and_rules": [
+        "Invalid login attempts must be limited",
+        "Session time out after inactivity"
+      ],
+      "core_domain_objects": ["User", "Session"],
+      "description": "As a user, I want to log into my account, so that I can access my personal dashboard and account details.",
+      "epic_title": "User Account Management",
+      "number": 2,
+      "priority_business_value": "High | Critical for user engagement and retention",
+      "test_cases": [
+        {
+          "feature": "User Authentication",
+          "scenarios": [
+            {
+              "name": "Successful Login",
+              "steps": [
+                "Given the user is on the login page",
+                "When the user enters valid credentials",
+                "And clicks the login button",
+                "Then the user should be redirected to the dashboard",
+                "And a welcome message should be displayed"
+              ]
+            },
+            {
+              "name": "Failed Login",
+              "steps": [
+                "Given the user is on the login page",
+                "When the user enters invalid credentials",
+                "And clicks the login button",
+                "Then an error message should be displayed",
+                "And the user should remain on the login page"
+              ]
+            },
+            {
+              "name": "Account Lockout",
+              "steps": [
+                "Given the user is on the login page",
+                "When the user enters invalid credentials 5 consecutive times",
+                "Then the account should be temporarily locked",
+                "And a notification should be sent to the user's email",
+                "And instructions for account recovery should be displayed"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "User Login"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must validate the registered email before sending the reset link",
+            "The user must receive the reset link in their email",
+            "The message should confirm that a reset link has been sent"
+          ],
+          "scenario": "Request Password Reset"
+        },
+        {
+          "criteria": [
+            "The user must be able to set a new password using the reset link",
+            "The new password should meet security criteria"
+          ],
+          "scenario": "Reset Password with Valid Link"
+        },
+        {
+          "criteria": [
+            "The user should receive a message indicating the link has expired if they try to use an old link"
+          ],
+          "scenario": "Use Expired Reset Link"
+        }
+      ],
+      "attributes_and_rules": [
+        "Password reset links must expire after 24 hours",
+        "User must verify their identity via email"
+      ],
+      "core_domain_objects": ["User", "Password Reset"],
+      "description": "As a user, I want to recover my password, so that I can regain access to my account.",
+      "epic_title": "User Account Management",
+      "number": 3,
+      "priority_business_value": "High | Essential for user retention and security",
+      "test_cases": [
+        {
+          "feature": "Password Recovery",
+          "scenarios": [
+            {
+              "name": "Request Password Reset",
+              "steps": [
+                "Given the user is on the forgot password page",
+                "When the user enters their registered email",
+                "And submits the form",
+                "Then a password reset link should be sent to the email",
+                "And a confirmation message should be displayed"
+              ]
+            },
+            {
+              "name": "Reset Password with Valid Link",
+              "steps": [
+                "Given the user receives a reset link in their email",
+                "When the user clicks on the reset link",
+                "And enters a new password",
+                "Then the password should be successfully updated",
+                "And the user should be able to log in with the new password"
+              ]
+            },
+            {
+              "name": "Use Expired Reset Link",
+              "steps": [
+                "Given the user tries to use an expired reset link",
+                "When the user attempts to set a new password",
+                "Then an error message should indicate that the link has expired"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Password Recovery"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The user must be able to edit their personal information (e.g., name, email, etc.)",
+            "The system must save the updates successfully"
+          ],
+          "scenario": "Update Profile Information"
+        },
+        {
+          "criteria": [
+            "The user must be able to view their current profile information",
+            "Profile information should be displayed accurately"
+          ],
+          "scenario": "View Profile Information"
+        },
+        {
+          "criteria": [
+            "The system must validate new data for correctness (e.g., valid email format)",
+            "An error message should be displayed for invalid inputs"
+          ],
+          "scenario": "Invalid Profile Update"
+        }
+      ],
+      "attributes_and_rules": [
+        "Profile updates must be saved correctly",
+        "Changes should reflect immediately"
+      ],
+      "core_domain_objects": ["User", "Profile"],
+      "description": "As a user, I want to manage my account profile, so that I can update my personal information and preferences.",
+      "epic_title": "User Account Management",
+      "number": 4,
+      "priority_business_value": "Medium | Important for user satisfaction and personalization",
+      "test_cases": [
+        {
+          "feature": "Profile Management",
+          "scenarios": [
+            {
+              "name": "Update Profile Information",
+              "steps": [
+                "Given the user is logged in and on the profile page",
+                "When the user updates their personal information and submits the changes",
+                "Then the updates should be saved successfully",
+                "And the updated information should be reflected on the profile page"
+              ]
+            },
+            {
+              "name": "View Profile Information",
+              "steps": [
+                "Given the user is logged in and on the profile page",
+                "When the user views their information",
+                "Then the current profile information should be displayed accurately"
+              ]
+            },
+            {
+              "name": "Invalid Profile Update",
+              "steps": [
+                "Given the user is updating their profile information",
+                "When the user enters an invalid email",
+                "Then an error message should be displayed indicating the email is invalid"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Profile Management"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must allow the user to enter product details",
+            "The system must validate that the product name is unique",
+            "The system must save the product and confirm success",
+            "The new product must be viewable in the catalog"
+          ],
+          "scenario": "Add New Product Successfully"
+        },
+        {
+          "criteria": [
+            "The system must show an error message when the product name is not unique",
+            "The system must show an error message for empty product descriptions",
+            "The system must not allow saving the product until all validations pass"
+          ],
+          "scenario": "Fail to Add Product due to Invalid Input"
+        }
+      ],
+      "attributes_and_rules": [
+        "Product name must be unique",
+        "Product price must be a positive number",
+        "Product description cannot be empty"
+      ],
+      "core_domain_objects": ["Product", "Category"],
+      "description": "As an admin, I want to add new products to the inventory, so that they can be available for customers to browse and purchase.",
+      "epic_title": "Product Catalog Management",
+      "number": 1,
+      "priority_business_value": "High | Essential for catalog management",
+      "test_cases": [
+        {
+          "feature": "Product Management",
+          "scenarios": [
+            {
+              "name": "Successful Product Addition",
+              "steps": [
+                "Given the user is on the product addition page",
+                "When the user enters valid product details",
+                "And clicks the add product button",
+                "Then the product should be added to the catalog",
+                "And a success message should be displayed"
+              ]
+            },
+            {
+              "name": "Duplicate Product Name Error",
+              "steps": [
+                "Given the user is on the product addition page",
+                "When the user enters a product name that already exists",
+                "And submits the form",
+                "Then an error message indicating the name already exists should be displayed",
+                "And the product should not be added"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Add New Product"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must allow the admin to edit product details",
+            "The system must validate that the updated price is a positive value",
+            "The system must confirm success after the update",
+            "The updated details must reflect in the product catalog"
+          ],
+          "scenario": "Update Product Information"
+        },
+        {
+          "criteria": [
+            "The system must not allow a price update with a negative number",
+            "The system must show an error message for invalid inputs",
+            "The product must remain unchanged if validations fail"
+          ],
+          "scenario": "Fail to Update Product with Invalid Data"
+        }
+      ],
+      "attributes_and_rules": [
+        "Product can be updated only by an admin",
+        "Price must be a numeric value",
+        "Description can be modified but not removed"
+      ],
+      "core_domain_objects": ["Product"],
+      "description": "As an admin, I want to update existing product details, so that I can ensure all information is current and accurate.",
+      "epic_title": "Product Catalog Management",
+      "number": 2,
+      "priority_business_value": "High | Required for accurate product information",
+      "test_cases": [
+        {
+          "feature": "Product Management",
+          "scenarios": [
+            {
+              "name": "Successful Product Update",
+              "steps": [
+                "Given the admin is on the product update page",
+                "When the admin enters valid updated information",
+                "And clicks the update button",
+                "Then the system should confirm the update",
+                "And updated information should appear in the catalog"
+              ]
+            },
+            {
+              "name": "Invalid Price Update Error",
+              "steps": [
+                "Given the admin is on the product update page",
+                "When the admin enters an invalid negative price",
+                "And submits the form",
+                "Then an error message should be displayed",
+                "And the product should remain unchanged"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Update Product Details"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must ask for confirmation before deletion",
+            "The system must remove the product upon confirmation",
+            "The product must no longer be visible in the catalog after deletion"
+          ],
+          "scenario": "Delete Product Successfully"
+        },
+        {
+          "criteria": [
+            "The system must not delete the product if the user cancels the confirmation",
+            "The product must remain in the catalog"
+          ],
+          "scenario": "Cancel Product Deletion"
+        }
+      ],
+      "attributes_and_rules": [
+        "Only admins can delete products",
+        "Deletion should require confirmation",
+        "Products that are deleted must not appear in the catalog"
+      ],
+      "core_domain_objects": ["Product"],
+      "description": "As an admin, I want to delete products from the catalog, so that I can remove outdated or unwanted items.",
+      "epic_title": "Product Catalog Management",
+      "number": 3,
+      "priority_business_value": "Medium | Important for inventory control",
+      "test_cases": [
+        {
+          "feature": "Product Management",
+          "scenarios": [
+            {
+              "name": "Successful Product Deletion",
+              "steps": [
+                "Given the admin is on the product list page",
+                "When the admin chooses to delete a product",
+                "And confirms the deletion",
+                "Then the product should be removed from the catalog",
+                "And a success message should be displayed"
+              ]
+            },
+            {
+              "name": "Cancellation of Deletion",
+              "steps": [
+                "Given the admin is on the product list page",
+                "When the admin chooses to delete a product",
+                "And cancels the deletion confirmation",
+                "Then the product should remain in the catalog",
+                "And no success message should be displayed"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Delete Product"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must return relevant search results based on the query",
+            "The search results must be displayed in a user-friendly format",
+            "The user should be able to paginate through search results"
+          ],
+          "scenario": "Successful Product Search"
+        },
+        {
+          "criteria": [
+            "The system must inform the user when no products match the search query",
+            "The search box should remain available for a new query"
+          ],
+          "scenario": "No Results Found"
+        }
+      ],
+      "attributes_and_rules": [
+        "Search should return products based on names, categories, or attributes",
+        "Search results should be pageable",
+        "Relevant search terms should highlight in results"
+      ],
+      "core_domain_objects": ["Search", "Product"],
+      "description": "As a customer, I want to search for products in the catalog, so that I can quickly find what I am looking for.",
+      "epic_title": "Product Catalog Management",
+      "number": 4,
+      "priority_business_value": "High | Essential for user navigation",
+      "test_cases": [
+        {
+          "feature": "Product Search",
+          "scenarios": [
+            {
+              "name": "Successful Product Search",
+              "steps": [
+                "Given the customer is on the catalog page",
+                "When the customer enters a search term",
+                "And clicks the search button",
+                "Then relevant products should be displayed",
+                "And the customer should have the option to paginate"
+              ]
+            },
+            {
+              "name": "No Search Results",
+              "steps": [
+                "Given the customer is on the catalog page",
+                "When the customer enters a search term that matches no products",
+                "And clicks the search button",
+                "Then a message should indicate no results were found",
+                "And the search box should be ready for a new search"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Search Products"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system must allow assigning multiple categories to a product",
+            "The category must be displayed on the product page",
+            "The admin should be able to create new categories"
+          ],
+          "scenario": "Successful Product Categorization"
+        },
+        {
+          "criteria": [
+            "The system must show an error if a user tries to save a product without categorization",
+            "The system must retain the product information if validations fail"
+          ],
+          "scenario": "Fail to Categorize Product"
+        }
+      ],
+      "attributes_and_rules": [
+        "Each product must belong to at least one category",
+        "Categories should be manageable by admins",
+        "Categories can be hierarchical"
+      ],
+      "core_domain_objects": ["Product", "Category"],
+      "description": "As an admin, I want to categorize products, so that customers can easily browse through related items.",
+      "epic_title": "Product Catalog Management",
+      "number": 5,
+      "priority_business_value": "Medium | Enhances product discoverability",
+      "test_cases": [
+        {
+          "feature": "Product Categorization",
+          "scenarios": [
+            {
+              "name": "Successful Categorization",
+              "steps": [
+                "Given the admin is adding or editing a product",
+                "When the admin selects one or more categories",
+                "And submits the product details",
+                "Then the product should be categorized correctly",
+                "And categories should display on the product page"
+              ]
+            },
+            {
+              "name": "Error on Missing Category",
+              "steps": [
+                "Given the admin is on the product addition page",
+                "When the admin submits the product without a category",
+                "Then an error message should be displayed",
+                "And the product should not be saved"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Product Categorization"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The user can view product details on the product page.",
+            "The user can click 'Add to Cart' button.",
+            "The cart count updates immediately after adding a product.",
+            "The system displays a confirmation message after a product is added."
+          ],
+          "scenario": "Add a single product"
+        },
+        {
+          "criteria": [
+            "The user can add multiple different products to the cart.",
+            "The cart total price updates correctly after each addition.",
+            "The user can view all added items in the shopping cart."
+          ],
+          "scenario": "Add multiple products"
+        }
+      ],
+      "attributes_and_rules": [
+        "The shopping cart must persist across sessions for logged-in users.",
+        "Guest users can add products but will lose their cart on session expiration."
+      ],
+      "core_domain_objects": ["Product", "ShoppingCart", "User"],
+      "description": "As a user, I want to add products to my shopping cart, so that I can purchase multiple items at once.",
+      "epic_title": "Shopping Cart Functionality",
+      "number": 1,
+      "priority_business_value": "High | This functionality is essential for a positive user shopping experience.",
+      "test_cases": [
+        {
+          "feature": "Shopping Cart Management",
+          "scenarios": [
+            {
+              "name": "Add Single Product",
+              "steps": [
+                "Given the user is on a product page",
+                "When the user clicks 'Add to Cart'",
+                "Then the product should be added to the shopping cart",
+                "And the cart count should increase by one",
+                "And a confirmation message should display 'Product added to cart'"
+              ]
+            },
+            {
+              "name": "Add Multiple Products",
+              "steps": [
+                "Given the user is on a product page",
+                "When the user adds multiple products to the cart",
+                "Then all selected products should appear in the shopping cart",
+                "And the total price should reflect the added products"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Add Product to Shopping Cart"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The user can view an 'Remove' button next to each product in the cart.",
+            "Clicking the 'Remove' button prompts a confirmation.",
+            "Upon confirmation, the product is removed from the cart.",
+            "The total price updates accordingly."
+          ],
+          "scenario": "Remove a product"
+        },
+        {
+          "criteria": [
+            "The user can clear the entire shopping cart.",
+            "The system must confirm the action before clearing the cart.",
+            "After clearing, the cart should be empty and the total price should be zero."
+          ],
+          "scenario": "Remove all products"
+        }
+      ],
+      "attributes_and_rules": [
+        "Removing an item should update the total price automatically.",
+        "Users should see a confirmation before removing an item."
+      ],
+      "core_domain_objects": ["ShoppingCart", "Product"],
+      "description": "As a user, I want to remove products from my shopping cart, so that I can manage my selections easily.",
+      "epic_title": "Shopping Cart Functionality",
+      "number": 2,
+      "priority_business_value": "High | This enhances the user's ability to manage their purchases.",
+      "test_cases": [
+        {
+          "feature": "Shopping Cart Management",
+          "scenarios": [
+            {
+              "name": "Remove Product",
+              "steps": [
+                "Given the user has products in the shopping cart",
+                "When the user clicks the 'Remove' button on a product",
+                "And confirms the removal",
+                "Then the product should be removed from the cart",
+                "And the total price should decrease accordingly"
+              ]
+            },
+            {
+              "name": "Clear Shopping Cart",
+              "steps": [
+                "Given the user is in the shopping cart",
+                "When the user chooses to clear the cart",
+                "And confirms the action",
+                "Then the shopping cart should be empty",
+                "And the total price should be zero"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Remove Product from Shopping Cart"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The user can increase the quantity of a product in the cart.",
+            "The total price updates immediately when the quantity increases.",
+            "The system displays a confirmation message for quantity change."
+          ],
+          "scenario": "Increase product quantity"
+        },
+        {
+          "criteria": [
+            "The user can decrease the quantity of a product.",
+            "If the quantity reaches zero, the product should be removed from the cart.",
+            "The total price updates immediately when the quantity decreases."
+          ],
+          "scenario": "Decrease product quantity"
+        }
+      ],
+      "attributes_and_rules": [
+        "The quantity must be a positive integer.",
+        "Modifying quantity should recalculate the total price."
+      ],
+      "core_domain_objects": ["ShoppingCart", "Product"],
+      "description": "As a user, I want to modify the quantity of products in my shopping cart, so that I can adjust my order before checkout.",
+      "epic_title": "Shopping Cart Functionality",
+      "number": 3,
+      "priority_business_value": "Medium | This provides flexibility in the user's order management.",
+      "test_cases": [
+        {
+          "feature": "Shopping Cart Management",
+          "scenarios": [
+            {
+              "name": "Increase Product Quantity",
+              "steps": [
+                "Given the user has a product in the shopping cart with quantity of 1",
+                "When the user clicks on the increase quantity button",
+                "Then the quantity should be updated to 2",
+                "And the total price should reflect the increased quantity",
+                "And a confirmation message should state 'Quantity updated'"
+              ]
+            },
+            {
+              "name": "Decrease Product Quantity to Zero",
+              "steps": [
+                "Given the user has a product with a quantity of 1 in the cart",
+                "When the user clicks on the decrease quantity button",
+                "Then the quantity should be zero",
+                "And the product should be removed from the cart",
+                "And the total price should be updated accordingly"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Modify Quantity of Products in Shopping Cart"
+    },
+    {
+      "acceptance_criteria": [
+        {
+          "criteria": [
+            "The system saves the current state of the cart when the user logs out.",
+            "The next time the user logs in, the previous cart state should be retrieved.",
+            "The cart must contain all products that were in the cart at logout."
+          ],
+          "scenario": "Save cart on logout"
+        },
+        {
+          "criteria": [
+            "The user can modify the cart before logging out.",
+            "Upon logging back in, changes made before logout should be preserved.",
+            "The total price must reflect any modifications made."
+          ],
+          "scenario": "Modify cart and save"
+        }
+      ],
+      "attributes_and_rules": [
+        "The cart state must be saved to the user's profile.",
+        "The saved cart must be retrievable across multiple sessions."
+      ],
+      "core_domain_objects": ["User", "ShoppingCart"],
+      "description": "As a logged-in user, I want to save my shopping cart state, so that I can retrieve it later when I log back in.",
+      "epic_title": "Shopping Cart Functionality",
+      "number": 4,
+      "priority_business_value": "High | This feature enhances user convenience and loyalty.",
+      "test_cases": [
+        {
+          "feature": "Cart Persistence",
+          "scenarios": [
+            {
+              "name": "Save Cart on Logout",
+              "steps": [
+                "Given the user has products in their shopping cart",
+                "When the user logs out",
+                "Then the shopping cart should be saved to the user's profile",
+                "And the next time the user logs in, the cart should reflect the previous items"
+              ]
+            },
+            {
+              "name": "Preserve Modifications After Logout",
+              "steps": [
+                "Given the user adds a product to their cart and logs out",
+                "When the user logs back in",
+                "Then the cart should contain the added product",
+                "And the total price should reflect the quantity and price of the products"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Save Shopping Cart for Logged-in Users"
+    }
+  ]
+}
