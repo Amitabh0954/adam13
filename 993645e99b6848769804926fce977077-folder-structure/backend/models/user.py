@@ -5,9 +5,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     login_attempts = db.Column(db.Integer, default=0)
-    preferences = db.Column(db.JSON, nullable=True)
 
-    def __init__(self, email: str, password: str, preferences: dict = None):
+    def __init__(self, email: str, password: str):
         self.email = email
         self.password = password
-        self.preferences = preferences if preferences is not None else {}
