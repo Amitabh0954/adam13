@@ -18,10 +18,3 @@ class ProductRepository:
 
     def get_product_by_name(self, name: str) -> Product:
         return Product.query.filter_by(name=name).first()
-
-    def get_product_by_id(self, product_id: int) -> Product:
-        return Product.query.get(product_id)
-
-    def save_product(self, product: Product) -> None:
-        db.session.commit()
-        logger.info(f"Product updated with ID: {product.id}")
