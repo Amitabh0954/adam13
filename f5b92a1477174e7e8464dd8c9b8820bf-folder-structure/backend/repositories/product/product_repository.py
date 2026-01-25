@@ -34,14 +34,3 @@ class ProductRepository:
         db.session.delete(product)
         db.session.commit()
         logger.info(f"Product deleted with ID: {product_id}")
-
-    def search_products(self, query: str, page: int, per_page: int):
-        search_query = f"%{query}%"
-        products = Product.query.filter(
-            db.or_(
-                Product.name.ilike(search_query),
-                Product.description.ilike(search_query),
-                Product.category.has(name.ilike(search_query))
-            )
-        ).paginate(page, per_page, False)
-        return products.items, products.total
