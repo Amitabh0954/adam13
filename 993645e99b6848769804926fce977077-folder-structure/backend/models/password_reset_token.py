@@ -1,9 +1,11 @@
 from backend.database import db
-import uuid
 from datetime import datetime, timedelta
+import uuid
 
 class PasswordResetToken(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    token = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
-    expiration = db.Column(db.DateTime, nullable=False, default=lambda: datetime.utcnow() + timedelta(hours=24))
+    expires_at = db.Column(db.DateTime, nullable=False)
+
+    def is_expired(self) -> bool:
+        return datetime.utcnow() > self.expires_at
