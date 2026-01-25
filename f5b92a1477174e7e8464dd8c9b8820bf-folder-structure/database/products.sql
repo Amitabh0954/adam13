@@ -4,5 +4,5 @@ CREATE TABLE products (
     price FLOAT NOT NULL,
     description TEXT NOT NULL,
     category_id INT,
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
