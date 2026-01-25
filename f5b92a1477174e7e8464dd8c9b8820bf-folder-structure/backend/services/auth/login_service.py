@@ -1,6 +1,5 @@
 from werkzeug.security import check_password_hash
 from backend.repositories.user_account_management.user_repository import UserRepository
-from flask_login import UserMixin
 
 class LoginService:
     
