@@ -3,9 +3,6 @@ from backend.models.user import User
 from backend.extensions import bcrypt
 
 class UserService:
-    # Inline comment referencing the Epic Title
-    # Epic Title: Product Catalog Management
-
     def __init__(self):
         self.user_repository = UserRepository()
     
