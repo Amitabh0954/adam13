@@ -1,1 +1,1 @@
-Based on the user story and the provided folder structure, we will implement the functionality for adding new products. This includes making sure the product name is unique, the price is a positive number, and the product description is not empty.
+Based on the folder structure and user stories, we will implement user registration by ensuring email uniqueness and password security. The code will follow the Flask framework and use MySQL as the database.
