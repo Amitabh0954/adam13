@@ -1,6 +1,8 @@
 import logging
 from flask import Flask
 from user_account_management import user_blueprint
+from product_catalog_management import product_blueprint, category_blueprint
+from shopping_cart_management import shopping_cart_blueprint
 from config import Config
 from user_account_management.extensions import db, login_manager, mail
 from user_account_management.utils import setup_database
@@ -24,6 +26,9 @@ def create_app() -> Flask:
 
     # Register blueprints
     app.register_blueprint(user_blueprint)
+    app.register_blueprint(product_blueprint)
+    app.register_blueprint(category_blueprint)
+    app.register_blueprint(shopping_cart_blueprint)
 
     @app.before_first_request
     def startup():
