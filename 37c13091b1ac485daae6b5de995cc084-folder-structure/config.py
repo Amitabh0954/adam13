@@ -1,5 +1,8 @@
 import os
 
+# Inline comment referencing the Epic Title
+# Epic Title: Product Catalog Management
+
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "a_temporary_secret_key"
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or "mysql+pymysql://user:password@localhost/dbname"
