@@ -1,1 +1,1 @@
-We will extend the product catalog management functionality to include searching for products based on their names, categories, or attributes, with highlighting of relevant search terms and pageable results.
+We will extend the product catalog management functionality to include categorizing products. Each product must belong to at least one category, categories should be manageable by admins, and categories can be hierarchical.
