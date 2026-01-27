@@ -1,3 +1,7 @@
-To handle user registration including unique email validation and password security criteria, we need to implement controllers, services, and repositories related to user management. 
+To implement the user login functionality with constraints to limit invalid login attempts and session timeout after inactivity, we need to add related code to handle these scenarios in the user management system.
 
-Let's proceed with creating the necessary files for the `User Registration` functionality in the specified folder structure.
+Let's proceed by adding and updating the necessary files with their respective functionalities.
+
+We will ensure that:
+1. Invalid login attempts are tracked and limited.
+2. Sessions timeout after a period of inactivity.
