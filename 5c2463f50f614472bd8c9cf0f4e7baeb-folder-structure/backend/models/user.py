@@ -6,4 +6,3 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     preferences = db.Column(db.JSON, nullable=True)
-    is_admin = db.Column(db.Boolean, default=False)
