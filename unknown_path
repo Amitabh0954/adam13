@@ -1,3 +1,3 @@
-To implement the functionality for saving the shopping cart state to a user's profile and ensuring the cart is retrievable across multiple sessions, we need to ensure the cart is saved and linked to the user model. We will also extend our services, repositories, and controllers to handle this functionality.
+To implement the functionality for removing products from the shopping cart, with the constraints that removing an item should update the total price automatically and users should see a confirmation before removing an item, we need to extend the models, repositories, services, and controllers for managing the shopping cart.
 
 Let's proceed with the necessary files and their respective functionalities.
