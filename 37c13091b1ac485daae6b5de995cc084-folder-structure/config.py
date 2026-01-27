@@ -8,7 +8,7 @@ class Config:
     # Session settings
     SESSION_TYPE = 'filesystem'
     SESSION_PERMANENT = False
+    PERMANENT_SESSION_LIFETIME = int(os.environ.get("PERMANENT_SESSION_LIFETIME", 1800))  # 30 minutes of inactivity
 
     # Application settings
     REMEMBER_COOKIE_DURATION = 3600  # 1 hour
-    PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes of inactivity
