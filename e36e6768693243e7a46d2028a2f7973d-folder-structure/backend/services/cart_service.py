@@ -30,3 +30,18 @@ class CartService:
 
         self.cart_repository.remove_product_from_cart(cart, product_id)
         return {'status': 'success', 'message': 'Product removed from cart successfully'}
+
+    def update_quantity(self, user_id: int, product_id: int, quantity: int) -> Dict[str, str]:
+        if user_id:
+            cart = self.cart_repository.get_cart_by_user(user_id)
+        else:
+            cart = self.cart_repository.get_cart_by_session()
+
+        if not cart:
+            return {'status': 'error', 'message': 'Cart not found'}
+
+        if quantity <= 0:
+            return {'status': 'error', 'message': 'Quantity must be a positive integer'}
+
+        self.cart_repository.update_product_quantity(cart, product_id, quantity)
+        return {'status': 'success', 'message': 'Product quantity updated successfully'}
