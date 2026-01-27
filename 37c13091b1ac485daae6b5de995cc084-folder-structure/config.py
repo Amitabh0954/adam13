@@ -1,7 +1,7 @@
 import os
 
 # Inline comment referencing the Epic Title
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "a_temporary_secret_key"
