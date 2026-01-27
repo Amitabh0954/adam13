@@ -6,9 +6,3 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(500), nullable=False)
     categories = db.relationship('Category', secondary='product_categories', backref='products')
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "price": self.price
