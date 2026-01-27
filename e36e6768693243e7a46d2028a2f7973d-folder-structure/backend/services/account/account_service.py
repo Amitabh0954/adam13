@@ -2,8 +2,13 @@
 
 from backend.repositories.account.account_repository import AccountRepository
 from backend.models.user import User
-from werkzeug.security import check_password_hash, generate_password_hash
 import re
+import hashlib
+import random
+import smtplib
+from email.mime.text import MIMEText
+from datetime import datetime, timedelta
+from werkzeug.security import check_password_hash, generate_password_hash
 from typing import Dict
 
 class AccountService:
@@ -28,36 +33,6 @@ class AccountService:
 
         return {'status': 'success', 'message': 'User logged in successfully', 'user_id': user.id}
 
-    def get_profile(self, user_id: int) -> Dict[str, str]:
-        user = self.account_repository.get_user_by_id(user_id)
-        if not user:
-            return {}  # or raise an appropriate error
-
-        return {
-            'email': user.email,
-            'name': user.name,
-            'address': user.address
-        }
-    
-    def update_profile(self, user_id: int, data: Dict[str, str]) -> Dict[str, str]:
-        user = self.account_repository.get_user_by_id(user_id)
-        if not user:
-            return {'status': 'error', 'message': 'User not found'}
-
-        if 'email' in data and data['email'] != user.email:
-            if self.account_repository.get_user_by_email(data['email']):
-                return {'status': 'error', 'message': 'Email must be unique'}
-            user.email = data['email']
-
-        if 'name' in data:
-            user.name = data['name']
-
-        if 'address' in data:
-            user.address = data['address']
-
-        self.account_repository.update_user(user)
-        return {'status': 'success', 'message': 'Profile updated successfully'}
-
     def is_password_secure(self, password: str) -> bool:
         if len(password) < 8:
             return False
@@ -70,3 +45,45 @@ class AccountService:
         if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
             return False
         return True
+
+    def initiate_password_reset(self, email: str) -> Dict[str, str]:
+        user = self.account_repository.get_user_by_email(email)
+        if not user:
+            return {'status': 'error', 'message': 'Email not found'}
+
+        # Generate a unique token
+        token = hashlib.sha256(str(random.getrandbits(256)).encode('utf-8')).hexdigest()
+        
+        # Set expiry time as 24 hours from now
+        expiry_time = datetime.utcnow() + timedelta(hours=24)
+
+        # Save the token and expiry time
+        self.account_repository.save_password_reset_token(user.id, token, expiry_time)
+
+        # Send email with the token
+        self.send_password_reset_email(email, token)
+
+        return {'status': 'success', 'message': 'Password reset link sent'}
+
+    def reset_password(self, token: str, new_password: str) -> Dict[str, str]:
+        reset_request = self.account_repository.get_password_reset_request(token)
+        if not reset_request or reset_request.expiry_time < datetime.utcnow():
+            return {'status': 'error', 'message': 'Invalid or expired token'}
+
+        if not self.is_password_secure(new_password):
+            return {'status': 'error', 'message': 'Password does not meet security criteria'}
+
+        hashed_password = generate_password_hash(new_password)
+        self.account_repository.update_user_password(reset_request.user_id, hashed_password)
+        self.account_repository.delete_password_reset_request(token)
+
+        return {'status': 'success', 'message': 'Password reset successfully'}
+
+    def send_password_reset_email(self, email: str, token: str):
+        msg = MIMEText(f"Click the link to reset your password: http://yourapp.com/reset_password?token={token}")
+        msg['Subject'] = 'Password Reset Request'
+        msg['From'] = 'no-reply@yourapp.com'
+        msg['To'] = email
+
+        with smtplib.SMTP('localhost') as server:
+            server.send_message(msg)
