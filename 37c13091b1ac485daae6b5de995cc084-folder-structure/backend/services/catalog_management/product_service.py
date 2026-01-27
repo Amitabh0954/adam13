@@ -4,7 +4,7 @@ from backend.models.product import Product
 
 class ProductService:
     # Inline comment referencing the Epic Title
-    # Epic Title: Shopping Cart Functionality
+    # Epic Title: Product Catalog Management
 
     def __init__(self):
         self.product_repository = ProductRepository()
@@ -23,4 +23,9 @@ class ProductService:
             raise ValueError("Product price must be a positive number.")
         
         if not description:
-            raise ValueError("
+            raise ValueError("Product description cannot be empty.")
+
+        if not category_ids or not all(self.category_repository.find_by_id(id) for id in category_ids):
+            raise ValueError("Each product must belong to at least one valid category.")
+
+        new_product = Product
