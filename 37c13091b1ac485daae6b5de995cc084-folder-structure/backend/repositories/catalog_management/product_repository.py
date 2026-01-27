@@ -17,3 +17,7 @@ class ProductRepository:
     
     def update_product(self, product: Product):
         db.session.commit()
+
+    def delete_product(self, product: Product):
+        db.session.delete(product)
+        db.session.commit()
