@@ -1,1 +1,1 @@
-Based on your user stories and provided folder structure, we will extend the functionalities to include user login with invalid login attempt limitation and session timeout after inactivity.
+Based on the provided folder structure and user stories, we will extend the functionalities to include the ability to remove products from the shopping cart with confirmation and automatic total price update.
