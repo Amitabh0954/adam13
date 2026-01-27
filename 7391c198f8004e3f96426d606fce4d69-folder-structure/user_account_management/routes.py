@@ -1,5 +1,5 @@
-from flask import request, jsonify, session
-from flask_login import login_user, logout_user, current_user, login_required
+from flask import request, jsonify, session, url_for
+from flask_login import login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
@@ -114,22 +114,3 @@ def reset_password(token):
         return jsonify({"message": "Password reset successful"}), 200
 
     return jsonify({"message": "Please provide a new password"}), 200
-
-@user_blueprint.route('/profile', methods=['GET', 'PUT'])
-@login_required
-def profile():
-    if request.method == 'GET':
-        user = current_user
-        return jsonify({
-            "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-        }), 200
-
-    if request.method == 'PUT':
-        data = request.get_json()
-        user = current_user
-        user.first_name = data.get('first_name', user.first_name)
-        user.last_name = data.get('last_name', user.last_name)
-        db.session.commit()
-        return jsonify({"message": "Profile updated successfully"}), 200
