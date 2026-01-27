@@ -1,3 +1,3 @@
-To handle password recovery including email verification and expiring reset links, we need to extend the authentication module with relevant functionality.
+To implement the functionality for updating product details with the constraints that only an admin can update, price must be numeric, and the description can be modified but not removed, we need to extend the catalog management module and the corresponding services and repository logic.
 
-We will continue building on the existing structure under the `authentication` modules and add the necessary logic for password recovery.
+Let's proceed with adding the necessary files and functionality.
