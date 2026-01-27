@@ -4,5 +4,7 @@ CREATE TABLE IF NOT EXISTS user (
     password VARCHAR(200) NOT NULL,
     last_login_at DATETIME DEFAULT NULL,
     current_login_at DATETIME DEFAULT NULL,
-    login_count INT DEFAULT 0 NOT NULL
+    login_count INT DEFAULT 0 NOT NULL,
+    first_name VARCHAR(50) DEFAULT NULL,
+    last_name VARCHAR(50) DEFAULT NULL
 );
