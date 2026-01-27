@@ -44,31 +44,3 @@ def remove_from_cart():
             del cart[product_id]
             session['cart'] = cart
     return jsonify({"message": "Product removed from cart", "cart": cart}), 200
-
-@shopping_cart_blueprint.route('/cart/update', methods=['POST'])
-def update_cart():
-    data = request.get_json()
-    product_id = data.get('product_id')
-    quantity = data.get('quantity')
-    
-    if quantity <= 0:
-        return jsonify({"error": "Quantity must be a positive integer"}), 400
-    
-    if current_user.is_authenticated:
-        shopping_cart_service.update_cart(current_user.id, product_id, quantity)
-        cart = shopping_cart_service.get_cart(current_user.id)
-    else:
-        cart = session.get('cart', {})
-        if product_id in cart:
-            cart[product_id] = quantity
-            session['cart'] = cart
-        else:
-            return jsonify({"error": "Product not in cart"}), 400
-
-    return jsonify({"message": "Cart updated successfully", "cart": cart}), 200
-
-@shopping_cart_blueprint.route('/cart/save', methods=['POST'])
-@login_required
-def save_cart():
-    shopping_cart_service.save_cart(current_user.id)
-    return jsonify({"message": "Cart saved successfully"}), 200
