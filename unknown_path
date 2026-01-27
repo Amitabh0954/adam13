@@ -1,1 +1,1 @@
-Based on the provided folder structure and user stories, we will extend the functionalities to include the ability to remove products from the shopping cart with confirmation and automatic total price update.
+Based on the provided folder structure and user stories, we will extend the functionalities to allow users to modify the quantity of products in their shopping cart, ensuring the quantity is a positive integer and recalculating the total price.
