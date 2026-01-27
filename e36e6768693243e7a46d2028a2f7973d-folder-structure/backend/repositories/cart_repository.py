@@ -37,3 +37,10 @@ class CartRepository:
         if cart_item:
             cart_item.quantity = quantity
             db_session.commit()
+
+    def save_cart(self, user_id: int):
+        cart = self.get_cart_by_user(user_id)
+        db_session.commit()
+
+    def load_cart(self, user_id: int) -> Optional[Cart]:
+        return self.get_cart_by_user(user_id)
