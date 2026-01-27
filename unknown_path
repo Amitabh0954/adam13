@@ -1,1 +1,1 @@
-Based on the folder structure and user stories, we will extend the functionalities to include password recovery with email verification and password reset link expiration after 24 hours.
+Based on the folder structure, we will implement user login functionality by ensuring login attempt limits and session timeouts after inactivity. We also need to modify the existing registration and login setup.
