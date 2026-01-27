@@ -14,7 +14,9 @@ def add_to_cart():
     cart_service = CartService()
     cart_service.add_to_cart(session, product_id, quantity)
 
-    return jsonify({'message': 'Product added to cart successfully'}), 200
+    cart_contents = cart_service.get_cart(session)
+    session['cart'] = cart_contents
+    return jsonify({'message': 'Product added to cart successfully', 'cart': cart_contents}), 200
 
 @cart_bp.route('/', methods=['GET'])
 def get_cart():
@@ -27,7 +29,14 @@ def remove_from_cart():
     data = request.get_json()
     product_id = data.get('product_id')
 
+    # Confirm removal
+    confirmation = data.get('confirmation')
+    if not confirmation:
+        return jsonify({'message': 'Remove confirmation required'}), 400
+
     cart_service = CartService()
     cart_service.remove_from_cart(session, product_id)
 
-    return jsonify({'message': 'Product removed from cart successfully'}), 200
+    cart_contents = cart_service.get_cart(session)
+    session['cart'] = cart_contents
+    return jsonify({'message': 'Product removed from cart successfully', 'cart': cart_contents}), 200
