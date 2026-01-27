@@ -3,7 +3,7 @@ from backend.extensions import db
 
 class ProductRepository:
     # Inline comment referencing the Epic Title
-    # Epic Title: Shopping Cart Functionality
+    # Epic Title: Product Catalog Management
 
     def find_by_name(self, name: str) -> Product:
         return Product.query.filter_by(name=name).first()
