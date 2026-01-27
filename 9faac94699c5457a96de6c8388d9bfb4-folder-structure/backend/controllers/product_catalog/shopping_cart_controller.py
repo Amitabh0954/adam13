@@ -33,3 +33,31 @@ def add_to_cart():
         message = 'Product added to cart for guest user'
 
     return jsonify({'message': message}), 200
+
+@shopping_cart_bp.route('/cart/<int:product_id>', methods=['DELETE'])
+def remove_from_cart(product_id):
+    confirmation = request.json.get('confirmation')
+    if not confirmation or confirmation.lower() != 'yes':
+        return jsonify({'message': 'Deletion not confirmed'}), 400
+
+    user_service = UserService()
+    if not user_service.is_user_logged_in():
+        cart = session.get('cart', {})
+    else:
+        user_id = user_service.get_current_user_id()
+        cart = user_service.get_user_cart(user_id)
+
+    if product_id not in cart:
+        return jsonify({'message': 'Product not in cart'}), 400
+
+    shopping_cart_service = ShoppingCartService()
+    result = shopping_cart_service.remove_product_from_cart(cart, product_id)
+
+    if user_service.is_user_logged_in():
+        user_service.save_user_cart(user_id, cart)
+        message = 'Product removed from cart for logged-in user'
+    else:
+        session['cart'] = cart
+        message = 'Product removed from cart for guest user'
+
+    return jsonify({'message': message, 'total_price': result['total_price']}), 200
