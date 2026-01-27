@@ -1,6 +1,7 @@
 from backend.repositories.catalog_management.product_repository import ProductRepository
 from backend.models.product import Product
 from backend.models.user import User
+from backend.utils import pagination, highlight
 
 class ProductService:
     def __init__(self):
@@ -59,3 +60,21 @@ class ProductService:
             raise ValueError("Product not found.")
         
         self.product_repository.delete_product(product)
+
+    def search_products(self, term: str, page: int, per_page: int):
+        query = self.product_repository.search(term)
+        paginated_results = pagination(query, page, per_page)
+        
+        results = []
+        for product in paginated_results.items:
+            product_dict = product.to_dict()
+            product_dict['name'] = highlight(product_dict['name'], [term])
+            product_dict['description'] = highlight(product_dict['description'], [term])
+            results.append(product_dict)
+        
+        return {
+            "products": results,
+            "page": paginated_results.page,
+            "pages": paginated_results.pages,
+            "total": paginated_results.total
+        }
