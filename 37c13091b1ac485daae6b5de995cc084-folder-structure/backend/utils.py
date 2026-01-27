@@ -1,26 +1,25 @@
-from datetime import datetime, timedelta
+from itsdangerous import URLSafeTimedSerializer
+from .extensions import db
 
-class InvalidLoginAttemptTracker:
-    def __init__(self):
-        self.attempts = {}
+def generate_token(email: str):
+    serializer = URLSafeTimedSerializer(secret_key="SECRET_KEY")
+    return serializer.dumps(email, salt="email-confirm-salt")
 
-    def add_attempt(self, user_id: int):
-        now = datetime.now()
-        if user_id in self.attempts:
-            self.attempts[user_id].append(now)
-        else:
-            self.attempts[user_id] = [now]
+def confirm_token(token: str, expiration=86400):  # Token expiration set to 24 hours (86400 seconds)
+    serializer = URLSafeTimedSerializer(secret_key="SECRET_KEY")
+    try:
+        email = serializer.loads(token, salt="email-confirm-salt", max_age=expiration)
+    except:
+        return False
+    return email
 
-    def is_locked_out(self, user_id: int, max_attempts: int, lockout_period: timedelta) -> bool:
-        if user_id not in self.attempts:
-            return False
+def send_email(subject: str, recipient: str, body: str):
+    from flask_mail import Message
+    from .extensions import mail
 
-        attempts = [attempt for attempt in self.attempts[user_id] if datetime.now() - attempt < lockout_period]
-        self.attempts[user_id] = attempts
-
-        return len(attempts) >= max_attempts
-
-tracker = InvalidLoginAttemptTracker()
+    msg = Message(subject, recipients=[recipient])
+    msg.body = body
+    mail.send(msg)
 
 def setup_database():
     db.create_all()
