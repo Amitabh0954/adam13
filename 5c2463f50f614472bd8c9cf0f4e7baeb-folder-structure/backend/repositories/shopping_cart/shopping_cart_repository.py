@@ -18,3 +18,17 @@ class ShoppingCartRepository:
 
     def update_item(self, item: ShoppingCartItem):
         db.session.commit()
+
+    def save_cart_state(self, user_id: int, cart_state: dict):
+        db.session.execute(
+            "UPDATE users SET cart = :cart_state WHERE id = :user_id",
+            {"cart_state": cart_state, "user_id": user_id}
+        )
+        db.session.commit()
+
+    def get_saved_cart_state(self, user_id: int) -> dict:
+        result = db.session.execute(
+            "SELECT cart FROM users WHERE id = :user_id",
+            {"user_id": user_id}
+        ).first()
+        return result[0] if result else {}
