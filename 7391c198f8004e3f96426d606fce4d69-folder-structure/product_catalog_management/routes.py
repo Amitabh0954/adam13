@@ -1,6 +1,5 @@
 from flask import request, jsonify
 from flask_login import login_required, current_user
-from sqlalchemy import or_
 from . import product_blueprint
 from .models import Product, Category
 from .extensions import db
@@ -91,38 +90,3 @@ def delete_product(product_id):
     product.is_active = False
     db.session.commit()
     return jsonify({"message": "Product deleted successfully"}), 200
-
-@product_blueprint.route('/search_products', methods=['GET'])
-def search_products():
-    search_term = request.args.get('search_term', '')
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-
-    products = Product.query.filter(
-        Product.is_active,
-        or_(
-            Product.name.like(f'%{search_term}%'),
-            Product.description.like(f'%{search_term}%'),
-            Product.categories.any(Category.name.like(f'%{search_term}%'))
-        )
-    ).paginate(page, per_page, False)
-    
-    result = []
-    for product in products.items:
-        product_info = {
-            "id": product.id,
-            "name": product.name,
-            "price": product.price,
-            "description": product.description,
-            "categories": [category.name for category in product.categories]
-        }
-        result.append(product_info)
-
-    response = {
-        "total": products.total,
-        "pages": products.pages,
-        "current_page": products.page,
-        "products": result
-    }
-
-    return jsonify(response), 200
