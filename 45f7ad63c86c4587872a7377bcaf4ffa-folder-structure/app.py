@@ -11,7 +11,6 @@ from backend.product.categorization.routes import categorization_bp
 from backend.cart.add.routes import add_bp
 from backend.cart.modify.routes import modify_bp
 from backend.cart.remove.routes import remove_bp
-from backend.cart.state.routes import state_bp
 from backend.database import engine, Base
 from backend.mail import mail
 from flask_mail import Mail
@@ -30,7 +29,6 @@ app.register_blueprint(categorization_bp, url_prefix='/product')
 app.register_blueprint(add_bp, url_prefix='/cart')
 app.register_blueprint(modify_bp, url_prefix='/cart')
 app.register_blueprint(remove_bp, url_prefix='/cart')
-app.register_blueprint(state_bp, url_prefix='/cart')
 
 # Config Mail
 app.config.update(
