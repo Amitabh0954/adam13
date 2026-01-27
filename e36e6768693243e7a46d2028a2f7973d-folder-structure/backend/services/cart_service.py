@@ -45,3 +45,20 @@ class CartService:
 
         self.cart_repository.update_product_quantity(cart, product_id, quantity)
         return {'status': 'success', 'message': 'Product quantity updated successfully'}
+
+    def save_cart(self, user_id: int) -> Dict[str, str]:
+        if not self.cart_repository.get_cart_by_user(user_id):
+            return {'status': 'error', 'message': 'No cart to save'}
+
+        self.cart_repository.save_cart(user_id)
+        return {'status': 'success', 'message': 'Cart saved successfully'}
+
+    def load_cart(self, user_id: int) -> Dict:
+        cart = self.cart_repository.load_cart(user_id)
+        if not cart:
+            return {'status': 'error', 'message': 'No saved cart found'}
+        
+        return {
+            'status': 'success',
+            'cart': cart.to_dict()
+        }
