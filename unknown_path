@@ -1,3 +1,1 @@
-Based on your folder structure and user stories, we need to implement the profile management functionality. This involves allowing users to update their personal information, verifying that changes are applied immediately.
-
-**Profile Management** will be implemented under the `auth` section since it deals with user accounts.
+Based on the provided folder structure and user story, we will implement the functionality to update existing product details. This involves ensuring only admins can update products, validating the price as numeric, and allowing the product description to be modified but not removed.
