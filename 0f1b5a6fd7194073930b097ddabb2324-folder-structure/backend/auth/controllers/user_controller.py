@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, url_for
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer
 from backend.auth.models.user import User, PasswordResetToken
 from backend.auth.extensions import db, bcrypt, mail
@@ -58,6 +58,41 @@ def login():
 def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
+
+@auth_blueprint.route('/profile', methods=['GET'])
+@login_required
+def get_profile():
+    user = current_user
+    return jsonify({
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'created_at': user.created_at,
+        'updated_at': user.updated_at
+    }), 200
+
+@auth_blueprint.route('/profile', methods=['PUT'])
+@login_required
+def update_profile():
+    data = request.get_json()
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+
+    user = current_user
+    user.first_name = first_name
+    user.last_name = last_name
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Profile updated successfully',
+        'user': {
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'created_at': user.created_at,
+            'updated_at': user.updated_at
+        }
+    }), 200
 
 @auth_blueprint.route('/request_password_reset', methods=['POST'])
 def request_password_reset():
