@@ -39,3 +39,24 @@ def remove_from_cart():
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Product removed from cart successfully'}), 200
+
+@cart_bp.route('/update_quantity', methods=['POST'])
+def update_quantity():
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if not product_id or quantity is None:
+        return jsonify({'message': 'Product ID and quantity are required'}), 400
+
+    if quantity <= 0:
+        return jsonify({'message': 'Quantity must be a positive integer'}), 400
+
+    user_id = session.get('user_id')
+    cart_service = CartService()
+    result = cart_service.update_quantity(user_id, product_id, quantity)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Product quantity updated successfully'}), 200
