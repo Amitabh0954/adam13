@@ -21,10 +21,3 @@ class UserRepository:
         if user:
             user.password = new_password
             db_session.commit()
-
-    def get_user_by_id(self, user_id: int) -> User:
-        return db_session.query(User).filter_by(id=user_id).first()
-
-    def update_user(self, user: User):
-        db_session.add(user)
-        db_session.commit()
