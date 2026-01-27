@@ -1,1 +1,1 @@
-Based on the provided folder structure and user story, we will implement the functionality to update existing product details. This involves ensuring only admins can update products, validating the price as numeric, and allowing the product description to be modified but not removed.
+Based on the provided folder structure and user stories, we will implement the functionality for deleting products. This will include ensuring that only admins can delete products, requiring deletion confirmation, and making sure deleted products do not appear in the catalog.
