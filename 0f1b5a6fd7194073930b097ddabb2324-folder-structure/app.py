@@ -2,7 +2,6 @@ import logging
 from flask import Flask
 from backend.auth.controllers.user_controller import auth_blueprint
 from backend.products.controllers.product_controller import product_blueprint
-from backend.products.controllers.category_controller import category_blueprint
 from config import Config
 from backend.auth.extensions import db, login_manager, bcrypt, mail
 from backend.auth.utils import setup_database
@@ -28,7 +27,6 @@ def create_app() -> Flask:
     # Register blueprints
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(product_blueprint)
-    app.register_blueprint(category_blueprint)
 
     @app.before_first_request
     def startup():
