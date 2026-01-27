@@ -1,1 +1,1 @@
-Based on the provided user stories and folder structure, we will extend the functionalities to include profile management where users can update their profiles, and changes reflect immediately.
+Based on the folder structure and user stories, we will extend the functionalities to include password recovery with email verification and password reset link expiration after 24 hours.
