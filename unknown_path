@@ -1,1 +1,1 @@
-We will extend the product catalog management functionality to include categorizing products. Each product must belong to at least one category, categories should be manageable by admins, and categories can be hierarchical.
+Based on your user stories and provided folder structure, we will extend the functionalities to include user login with invalid login attempt limitation and session timeout after inactivity.
