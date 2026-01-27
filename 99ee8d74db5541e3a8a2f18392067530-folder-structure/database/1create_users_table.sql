@@ -1,4 +1,4 @@
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
