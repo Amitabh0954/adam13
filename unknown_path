@@ -1,1 +1,1 @@
-Given the user stories, I will extend the existing functionality to include user login, session management, and rate-limiting invalid login attempts.
+We will extend the existing functionality to include managing the user profile, including updating personal information and preferences.
