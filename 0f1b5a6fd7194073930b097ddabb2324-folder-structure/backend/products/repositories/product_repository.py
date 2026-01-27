@@ -17,3 +17,9 @@ class ProductRepository:
     def update_product(self, product: Product) -> Product:
         db.session.commit()
         return product
+    
+    def delete_product(self, product_id: int):
+        product = self.get_product_by_id(product_id)
+        if product:
+            product.is_active = False
+            db.session.commit()
