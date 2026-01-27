@@ -22,3 +22,10 @@ class ProductRepository:
     def delete_product(self, product: Product):
         db_session.delete(product)
         db_session.commit()
+
+    def search_products(self, query: str, page: int, per_page: int):
+        search_query = f"%{query}%"
+        return db_session.query(Product).filter(
+            Product.name.like(search_query) |
+            Product.description.like(search_query)
+        ).paginate(page, per_page, False)
