@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
 class PasswordResetToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('reset_tokens', lazy=True)
+    user = db.relationship('User', backref=db.backref('reset_tokens', lazy=True))
     token = db.Column(db.String(100), nullable=False, unique=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     expires_at = db.Column(db.DateTime, nullable=False)
