@@ -41,3 +41,43 @@ def get_cart():
         return jsonify(cart), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+
+@cart_blueprint.route('/cart', methods=['DELETE'])
+def remove_from_cart():
+    data = request.get_json()
+    product_id = data.get('product_id')
+
+    try:
+        if current_user.is_authenticated:
+            cart_service.remove_from_cart(user_id=current_user.id, product_id=product_id)
+        else:
+            cart = session.get('cart', {})
+            if product_id in cart:
+                del cart[product_id]
+                session['cart'] = cart
+
+        return jsonify({"message": "Product removed from cart successfully"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@cart_blueprint.route('/cart', methods=['PUT'])
+def update_cart_quantity():
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if quantity <= 0:
+        return jsonify({"error": "Quantity must be a positive integer"}), 400
+
+    try:
+        if current_user.is_authenticated:
+            cart_service.update_cart_quantity(user_id=current_user.id, product_id=product_id, quantity=quantity)
+        else:
+            cart = session.get('cart', {})
+            if product_id in cart:
+                cart[product_id] = quantity
+                session['cart'] = cart
+
+        return jsonify({"message": "Quantity updated successfully"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
