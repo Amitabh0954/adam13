@@ -1,1 +1,1 @@
-Based on the provided folder structure and user stories, we will extend the functionalities to include updating existing products. Only admins can update product details, the price must be a numeric value, and the description can be modified but not removed.
+Based on the provided folder structure and user stories, we will extend the functionalities to include adding new products with the specified validation rules.
