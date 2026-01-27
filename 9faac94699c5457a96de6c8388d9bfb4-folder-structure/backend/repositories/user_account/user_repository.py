@@ -12,7 +12,3 @@ class UserRepository:
         db_session.add(new_user)
         db_session.commit()
         return new_user
-
-    def update_user(self, user: User):
-        db_session.add(user)
-        db_session.commit()
