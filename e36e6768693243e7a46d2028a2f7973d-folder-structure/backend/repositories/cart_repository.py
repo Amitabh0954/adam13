@@ -25,3 +25,9 @@ class CartRepository:
             cart_item = CartItem(cart_id=cart.id, product_id=product_id, quantity=quantity)
             db_session.add(cart_item)
         db_session.commit()
+
+    def remove_product_from_cart(self, cart: Cart, product_id: int):
+        cart_item = db_session.query(CartItem).filter_by(cart_id=cart.id, product_id=product_id).first()
+        if cart_item:
+            db_session.delete(cart_item)
+            db_session.commit()
