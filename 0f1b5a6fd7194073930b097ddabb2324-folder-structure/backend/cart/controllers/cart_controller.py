@@ -85,3 +85,10 @@ def modify_cart_item():
     cart_items = [item.to_dict() for item in cart.items]
 
     return jsonify({"message": "Cart item quantity modified successfully", "cart": cart_items}), 200
+
+@cart_blueprint.route('/save_cart', methods=['POST'])
+@login_required
+def save_cart():
+    cart = cart_repository.get_or_create_cart(user_id=current_user.id)
+    db.session.commit()
+    return jsonify({"message": "Cart saved successfully", "cart_id": cart.id}), 200
