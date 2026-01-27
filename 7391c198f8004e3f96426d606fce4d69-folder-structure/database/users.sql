@@ -1,5 +1,8 @@
 CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(120) NOT NULL UNIQUE,
-    password VARCHAR(200) NOT NULL
+    password VARCHAR(200) NOT NULL,
+    last_login_at DATETIME DEFAULT NULL,
+    current_login_at DATETIME DEFAULT NULL,
+    login_count INT DEFAULT 0 NOT NULL
 );
