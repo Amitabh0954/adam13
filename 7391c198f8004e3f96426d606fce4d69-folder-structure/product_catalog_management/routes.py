@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import or_
 from . import product_blueprint, category_blueprint
-from .models import Product, Category, CartItem
+from .models import Product, Category
 from .extensions import db
 
 @product_blueprint.route('/add_product', methods=['POST'])
