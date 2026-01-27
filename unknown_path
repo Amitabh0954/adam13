@@ -1,3 +1,3 @@
-To implement the functionality for modifying the quantity of products in the shopping cart with the constraints that the quantity must be a positive integer and modifying the quantity should recalculate the total price, we need to extend models, repositories, services, and controllers for managing the shopping cart.
+To implement the functionality for saving the shopping cart state to a user's profile and ensuring the cart is retrievable across multiple sessions, we need to ensure the cart is saved and linked to the user model. We will also extend our services, repositories, and controllers to handle this functionality.
 
 Let's proceed with the necessary files and their respective functionalities.
