@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, url_for
 from flask_login import login_user, logout_user, login_required
 from backend.services.authentication.user_service import UserService
 
