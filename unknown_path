@@ -1,3 +1,3 @@
-To implement the functionality for deleting products, constrained by the requirement that only admins can delete products, deletion requires confirmation, and deleted products must not appear in the catalog, we need to add relevant endpoints and services to the catalog management module.
+To implement the functionality for searching products in the catalog based on names, categories, or attributes, we need to add search endpoints and services in the catalog management module. We'll ensure the search results are pageable and highlight relevant search terms in the results.
 
 Let's proceed with adding the necessary files and functionality.
