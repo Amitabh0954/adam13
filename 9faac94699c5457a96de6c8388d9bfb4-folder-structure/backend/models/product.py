@@ -1,4 +1,4 @@
-# Epic Title: Shopping Cart Functionality
+# Epic Title: Product Catalog Management
 
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
