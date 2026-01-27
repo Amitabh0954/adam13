@@ -65,3 +65,14 @@ def update_cart():
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Cart updated successfully'}), 200
+
+@cart_bp.route('/get', methods=['GET'])
+def get_cart():
+    user_id = session.get('user_id')  # For logged-in users
+
+    if not user_id:
+        return jsonify({'message': 'User must be logged in to view the cart'}), 403
+
+    result = cart_service.get_cart(user_id)
+
+    return jsonify(result), 200
