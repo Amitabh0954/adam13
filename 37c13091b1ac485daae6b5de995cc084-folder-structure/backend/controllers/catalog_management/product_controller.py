@@ -6,7 +6,7 @@ product_blueprint = Blueprint('product', __name__)
 product_service = ProductService()
 
 # Inline comment referencing the Epic Title
-# Epic Title: Shopping Cart Functionality
+# Epic Title: Product Catalog Management
 
 @product_blueprint.route('/products', methods=['POST'])
 @login_required
