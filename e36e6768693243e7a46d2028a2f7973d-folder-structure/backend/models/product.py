@@ -17,6 +17,16 @@ class Product(Base):
 
     category = relationship('Category', back_populates='products')
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'category_id': self.category_id,
+            'category_name': self.category.name
+        }
+
 class Category(Base):
     __tablename__ = 'categories'
 
