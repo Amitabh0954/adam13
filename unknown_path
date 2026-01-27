@@ -1,1 +1,1 @@
-We will extend the product catalog management functionality to include deleting products with the specified constraints: only admins can delete products, and the deletion should require confirmation.
+We will extend the product catalog management functionality to include searching for products based on their names, categories, or attributes, with highlighting of relevant search terms and pageable results.
