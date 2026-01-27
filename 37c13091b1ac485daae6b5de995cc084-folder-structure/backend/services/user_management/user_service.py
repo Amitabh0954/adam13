@@ -36,10 +36,4 @@ class UserService:
         if not self._validate_password(new_password):
             raise ValueError("Password does not meet security criteria")
 
-        user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-        self.user_repository.update_user(user)
-
-    def update_profile(self, user_id: int, data: dict):
-        user = User.query.get(user_id)
-        if not user:
-            raise ValueError("User not
+        user.password = bcrypt.generate_password_hash(new_password).decode('utf-8
