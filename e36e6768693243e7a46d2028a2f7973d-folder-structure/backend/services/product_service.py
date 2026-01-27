@@ -53,3 +53,13 @@ class ProductService:
 
         self.product_repository.delete_product(product)
         return {'status': 'success', 'message': 'Product deleted successfully'}
+
+    def search_products(self, query: str, page: int, per_page: int) -> Dict[str, object]:
+        products = self.product_repository.search_products(query, page, per_page)
+        return {
+            'products': [product.to_dict() for product in products.items],
+            'total': products.total,
+            'page': products.page,
+            'per_page': products.per_page,
+            'pages': products.pages
+        }
