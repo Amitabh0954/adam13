@@ -18,3 +18,15 @@ class CartService:
 
         self.cart_repository.add_product_to_cart(cart, product_id, quantity)
         return {'status': 'success', 'message': 'Product added to cart successfully'}
+
+    def remove_from_cart(self, user_id: int, product_id: int) -> Dict[str, str]:
+        if user_id:
+            cart = self.cart_repository.get_cart_by_user(user_id)
+        else:
+            cart = self.cart_repository.get_cart_by_session()
+
+        if not cart:
+            return {'status': 'error', 'message': 'Cart not found'}
+
+        self.cart_repository.remove_product_from_cart(cart, product_id)
+        return {'status': 'success', 'message': 'Product removed from cart successfully'}
