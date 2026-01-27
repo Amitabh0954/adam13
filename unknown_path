@@ -1,7 +1,7 @@
-To implement the user login functionality with constraints to limit invalid login attempts and session timeout after inactivity, we need to add related code to handle these scenarios in the user management system.
+To implement the password recovery functionality with the constraints that reset links must expire after 24 hours and users must verify their identity via email, we will need to:
+- Generate and store password reset tokens.
+- Send password reset emails to users.
+- Ensure reset links are valid only for 24 hours.
+- Verify user identity via email.
 
-Let's proceed by adding and updating the necessary files with their respective functionalities.
-
-We will ensure that:
-1. Invalid login attempts are tracked and limited.
-2. Sessions timeout after a period of inactivity.
+Let's proceed by adding the necessary files and their respective functionalities.
