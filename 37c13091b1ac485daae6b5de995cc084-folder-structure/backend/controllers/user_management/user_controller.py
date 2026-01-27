@@ -1,13 +1,10 @@
-from flask import Blueprint, request, jsonify, session
-from flask_login import login_user, logout_user, login_required, current_user
+from flask import Blueprint, request, jsonify, url_for
+from flask_login import login_user, logout_user, login_required
 from backend.services.user_management.user_service import UserService
-from backend.utils import tracker
-from datetime import timedelta
+from backend.utils import generate_token, confirm_token, send_email
 
 user_blueprint = Blueprint('user', __name__)
 user_service = UserService()
-MAX_INVALID_ATTEMPTS = 5
-LOCKOUT_PERIOD = timedelta(minutes=15)  # 15 minutes lockout period
 
 @user_blueprint.route('/register', methods=['POST'])
 def register():
@@ -26,24 +23,15 @@ def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
-    user = user_service.find_by_email(email)
-
-    if user and tracker.is_locked_out(user.id, MAX_INVALID_ATTEMPTS, LOCKOUT_PERIOD):
-        return jsonify({"error": "Account locked due to too many invalid login attempts"}), 403
 
     try:
-        authenticated_user = user_service.authenticate_user(email, password)
-        if authenticated_user:
-            login_user(authenticated_user)
-            session.permanent = True
+        user = user_service.authenticate_user(email, password)
+        if user:
+            login_user(user)
             return jsonify({"message": "Login successful"}), 200
         else:
-            if user:
-                tracker.add_attempt(user.id)
             return jsonify({"error": "Invalid credentials"}), 401
     except ValueError as e:
-        if user:
-            tracker.add_attempt(user.id)
         return jsonify({"error": str(e)}), 400
 
 @user_blueprint.route('/logout', methods=['POST'])
@@ -52,7 +40,38 @@ def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
 
-@user_blueprint.route('/dashboard', methods=['GET'])
-@login_required
-def dashboard():
-    return jsonify({"message": f"Welcome to your dashboard, {current_user.email}!"}), 200
+@user_blueprint.route('/password-recovery', methods=['POST'])
+def password_recovery():
+    data = request.get_json()
+    email = data.get('email')
+
+    try:
+        user = user_service.find_by_email(email)
+        if user:
+            token = generate_token(user.email)
+            reset_url = url_for('user.reset_password', token=token, _external=True)
+            send_email(
+                subject="Password Reset Request",
+                recipient=user.email,
+                body=f"To reset your password, click the following link: {reset_url}"
+            )
+            return jsonify({"message": "Password reset link sent to your email"}), 200
+        else:
+            return jsonify({"error": "Email not registered"}), 400
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@user_blueprint.route('/reset-password/<token>', methods=['POST'])
+def reset_password(token):
+    email = confirm_token(token)
+    if not email:
+        return jsonify({"error": "Invalid or expired token"}), 400
+
+    data = request.get_json()
+    new_password = data.get('password')
+
+    try:
+        user_service.reset_password(email, new_password)
+        return jsonify({"message": "Password has been reset successfully"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
