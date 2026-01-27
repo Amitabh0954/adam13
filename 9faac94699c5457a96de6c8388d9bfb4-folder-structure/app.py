@@ -5,7 +5,6 @@ from backend.controllers.product_catalog.product_controller import product_bp
 from backend.controllers.product_catalog.product_update_controller import product_update_bp
 from backend.controllers.product_catalog.product_delete_controller import product_delete_bp
 from backend.controllers.product_catalog.product_search_controller import product_search_bp
-from backend.controllers.product_catalog.category_controller import category_bp
 from backend.database import engine, Base
 
 app = Flask(__name__)
@@ -16,7 +15,6 @@ app.register_blueprint(product_bp, url_prefix='/catalog')
 app.register_blueprint(product_update_bp, url_prefix='/catalog')
 app.register_blueprint(product_delete_bp, url_prefix='/catalog')
 app.register_blueprint(product_search_bp, url_prefix='/catalog')
-app.register_blueprint(category_bp, url_prefix='/catalog')
 
 # Create tables
 Base.metadata.create_all(bind=engine)
