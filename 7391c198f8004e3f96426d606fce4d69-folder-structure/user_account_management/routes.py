@@ -1,12 +1,15 @@
 from flask import request, jsonify, session
-from flask_login import login_user, logout_user
-from werkzeug.security import check_password_hash
+from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug.security import check_password_hash, generate_password_hash
+from itsdangerous import URLSafeTimedSerializer
+from datetime import datetime, timedelta
 from . import user_blueprint
-from .models import User
-from .extensions import db
-from .utils import validate_password
+from .models import User, PasswordResetToken
+from .extensions import db, mail
+from .utils import validate_password, send_email
 
 MAX_LOGIN_ATTEMPTS = 5
+TOKEN_EXPIRATION_HOURS = 24
 
 @user_blueprint.route('/register', methods=['POST'])
 def register():
@@ -49,7 +52,7 @@ def login():
 
     user.invalid_login_attempts = 0
     user.last_login_at = user.current_login_at
-    user.current_login_at = datetime.datetime.utcnow()
+    user.current_login_at = datetime.now()
     user.login_count += 1
     db.session.commit()
 
@@ -61,3 +64,72 @@ def login():
 def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
+
+@user_blueprint.route('/reset_password_request', methods=['POST'])
+def reset_password_request():
+    data = request.get_json()
+    email = data.get('email')
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "Email not found"}), 404
+
+    token_serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
+    token = token_serializer.dumps(email, salt='password-reset-salt')
+
+    expires_at = datetime.now() + timedelta(hours=TOKEN_EXPIRATION_HOURS)
+    password_reset_token = PasswordResetToken(user=user, token=token, expires_at=expires_at)
+    db.session.add(password_reset_token)
+    db.session.commit()
+
+    reset_url = url_for('user.reset_password', token=token, _external=True)
+    send_email(
+        subject="Password Reset Request",
+        recipients=[email],
+        text_body=f"Click to reset your password: {reset_url}",
+        html_body=f'<p>Click to reset your password: <a href="{reset_url}">{reset_url}</a></p>'
+    )
+
+    return jsonify({"message": "Password reset email sent"}), 200
+
+@user_blueprint.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if request.method == 'POST':
+        data = request.get_json()
+        new_password = data.get('password')
+
+        if not validate_password(new_password):
+            return jsonify({"error": "Password does not meet security criteria"}), 400
+
+        password_reset_token = PasswordResetToken.query.filter_by(token=token).first()
+        if not password_reset_token or password_reset_token.expires_at < datetime.now():
+            return jsonify({"error": "Invalid or expired token"}), 400
+
+        user = password_reset_token.user
+        user.password = generate_password_hash(new_password)
+
+        db.session.delete(password_reset_token)
+        db.session.commit()
+
+        return jsonify({"message": "Password reset successful"}), 200
+
+    return jsonify({"message": "Please provide a new password"}), 200
+
+@user_blueprint.route('/profile', methods=['GET', 'PUT'])
+@login_required
+def profile():
+    if request.method == 'GET':
+        user = current_user
+        return jsonify({
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }), 200
+
+    if request.method == 'PUT':
+        data = request.get_json()
+        user = current_user
+        user.first_name = data.get('first_name', user.first_name)
+        user.last_name = data.get('last_name', user.last_name)
+        db.session.commit()
+        return jsonify({"message": "Profile updated successfully"}), 200
