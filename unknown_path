@@ -1,3 +1,3 @@
-To implement the feature allowing an admin to update existing product details with constraints that product updates can only be done by an admin, price must be a numeric value, and description can be modified but not removed, we need to add and update relevant parts of the code across controllers, services, and repositories.
+To implement the functionality for deleting products with the constraints that only admins can delete products, deletion should require confirmation, and deleted products must not appear in the catalog, we need to add and update models, repositories, services, and controllers for product catalog management.
 
-Let's proceed by adding and updating the necessary files with their respective functionalities.
+Let's proceed by adding the necessary files with their respective functionalities.
