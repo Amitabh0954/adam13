@@ -10,3 +10,6 @@ class UserRepository:
         db.session.add(new_user)
         db.session.commit()
         return new_user
+        
+    def update_user(self, user: User) -> None:
+        db.session.commit()
