@@ -1,1 +1,1 @@
-To address the user story about modifying the quantity of products in the shopping cart and recalculating the total price, we will implement the necessary functionality in the `cart` module.
+To implement the functionality of saving the shopping cart state for logged-in users and enabling its retrieval across multiple sessions, we need to update the cart module. Specifically, we need to ensure that the cart is saved to the user's profile and retrievable on subsequent logins.
