@@ -41,3 +41,18 @@ class CartRepository:
         if cart_item:
             db_session.delete(cart_item)
             db_session.commit()
+
+    def update_quantity(self, user_id: int, product_id: int, quantity: int):
+        cart = db_session.query(Cart).filter_by(user_id=user_id).first()
+        if not cart:
+            return
+
+        cart_item = db_session.query(CartItem).filter_by(cart_id=cart.id, product_id=product_id).first()
+        if cart_item:
+            if quantity > 0:
+                cart_item.quantity = quantity
+                db_session.add(cart_item)
+                db_session.commit()
+            else:
+                db_session.delete(cart_item)
+                db_session.commit()
