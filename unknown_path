@@ -1,1 +1,1 @@
-We will extend the product catalog management functionality to include updating existing product details with the specified constraints.
+We will extend the product catalog management functionality to include deleting products with the specified constraints: only admins can delete products, and the deletion should require confirmation.
