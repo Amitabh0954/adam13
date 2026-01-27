@@ -21,3 +21,7 @@ class CartService:
     def remove_from_cart(self, session: Dict[str, Any], product_id: int):
         user_id = session.get('user_id')
         self.cart_repository.remove_from_cart(user_id, product_id)
+
+    def update_quantity(self, session: Dict[str, Any], product_id: int, quantity: int):
+        user_id = session.get('user_id')
+        self.cart_repository.update_quantity(user_id, product_id, quantity)
