@@ -1,9 +1,9 @@
 import logging
-from flask import Flask, session
+from flask import Flask
 from backend.controllers.authentication.user_controller import auth_blueprint
 from backend.controllers.user_management.profile_controller import profile_blueprint
 from backend.controllers.catalog_management.product_controller import product_blueprint
-from backend.controllers.shopping_cart.shopping_cart_controller import shopping_cart_blueprint
+from backend.controllers.catalog_management.category_controller import category_blueprint
 from config import Config
 from backend.extensions import db, login_manager, bcrypt, mail
 from backend.utils import setup_database
@@ -30,7 +30,7 @@ def create_app() -> Flask:
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(profile_blueprint)
     app.register_blueprint(product_blueprint)
-    app.register_blueprint(shopping_cart_blueprint)
+    app.register_blueprint(category_blueprint)
 
     @app.before_first_request
     def startup():
@@ -39,11 +39,6 @@ def create_app() -> Flask:
     @app.teardown_appcontext
     def shutdown(_):
         logger.info("Application shutdown")
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        from backend.models.user import User
-        return User.query.get(int(user_id))
 
     return app
 
