@@ -48,3 +48,14 @@ class ProductService:
         
         self.product_repository.update_product(product)
         return product.to_dict()
+
+    def delete_product(self, user: User, product_id: int):
+        if not user.is_admin:
+            raise ValueError("Only admins can delete products.")
+        
+        product = self.product_repository.find_by_id(product_id)
+        
+        if not product:
+            raise ValueError("Product not found.")
+        
+        self.product_repository.delete_product(product)
