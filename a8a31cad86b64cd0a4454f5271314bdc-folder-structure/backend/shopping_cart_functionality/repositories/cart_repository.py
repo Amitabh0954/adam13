@@ -1,0 +1,15 @@
+# Epic Title: Shopping Cart Functionality
+
+from backend.database import db_session
+from backend.shopping_cart_functionality.models.cart import Cart
+
+class CartRepository:
+    def add_to_cart(self, user_id: int, product_id: int, quantity: int):
+        cart_item = db_session.query(Cart).filter_by(user_id=user_id, product_id=product_id).first()
+        if cart_item:
+            cart_item.quantity += quantity
+        else:
+            cart_item = Cart(user_id=user_id, product_id=product_id, quantity=quantity)
+
+        db_session.add(cart_item)
+        db_session.commit()
