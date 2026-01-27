@@ -2,13 +2,9 @@ import logging
 from flask import Flask
 from backend.controllers.user_management.user_controller import user_blueprint
 from backend.controllers.catalog_management.product_controller import product_blueprint
-from backend.controllers.catalog_management.category_controller import category_blueprint
 from config import Config
 from backend.extensions import db, login_manager, bcrypt, mail
 from backend.utils import setup_database
-
-# Inline comment referencing the Epic Title
-# Epic Title: Product Catalog Management
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -31,7 +27,6 @@ def create_app() -> Flask:
     # Register blueprints
     app.register_blueprint(user_blueprint)
     app.register_blueprint(product_blueprint)
-    app.register_blueprint(category_blueprint)
 
     @app.before_first_request
     def startup():
