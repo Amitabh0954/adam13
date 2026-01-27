@@ -10,6 +10,8 @@ class User(db.Model, UserMixin):
     updated_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     is_active = db.Column(db.Boolean, default=True)
     invalid_login_attempts = db.Column(db.Integer, default=0)
+    first_name = db.Column(db.String(50), nullable=True)
+    last_name = db.Column(db.String(50), nullable=True)
 
 class PasswordResetToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
