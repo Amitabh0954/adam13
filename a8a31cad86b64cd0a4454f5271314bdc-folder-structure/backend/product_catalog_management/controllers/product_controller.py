@@ -47,19 +47,3 @@ def update_product(product_id):
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Product updated successfully'}), 200
-
-@product_bp.route('/delete/<int:product_id>', methods=['DELETE'])
-@admin_required
-def delete_product(product_id):
-    confirm = request.args.get('confirm')
-
-    if confirm != 'true':
-        return jsonify({'message': 'Confirmation required to delete this product. Add ?confirm=true to the request.'}), 403
-
-    product_service = ProductService()
-    result = product_service.delete_product(product_id)
-
-    if result['status'] == 'error':
-        return jsonify({'message': result['message']}), 400
-
-    return jsonify({'message': 'Product deleted successfully'}), 200
