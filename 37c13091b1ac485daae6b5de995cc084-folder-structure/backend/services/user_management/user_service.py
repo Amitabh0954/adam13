@@ -4,7 +4,7 @@ from backend.extensions import bcrypt
 
 class UserService:
     # Inline comment referencing the Epic Title
-    # Epic Title: Shopping Cart Functionality
+    # Epic Title: Product Catalog Management
 
     def __init__(self):
         self.user_repository = UserRepository()
