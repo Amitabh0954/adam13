@@ -1,6 +1,6 @@
 # Epic Title: User Account Management
 
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 from backend.services.account.user_service import UserService
 from backend.services.account.password_reset_service import PasswordResetService
 
@@ -72,32 +72,3 @@ def reset_password(token):
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Password updated successfully'}), 200
-
-@user_bp.route('/profile', methods=['PUT'])
-def update_profile():
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({'message': 'User not logged in'}), 401
-
-    data = request.get_json()
-    user_service = UserService()
-    result = user_service.update_user_profile(user_id, data)
-
-    if result['status'] == 'error':
-        return jsonify({'message': result['message']}), 400
-
-    return jsonify({'message': 'Profile updated successfully'}), 200
-
-@user_bp.route('/profile', methods=['GET'])
-def get_profile():
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({'message': 'User not logged in'}), 401
-
-    user_service = UserService()
-    profile = user_service.get_user_profile(user_id)
-
-    if not profile:
-        return jsonify({'message': 'Profile not found'}), 404
-
-    return jsonify(profile), 200
