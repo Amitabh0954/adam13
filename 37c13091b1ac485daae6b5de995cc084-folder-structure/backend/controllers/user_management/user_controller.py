@@ -1,9 +1,13 @@
-from flask import Blueprint, request, jsonify
-from flask_login import login_user, logout_user, login_required
+from flask import Blueprint, request, jsonify, session
+from flask_login import login_user, logout_user, login_required, current_user
 from backend.services.user_management.user_service import UserService
+from backend.utils import tracker
+from datetime import timedelta
 
 user_blueprint = Blueprint('user', __name__)
 user_service = UserService()
+MAX_INVALID_ATTEMPTS = 5
+LOCKOUT_PERIOD = timedelta(minutes=15)  # 15 minutes lockout period
 
 @user_blueprint.route('/register', methods=['POST'])
 def register():
@@ -22,15 +26,24 @@ def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    user = user_service.find_by_email(email)
+
+    if user and tracker.is_locked_out(user.id, MAX_INVALID_ATTEMPTS, LOCKOUT_PERIOD):
+        return jsonify({"error": "Account locked due to too many invalid login attempts"}), 403
 
     try:
-        user = user_service.authenticate_user(email, password)
-        if user:
-            login_user(user)
+        authenticated_user = user_service.authenticate_user(email, password)
+        if authenticated_user:
+            login_user(authenticated_user)
+            session.permanent = True
             return jsonify({"message": "Login successful"}), 200
         else:
+            if user:
+                tracker.add_attempt(user.id)
             return jsonify({"error": "Invalid credentials"}), 401
     except ValueError as e:
+        if user:
+            tracker.add_attempt(user.id)
         return jsonify({"error": str(e)}), 400
 
 @user_blueprint.route('/logout', methods=['POST'])
@@ -38,3 +51,8 @@ def login():
 def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
+
+@user_blueprint.route('/dashboard', methods=['GET'])
+@login_required
+def dashboard():
+    return jsonify({"message": f"Welcome to your dashboard, {current_user.email}!"}), 200
