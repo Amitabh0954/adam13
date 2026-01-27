@@ -13,6 +13,7 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(50), nullable=True)
     is_admin = db.Column(db.Boolean, default=False)
     invalid_login_attempts = db.Column(db.Integer, default=0, nullable=False)
+    cart_items = db.relationship('CartItem', backref='user', lazy=True)
 
 class PasswordResetToken(db.Model):
     id = db.Column(db.Integer, primary key=True)
