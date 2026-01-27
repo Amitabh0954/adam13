@@ -76,3 +76,36 @@ def delete_product(product_id):
     db.session.commit()
 
     return jsonify({"message": "Product deleted successfully"}), 200
+
+@product_blueprint.route('/search_products', methods=['GET'])
+def search_products():
+    query = request.args.get('q', '')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    products = Product.query.filter(
+        Product.name.contains(query) | 
+        Product.description.contains(query)
+    ).paginate(page, per_page, False)
+
+    results = []
+    for product in products.items:
+        result = {
+            "id": product.id,
+            "name": highlight_search_terms(product.name, query),
+            "price": product.price,
+            "description": highlight_search_terms(product.description, query)
+        }
+        results.append(result)
+
+    return jsonify({
+        "products": results,
+        "total": products.total,
+        "page": products.page,
+        "pages": products.pages
+    }), 200
+
+def highlight_search_terms(text: str, terms: str) -> str:
+    for term in terms.split():
+        text = text.replace(term, f"<mark>{term}</mark>")
+    return text
