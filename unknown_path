@@ -1,1 +1,1 @@
-Based on the provided folder structure and user stories, we will extend the functionalities to include searching for products in the catalog. The search should return products based on names, categories, or attributes, be pageable, and highlight relevant search terms in the results.
+Based on the provided folder structure and user stories, we will extend the functionalities to include deleting products from the catalog. Only admins can delete products, deletion should require confirmation, and deleted products must not appear in the catalog.
