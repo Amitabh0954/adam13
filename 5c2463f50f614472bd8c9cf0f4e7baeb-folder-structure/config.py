@@ -14,10 +14,6 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
 
-    # Session settings
-    SESSION_TYPE = 'filesystem'
-    SESSION_PERMANENT = False
-
-    # Application settings
+    # Session and security settings
     REMEMBER_COOKIE_DURATION = 3600  # 1 hour
     PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes of inactivity
