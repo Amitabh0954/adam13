@@ -33,3 +33,15 @@ def update_product(product_id):
         return jsonify(product), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+
+@product_blueprint.route('/products/<int:product_id>', methods=['DELETE'])
+@login_required
+def delete_product(product_id):
+    if not current_user.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+
+    try:
+        product_service.delete_product(product_id)
+        return jsonify({"message": "Product deleted successfully"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
