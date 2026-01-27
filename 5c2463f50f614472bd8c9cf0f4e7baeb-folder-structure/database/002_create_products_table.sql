@@ -1,0 +1,6 @@
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL UNIQUE,
+    price FLOAT NOT NULL CHECK (price > 0),
+    description VARCHAR(500) NOT NULL
+);
