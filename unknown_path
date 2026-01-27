@@ -1,7 +1,3 @@
-To implement the password recovery functionality with the constraints that reset links must expire after 24 hours and users must verify their identity via email, we will need to:
-- Generate and store password reset tokens.
-- Send password reset emails to users.
-- Ensure reset links are valid only for 24 hours.
-- Verify user identity via email.
+To implement the profile management functionality where users can update their personal information and preferences with the constraints that updates must be saved correctly and changes should reflect immediately, we will need to add and modify models, repositories, services, and controllers for profile management.
 
-Let's proceed by adding the necessary files and their respective functionalities.
+Let's proceed by adding the necessary files with their respective functionalities.
