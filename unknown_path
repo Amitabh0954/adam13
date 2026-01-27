@@ -1,1 +1,1 @@
-To handle the removal of products from the shopping cart, we'll implement the necessary functionality in the `cart` module, including updating the total price and confirming the removal action from the user.
+To address the user story about modifying the quantity of products in the shopping cart and recalculating the total price, we will implement the necessary functionality in the `cart` module.
