@@ -55,3 +55,16 @@ def update_product(id):
     db_session.commit()
 
     return jsonify({'message': 'Product updated successfully'}), 200
+
+@catalog_bp.route('/product/<int:id>', methods=['DELETE'])
+def delete_product(id):
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({'message': 'Product not found'}), 404
+
+    # Assuming there is a confirmation step on frontend
+    db_session.delete(product)
+    db_session.commit()
+
+    return jsonify({'message': 'Product deleted successfully'}), 200
