@@ -1,6 +1,4 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_required, current_user
-from backend.products.models.product import Product
 from backend.products.repositories.product_repository import ProductRepository
 
 product_blueprint = Blueprint('product', __name__)
@@ -76,3 +74,19 @@ def delete_product(product_id):
 
     product_repository.delete_product(product_id)
     return jsonify({"message": "Product deleted successfully"}), 200
+
+@product_blueprint.route('/search_products', methods=['GET'])
+def search_products():
+    query = request.args.get('query')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    products, total = product_repository.search_products(query, page, per_page)
+    product_list = [product.to_dict() for product in products]
+
+    return jsonify({
+        'total': total,
+        'page': page,
+        'per_page': per_page,
+        'products': product_list
+    }), 200
