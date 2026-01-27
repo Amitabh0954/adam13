@@ -1,6 +1,9 @@
 from backend.extensions import db
 
 class Product(db.Model):
+    # Inline comment referencing the Epic Title
+    # Epic Title: Product Catalog Management
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
     price = db.Column(db.Float, nullable=False)
