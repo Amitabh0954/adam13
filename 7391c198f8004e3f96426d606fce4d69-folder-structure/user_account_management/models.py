@@ -8,3 +8,12 @@ class User(db.Model, UserMixin):
     last_login_at = db.Column(db.DateTime, nullable=True)
     current_login_at = db.Column(db.DateTime, nullable=True)
     login_count = db.Column(db.Integer, default=0, nullable=False)
+    first_name = db.Column(db.String(50), nullable=True)
+    last_name = db.Column(db.String(50), nullable=True)
+
+class PasswordResetToken(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('reset_tokens', lazy=True))
+    token = db.Column(db.String(100), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
