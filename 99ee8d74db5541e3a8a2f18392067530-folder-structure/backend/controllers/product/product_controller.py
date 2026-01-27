@@ -45,3 +45,16 @@ def update_product(product_id):
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Product updated successfully'}), 200
+
+@product_bp.route('/delete/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    if not session.get('is_admin'):
+        return jsonify({'message': 'Admin access required'}), 403
+
+    product_service = ProductService()
+    result = product_service.delete_product(product_id)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Product deleted successfully'}), 200
