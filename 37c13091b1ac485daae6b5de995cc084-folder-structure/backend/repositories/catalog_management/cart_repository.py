@@ -36,3 +36,9 @@ class CartRepository:
         if existing_item:
             existing_item.quantity = quantity
         db.session.commit()
+
+    def save_cart_state(self, cart: Cart):
+        db.session.commit()
+
+    def get_cart_state(self, user_id: int) -> Cart:
+        return Cart.query.filter_by(user_id=user_id).first()
