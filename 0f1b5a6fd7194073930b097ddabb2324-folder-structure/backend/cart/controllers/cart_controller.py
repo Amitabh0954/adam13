@@ -35,3 +35,28 @@ def get_cart():
     
     cart_items = [item.to_dict() for item in cart.items]
     return jsonify({"cart": cart_items}), 200
+
+@cart_blueprint.route('/cart', methods=['DELETE'])
+def remove_from_cart():
+    data = request.json
+    cart_item_id = data.get('cart_item_id')
+    confirmation = data.get('confirmation')
+
+    if confirmation != 'CONFIRM':
+        return jsonify({"error": "Removal confirmation required"}), 400
+
+    if current_user.is_authenticated:
+        cart = cart_repository.get_cart_by_user_id(current_user.id)
+    else:
+        if 'session_id' in session:
+            cart = cart_repository.get_cart_by_session_id(session['session_id'])
+        else:
+            return jsonify({"error": "Cart not found"}), 404
+
+    if not cart:
+        return jsonify({"error": "Cart not found"}), 404
+
+    cart_repository.remove_product_from_cart(cart.id, cart_item_id)
+    cart_items = [item.to_dict() for item in cart.items]
+
+    return jsonify({"message": "Product removed from cart successfully", "cart": cart_items}), 200
