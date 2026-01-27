@@ -5,7 +5,7 @@ from config import Config
 from backend.extensions import db, login_manager, bcrypt, mail
 from backend.utils import setup_database
 
-# Initialize structured logging
+# Initialize logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
