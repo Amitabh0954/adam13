@@ -1,8 +1,12 @@
 # Epic Title: Shopping Cart Functionality
 
 from flask import session
+from backend.repositories.user_account.user_repository import UserRepository
 
 class UserService:
+    def __init__(self):
+        self.user_repository = UserRepository()
+
     def is_user_logged_in(self) -> bool:
         return 'user_id' in session
 
@@ -10,9 +14,9 @@ class UserService:
         return session.get('user_id')
 
     def get_user_cart(self, user_id: int) -> dict:
-        # This should fetch the cart from a database in a real application
-        return session.get(f'cart_{user_id}', {})
+        user = self.user_repository.get_user_by_id(user_id)
+        return user.cart if user and user.cart else {}
 
     def save_user_cart(self, user_id: int, cart: dict):
-        # This should save the cart to a database in a real application
+        self.user_repository.update_user_cart(user_id, cart)
         session[f'cart_{user_id}'] = cart
