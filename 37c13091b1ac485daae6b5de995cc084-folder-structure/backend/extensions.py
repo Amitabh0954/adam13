@@ -1,5 +1,5 @@
 # Inline comment referencing the Epic Title
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
