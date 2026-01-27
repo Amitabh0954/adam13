@@ -39,3 +39,28 @@ def login_user():
 
     session['user_id'] = result['user_id']
     return jsonify({'message': 'User logged in successfully'}), 200
+
+@account_bp.route('/profile', methods=['GET'])
+def get_profile():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'message': 'User must be logged in to view profile'}), 403
+
+    account_service = AccountService()
+    profile_data = account_service.get_profile(user_id)
+    return jsonify(profile_data), 200
+
+@account_bp.route('/profile', methods=['PUT'])
+def update_profile():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'message': 'User must be logged in to update profile'}), 403
+
+    data = request.get_json()
+    account_service = AccountService()
+    result = account_service.update_profile(user_id, data)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Profile updated successfully'}), 200
