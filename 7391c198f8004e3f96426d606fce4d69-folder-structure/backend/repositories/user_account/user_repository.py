@@ -1,6 +1,5 @@
 from user_account_management.models import User, PasswordResetToken
 from user_account_management.extensions import db
-from datetime import datetime
 
 class UserRepository:
     def get_user_by_email(self, email: str) -> User:
