@@ -10,6 +10,7 @@ class User(db.Model, UserMixin):
     login_count = db.Column(db.Integer, default=0, nullable=False)
     first_name = db.Column(db.String(50), nullable=True)
     last_name = db.Column(db.String(50), nullable=True)
+    is_admin = db.Column(db.Boolean, default=False)
 
 class PasswordResetToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
