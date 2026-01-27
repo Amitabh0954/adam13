@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify, url_for
-from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
@@ -110,25 +109,6 @@ def reset_password(token):
         return jsonify({"message": "Password reset successful"}), 200
 
     return jsonify({"message": "Please provide a new password"}), 200
-
-@user_account_controller.route('/profile', methods=['GET', 'PUT'])
-@login_required
-def profile():
-    if request.method == 'GET':
-        user = current_user
-        return jsonify({
-            "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-        }), 200
-
-    if request.method == 'PUT':
-        data = request.get_json()
-        user = current_user
-        user.first_name = data.get('first_name', user.first_name)
-        user.last_name = data.get('last_name', user.last_name)
-        user_repo.update_user(user)
-        return jsonify({"message": "Profile updated successfully"}), 200
 
 def validate_password(password: str) -> bool:
     if len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password):
