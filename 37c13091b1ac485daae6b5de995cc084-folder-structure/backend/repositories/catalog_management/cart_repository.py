@@ -23,3 +23,16 @@ class CartRepository:
             new_item = CartItem(cart_id=cart.id, product_id=product_id, quantity=quantity)
             cart.items.append(new_item)
         db.session.commit()
+
+    def remove_from_cart(self, cart: Cart, product_id: int):
+        existing_item = next((item for item in cart.items if item.product_id == product_id), None)
+        if existing_item:
+            cart.items.remove(existing_item)
+            db.session.delete(existing_item)
+            db.session.commit()
+
+    def update_cart_quantity(self, cart: Cart, product_id: int, quantity: int):
+        existing_item = next((item for item in cart.items if item.product_id == product_id), None)
+        if existing_item:
+            existing_item.quantity = quantity
+        db.session.commit()
