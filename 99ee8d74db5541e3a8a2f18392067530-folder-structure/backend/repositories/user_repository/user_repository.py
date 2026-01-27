@@ -12,3 +12,6 @@ class UserRepository:
 
     def get_user_by_email(self, email: str) -> User:
         return db_session.query(User).filter_by(email=email).first()
+    
+    def get_user_by_email_and_password(self, email: str, password: str) -> User:
+        return db_session.query(User).filter_by(email=email, password=password).first()
