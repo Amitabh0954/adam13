@@ -4,7 +4,7 @@ from backend.extensions import bcrypt
 
 class UserService:
     # Inline comment referencing the Epic Title
-    # Epic Title: Product Catalog Management
+    # Epic Title: Shopping Cart Functionality
 
     def __init__(self):
         self.user_repository = UserRepository()
@@ -42,30 +42,4 @@ class UserService:
     def update_profile(self, user_id: int, data: dict):
         user = User.query.get(user_id)
         if not user:
-            raise ValueError("User not found")
-
-        if 'email' in data and data['email'] != user.email:
-            if self.user_repository.find_by_email(data['email']):
-                raise ValueError("Email is already taken")
-            user.email = data['email']
-        
-        if 'preferences' in data:
-            user.preferences = data['preferences']
-
-        self.user_repository.update_user(user)
-
-    def _validate_password(self, password: str) -> bool:
-        if len(password) < 8:
-            return False
-        if not any(char.isdigit() for char in password):
-            return False
-        if not any(char.isupper() for char in password):
-            return False
-        if not any(char.islower() for char in password):
-            return False
-        if not any(char in "!@#$%^&*()_+" for char in password):
-            return False
-        return True
-
-    def find_by_email(self, email: str) -> User:
-        return self.user_repository.find_by_email(email)
+            raise ValueError("User not
