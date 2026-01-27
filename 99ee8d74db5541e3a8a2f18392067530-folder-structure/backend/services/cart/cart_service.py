@@ -25,3 +25,12 @@ class CartService:
     def update_quantity(self, session: Dict[str, Any], product_id: int, quantity: int):
         user_id = session.get('user_id')
         self.cart_repository.update_quantity(user_id, product_id, quantity)
+        
+    def save_cart(self, session: Dict[str, Any]):
+        user_id = session.get('user_id')
+        cart_data = session.get('cart', {})
+        self.cart_repository.save_cart(user_id, cart_data)
+
+    def load_cart(self, session: Dict[str, Any]) -> Dict[str, Any]:
+        user_id = session.get('user_id')
+        return self.cart_repository.load_cart(user_id)
