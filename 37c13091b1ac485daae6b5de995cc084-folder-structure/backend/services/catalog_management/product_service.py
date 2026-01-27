@@ -57,3 +57,17 @@ class ProductService:
             raise ValueError("Product not found")
         
         self.product_repository.delete_product(product)
+
+    def search_products(self, query: str, page: int, per_page: int) -> tuple:
+        results, total = self.product_repository.search_products(query, page, per_page)
+        highlighted_results = []
+        for product in results:
+            product_dict = product.to_dict()
+            product_dict["name"] = self.highlight_query(product_dict["name"], query)
+            product_dict["description"] = self.highlight_query(product_dict["description"], query)
+            highlighted_results.append(product_dict)
+        return highlighted_results, total
+
+    def highlight_query(self, text: str, query: str) -> str:
+        highlighted = text.replace(query, f"<mark>{query}</mark>")
+        return highlighted
