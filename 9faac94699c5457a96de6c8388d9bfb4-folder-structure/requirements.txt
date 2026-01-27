@@ -2,3 +2,4 @@ flask==2.1.1
 sqlalchemy==1.4.18
 pymysql==1.0.2
 werkzeug==2.1.1
+itsdangerous==2.0.1
