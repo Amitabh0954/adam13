@@ -37,3 +37,6 @@ class UserService:
         if not any(char in "!@#$%^&*()_+" for char in password):
             return False
         return True
+
+    def find_by_email(self, email: str) -> User:
+        return self.user_repository.find_by_email(email)
