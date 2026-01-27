@@ -13,7 +13,7 @@ class User(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=False)
 
 class PasswordResetToken(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('reset_tokens', lazy=True))
     token = db.Column(db.String(100), nullable=False, unique=True)
