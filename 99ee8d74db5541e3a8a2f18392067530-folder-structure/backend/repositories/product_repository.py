@@ -12,3 +12,10 @@ class ProductRepository:
         db_session.add(new_product)
         db_session.commit()
         return new_product
+
+    def get_product_by_id(self, product_id: int) -> Product:
+        return db_session.query(Product).filter_by(id=product_id).first()
+
+    def update_product(self, product: Product):
+        db_session.add(product)
+        db_session.commit()
