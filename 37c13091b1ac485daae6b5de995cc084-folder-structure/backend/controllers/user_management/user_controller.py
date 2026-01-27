@@ -7,7 +7,7 @@ user_blueprint = Blueprint('user', __name__)
 user_service = UserService()
 
 # Inline comment referencing the Epic Title
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 @user_blueprint.route('/register', methods=['POST'])
 def register():
