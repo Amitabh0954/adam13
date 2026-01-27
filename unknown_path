@@ -1,1 +1,1 @@
-Based on the provided folder structure and user stories, we will extend the functionalities to allow users to modify the quantity of products in their shopping cart, ensuring the quantity is a positive integer and recalculating the total price.
+Based on the provided folder structure and user stories, we will extend the functionalities to allow logged-in users to save and retrieve their shopping cart state across multiple sessions.
