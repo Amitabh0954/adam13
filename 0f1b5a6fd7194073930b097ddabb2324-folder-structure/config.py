@@ -5,6 +5,6 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or "mysql+pymysql://user:password@localhost/dbname"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Session and security settings
+    # Security and session management settings
     REMEMBER_COOKIE_DURATION = 3600  # 1 hour
     PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes of inactivity
