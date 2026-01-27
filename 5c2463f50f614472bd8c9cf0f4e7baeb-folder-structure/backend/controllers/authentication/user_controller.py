@@ -38,3 +38,27 @@ def login():
 def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
+
+@auth_blueprint.route('/forgot_password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+    email = data.get('email')
+
+    try:
+        token = user_service.generate_password_reset_token(email)
+        reset_link = url_for('auth.reset_password', token=token, _external=True)
+        user_service.send_password_reset_email(email, reset_link)
+        return jsonify({"message": "Password reset email sent"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@auth_blueprint.route('/reset_password/<token>', methods=['POST'])
+def reset_password(token: str):
+    data = request.get_json()
+    new_password = data.get('new_password')
+
+    try:
+        user_service.reset_password(token, new_password)
+        return jsonify({"message": "Password reset successfully"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
