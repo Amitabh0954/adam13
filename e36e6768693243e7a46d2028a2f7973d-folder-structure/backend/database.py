@@ -1,4 +1,4 @@
-# Epic Title: Product Catalog Management
+# Epic Title: User Account Management
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
