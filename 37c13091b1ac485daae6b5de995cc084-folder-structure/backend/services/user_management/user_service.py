@@ -3,6 +3,9 @@ from backend.models.user import User
 from backend.extensions import bcrypt
 
 class UserService:
+    # Inline comment referencing the Epic Title
+    # Epic Title: Product Catalog Management
+
     def __init__(self):
         self.user_repository = UserRepository()
     
@@ -15,7 +18,7 @@ class UserService:
             raise ValueError("Password does not meet security criteria")
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        new_user = User(email=email, password=hashed_password)
+        new_user = User(email=email, password=hashed_password, is_admin=False)
         self.user_repository.save_user(new_user)
     
     def authenticate_user(self, email: str, password: str) -> User:
