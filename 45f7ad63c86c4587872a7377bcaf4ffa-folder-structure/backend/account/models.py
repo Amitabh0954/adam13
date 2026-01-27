@@ -11,3 +11,4 @@ class User(Base):
     email = Column(String(120), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
     preferences = Column(Text, nullable=True)  # New preferences column
+    saved_cart = Column(Text, nullable=True)  # New saved cart column
