@@ -1,1 +1,1 @@
-Based on the provided folder structure and user stories, we will extend the functionalities to allow logged-in users to save and retrieve their shopping cart state across multiple sessions.
+To accommodate the shopping cart functionality based on the user story, we need to extend the system to allow for items to be added to shopping carts, persisting across sessions for logged-in users and temporary for guest users.
