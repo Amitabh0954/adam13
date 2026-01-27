@@ -1,4 +1,4 @@
-# Epic Title: User Account Management
+# Epic Title: Product Catalog Management
 
 CREATE TABLE password_resets (
     id INT AUTO_INCREMENT PRIMARY KEY,
