@@ -1,13 +1,10 @@
-from flask import Blueprint, request, jsonify, url_for
+from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from backend.services.user_management.user_service import UserService
 from backend.utils import generate_token, confirm_token, send_email
 
 user_blueprint = Blueprint('user', __name__)
 user_service = UserService()
-
-# Inline comment referencing the Epic Title
-# Epic Title: Product Catalog Management
 
 @user_blueprint.route('/register', methods=['POST'])
 def register():
