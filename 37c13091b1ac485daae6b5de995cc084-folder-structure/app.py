@@ -1,8 +1,8 @@
 import logging
-from flask import Flask, session
+from flask import Flask
 from backend.controllers.user_management.user_controller import user_blueprint
 from config import Config
-from backend.extensions import db, login_manager, bcrypt
+from backend.extensions import db, login_manager, bcrypt, mail
 from backend.utils import setup_database
 
 # Initialize logging
@@ -17,6 +17,7 @@ def create_app() -> Flask:
     db.init_app(app)
     login_manager.init_app(app)
     bcrypt.init_app(app)
+    mail.init_app(app)
 
     # Set up the database
     with app.app_context():
@@ -37,13 +38,6 @@ def create_app() -> Flask:
     def load_user(user_id):
         from backend.models.user import User
         return User.query.get(int(user_id))
-
-    @login_manager.request_loader
-    def load_user_from_request(request):
-        user_id = request.headers.get('X-User-ID')
-        if user_id:
-            return User.query.get(int(user_id))
-        return None
 
     return app
 
