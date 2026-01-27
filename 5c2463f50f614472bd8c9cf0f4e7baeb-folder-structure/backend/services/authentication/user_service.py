@@ -1,16 +1,16 @@
 from backend.repositories.authentication.user_repository import UserRepository
 from backend.models.user import User
-from backend.extensions import bcrypt
-import time
+from backend.extensions import bcrypt, db
+from backend.utils import send_email
+from itsdangerous import URLSafeTimedSerializer
 
 class UserService:
-    FAILED_LOGIN_LIMIT = 5
-    FAILED_LOGIN_TIME_FRAME = 3600  # 1 hour in seconds
+    TOKEN_EXPIRATION = 86400  # 24 hours in seconds
 
     def __init__(self):
         self.user_repository = UserRepository()
-        self.failed_login_attempts = {}
-    
+        self.serializer = URLSafeTimedSerializer('a_secret_key')  # you should use a secure key
+
     def register_user(self, email: str, password: str):
         if not self.is_email_unique(email):
             raise ValueError("Email is already registered.")
@@ -23,36 +23,40 @@ class UserService:
         self.user_repository.save_user(new_user)
     
     def authenticate_user(self, email: str, password: str) -> User:
-        if self.is_login_attempts_exceeded(email):
-            raise ValueError("Too many invalid login attempts. Please try again later.")
-        
         user = self.user_repository.find_by_email(email)
         if user and bcrypt.check_password_hash(user.password, password):
-            self.clear_failed_attempts(email)
             return user
         else:
-            self.record_failed_attempt(email)
             return None
+    
+    def generate_password_reset_token(self, email: str) -> str:
+        user = self.user_repository.find_by_email(email)
+        if not user:
+            raise ValueError("Email not found.")
+        return self.serializer.dumps(user.id)
+    
+    def send_password_reset_email(self, email: str, reset_link: str):
+        subject = "Password Reset Request"
+        body = f"Please use the following link to reset your password: {reset_link}"
+        send_email(subject, email, body)
+    
+    def reset_password(self, token: str, new_password: str):
+        try:
+            user_id = self.serializer.loads(token, max_age=self.TOKEN_EXPIRATION)
+            user = self.user_repository.find_by_id(user_id)
+            if not user:
+                raise ValueError("Invalid token.")
+            
+            if not self.is_password_secure(new_password):
+                raise ValueError("Password does not meet security criteria.")
+
+            user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+            self.user_repository.save_user(user)
+        except Exception:
+            raise ValueError("Invalid or expired token.")
     
     def is_email_unique(self, email: str) -> bool:
         return self.user_repository.find_by_email(email) is None
     
     def is_password_secure(self, password: str) -> bool:
         return len(password) >= 8
-    
-    def record_failed_attempt(self, email: str):
-        current_time = time.time()
-        if email not in self.failed_login_attempts:
-            self.failed_login_attempts[email] = []
-        self.failed_login_attempts[email].append(current_time)
-    
-    def is_login_attempts_exceeded(self, email: str) -> bool:
-        current_time = time.time()
-        if email in self.failed_login_attempts:
-            self.failed_login_attempts[email] = [attempt for attempt in self.failed_login_attempts[email] if current_time - attempt < self.FAILED_LOGIN_TIME_FRAME]
-            return len(self.failed_login_attempts[email]) >= self.FAILED_LOGIN_LIMIT
-        return False
-    
-    def clear_failed_attempts(self, email: str):
-        if email in self.failed_login_attempts:
-            del self.failed_login_attempts[email]
