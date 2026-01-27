@@ -1,1 +1,1 @@
-To implement the functionality of saving the shopping cart state for logged-in users and enabling its retrieval across multiple sessions, we need to update the cart module. Specifically, we need to ensure that the cart is saved to the user's profile and retrievable on subsequent logins.
+To address the user story about adding products to the shopping cart, we will implement the necessary models, controllers, and repositories in the `cart` module. The shopping cart must persist across sessions for logged-in users and be temporary for guest users.
