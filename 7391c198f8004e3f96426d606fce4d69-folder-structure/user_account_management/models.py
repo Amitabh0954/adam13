@@ -1,6 +1,10 @@
 from .extensions import db
+from flask_login import UserMixin
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    last_login_at = db.Column(db.DateTime, nullable=True)
+    current_login_at = db.Column(db.DateTime, nullable=True)
+    login_count = db.Column(db.Integer, default=0, nullable=False)
