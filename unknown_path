@@ -1,3 +1,3 @@
-To implement the profile management functionality where users can update their personal information and preferences with the constraints that updates must be saved correctly and changes should reflect immediately, we will need to add and modify models, repositories, services, and controllers for profile management.
+To implement the feature allowing an admin to update existing product details with constraints that product updates can only be done by an admin, price must be a numeric value, and description can be modified but not removed, we need to add and update relevant parts of the code across controllers, services, and repositories.
 
-Let's proceed by adding the necessary files with their respective functionalities.
+Let's proceed by adding and updating the necessary files with their respective functionalities.
