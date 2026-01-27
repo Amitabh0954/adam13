@@ -1,3 +1,3 @@
-To implement the search functionality in the product catalog that allows customers to search for products and get paginated results with relevant search terms highlighted, we need to extend the models, repositories, services, and controllers for managing product searches.
+To implement the functionality for modifying the quantity of products in the shopping cart with the constraints that the quantity must be a positive integer and modifying the quantity should recalculate the total price, we need to extend models, repositories, services, and controllers for managing the shopping cart.
 
-Let's proceed by adding the necessary files with their respective functionalities.
+Let's proceed with the necessary files and their respective functionalities.
