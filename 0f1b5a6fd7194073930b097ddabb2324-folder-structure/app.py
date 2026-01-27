@@ -2,7 +2,7 @@ import logging
 from flask import Flask
 from backend.auth.controllers.user_controller import auth_blueprint
 from config import Config
-from backend.auth.extensions import db, login_manager, bcrypt
+from backend.auth.extensions import db, login_manager, bcrypt, mail
 from backend.auth.utils import setup_database
 
 # Initialize structured logging
@@ -17,6 +17,7 @@ def create_app() -> Flask:
     db.init_app(app)
     login_manager.init_app(app)
     bcrypt.init_app(app)
+    mail.init_app(app)
 
     # Set up the database
     with app.app_context():
