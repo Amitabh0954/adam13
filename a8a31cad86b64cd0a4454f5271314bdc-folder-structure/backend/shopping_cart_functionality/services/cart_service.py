@@ -21,3 +21,13 @@ class CartService:
     def update_cart(self, user_id: Optional[int], product_id: int, quantity: int) -> Dict[str, str]:
         self.cart_repository.update_cart(user_id, product_id, quantity)
         return {'status': 'success', 'message': 'Cart updated successfully'}
+
+    def get_cart(self, user_id: int) -> Dict:
+        cart_items = self.cart_repository.get_cart_by_user(user_id)
+        return {
+            'total_items': len(cart_items),
+            'products': [{
+                'product_id': item.product_id,
+                'quantity': item.quantity
+            } for item in cart_items]
+        }
