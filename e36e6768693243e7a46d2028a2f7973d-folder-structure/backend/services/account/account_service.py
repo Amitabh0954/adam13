@@ -4,6 +4,7 @@ from backend.repositories.account.account_repository import AccountRepository
 from backend.models.user import User
 import re
 from typing import Dict
+from werkzeug.security import check_password_hash, generate_password_hash
 
 class AccountService:
     def __init__(self):
@@ -16,8 +17,16 @@ class AccountService:
         if not self.is_password_secure(password):
             return {'status': 'error', 'message': 'Password does not meet security criteria'}
 
-        self.account_repository.create_user(email, password)
+        hashed_password = generate_password_hash(password)
+        self.account_repository.create_user(email, hashed_password)
         return {'status': 'success', 'message': 'User registered successfully'}
+
+    def login_user(self, email: str, password: str) -> Dict[str, str]:
+        user = self.account_repository.get_user_by_email(email)
+        if not user or not check_password_hash(user.password, password):
+            return {'status': 'error', 'message': 'Invalid email or password'}
+
+        return {'status': 'success', 'message': 'User logged in successfully', 'user_id': user.id}
 
     def is_password_secure(self, password: str) -> bool:
         if len(password) < 8:
