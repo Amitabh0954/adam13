@@ -91,3 +91,17 @@ def modify_cart_quantity(product_id):
         message = 'Product quantity modified for guest user'
 
     return jsonify({'message': message, 'total_price': result['total_price']}), 200
+
+@shopping_cart_bp.route('/cart', methods=['GET'])
+def get_cart():
+    user_service = UserService()
+    if user_service.is_user_logged_in():
+        user_id = user_service.get_current_user_id()
+        cart = user_service.get_user_cart(user_id) or {}
+        message = 'Cart retrieved for logged-in user'
+    else:
+        cart = session.get('cart', {})
+        message = 'Cart retrieved for guest user'
+    
+    total_price = sum(item['price'] * item['quantity'] for item in cart.values())
+    return jsonify({'message': message, 'cart': cart, 'total_price': total_price}), 200
