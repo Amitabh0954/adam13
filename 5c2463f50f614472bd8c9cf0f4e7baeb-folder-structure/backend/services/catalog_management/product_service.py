@@ -11,6 +11,7 @@ class ProductService:
         name = data.get("name")
         price = data.get("price")
         description = data.get("description")
+        category_ids = data.get("category_ids")
 
         if not name or self.product_repository.find_by_name(name):
             raise ValueError("Product name must be unique.")
@@ -20,8 +21,12 @@ class ProductService:
         
         if not description:
             raise ValueError("Product description cannot be empty.")
+        
+        if not category_ids or len(category_ids) == 0:
+            raise ValueError("Product must belong to at least one category.")
 
         new_product = Product(name=name, price=price, description=description)
+        new_product.categories = category_ids
         self.product_repository.save_product(new_product)
         return new_product.to_dict()
 
@@ -46,6 +51,12 @@ class ProductService:
                 product.description = description
             else:
                 raise ValueError("Product description cannot be empty.")
+        
+        if 'category_ids' in data:
+            category_ids = data['category_ids']
+            if not category_ids or len(category_ids) == 0:
+                raise ValueError("Product must belong to at least one category.")
+            product.categories = category_ids
         
         self.product_repository.update_product(product)
         return product.to_dict()
