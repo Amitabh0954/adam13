@@ -11,6 +11,10 @@ class ProductRepository:
     def save_product(self, product: Product):
         db.session.add(product)
         db.session.commit()
+    
+    def delete_product(self, product: Product):
+        db.session.delete(product)
+        db.session.commit()
 
     def update_product(self, product: Product):
         db.session.commit()
