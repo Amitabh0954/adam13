@@ -44,35 +44,3 @@ def remove_from_cart():
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Product removed from cart'}), 200
-
-@cart_bp.route('/update', methods=['PUT'])
-def update_cart():
-    data = request.get_json()
-    product_id = data.get('product_id')
-    quantity = data.get('quantity')
-
-    if not product_id or quantity is None:
-        return jsonify({'message': 'Product ID and quantity are required'}), 400
-
-    if quantity <= 0:
-        return jsonify({'message': 'Quantity must be a positive integer'}), 400
-
-    user_id = session.get('user_id')  # For logged-in users
-
-    result = cart_service.update_cart(user_id, product_id, quantity)
-
-    if result['status'] == 'error':
-        return jsonify({'message': result['message']}), 400
-
-    return jsonify({'message': 'Cart updated successfully'}), 200
-
-@cart_bp.route('/get', methods=['GET'])
-def get_cart():
-    user_id = session.get('user_id')  # For logged-in users
-
-    if not user_id:
-        return jsonify({'message': 'User must be logged in to view the cart'}), 403
-
-    result = cart_service.get_cart(user_id)
-
-    return jsonify(result), 200
