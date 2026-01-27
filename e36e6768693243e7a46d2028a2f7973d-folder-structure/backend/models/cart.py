@@ -14,6 +14,13 @@ class Cart(Base):
 
     items = relationship('CartItem', back_populates='cart')
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'items': [item.to_dict() for item in self.items]
+        }
+
 class CartItem(Base):
     __tablename__ = 'cart_items'
 
@@ -24,3 +31,10 @@ class CartItem(Base):
 
     cart = relationship('Cart', back_populates='items')
     product = relationship('Product')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'product_id': self.product_id,
+            'quantity': self.quantity
+        }
