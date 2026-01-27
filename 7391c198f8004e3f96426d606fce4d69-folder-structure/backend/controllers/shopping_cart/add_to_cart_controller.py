@@ -14,9 +14,9 @@ def add_to_cart():
     product_id = data.get('product_id')
     quantity = data.get('quantity', 1)
 
+    if quantity <= 0:
+        return jsonify({"error": "Quantity must be a positive integer"}), 400
+
     product = product_repository.get_product_by_id(product_id)
     if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    cart_repository.add_to_cart(current_user.id, product_id, quantity)
-    return jsonify({"message": "Product added to cart successfully"}),
+        return jsonify({"error": "Product not found
