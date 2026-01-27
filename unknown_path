@@ -1,3 +1,3 @@
-To implement the functionality for removing products from the shopping cart, ensuring that the total price is updated automatically and users see a confirmation before removal, we need to update the shopping cart controller, service, and repositories.
+To implement the shopping cart functionality where the cart persists across sessions for logged-in users and guest users can add products but lose their cart on session expiration, we need to add new models, repositories, services, and controllers specific to the shopping cart.
 
 Let's proceed with adding the necessary files and functionality.
