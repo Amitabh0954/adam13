@@ -1,6 +1,6 @@
 # Epic Title: Product Catalog Management
 
-from flask import Flask, session
+from flask import Flask
 from backend.product_catalog_management.controllers.product_controller import product_bp
 from backend.database import engine, Base
 
