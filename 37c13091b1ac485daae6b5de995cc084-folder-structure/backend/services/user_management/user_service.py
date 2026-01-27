@@ -25,6 +25,17 @@ class UserService:
         else:
             raise ValueError("Invalid credentials")
 
+    def reset_password(self, email: str, new_password: str):
+        user = self.user_repository.find_by_email(email)
+        if not user:
+            raise ValueError("Email not registered")
+
+        if not self._validate_password(new_password):
+            raise ValueError("Password does not meet security criteria")
+
+        user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        self.user_repository.update_user(user)
+
     def _validate_password(self, password: str) -> bool:
         if len(password) < 8:
             return False
