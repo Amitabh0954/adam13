@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify, url_for
-from flask_login import login_user, logout_user, login_required
+from flask import Blueprint, request, jsonify
+from flask_login import login_user, logout_user, login_required, current_user
 from backend.services.user_management.user_service import UserService
 from backend.utils import generate_token, confirm_token, send_email
 
@@ -73,5 +73,20 @@ def reset_password(token):
     try:
         user_service.reset_password(email, new_password)
         return jsonify({"message": "Password has been reset successfully"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@user_blueprint.route('/profile', methods=['GET'])
+@login_required
+def get_profile():
+    return jsonify(current_user.to_dict()), 200
+
+@user_blueprint.route('/profile', methods=['PUT'])
+@login_required
+def update_profile():
+    data = request.get_json()
+    try:
+        user_service.update_profile(current_user.id, data)
+        return jsonify({"message": "Profile updated successfully"}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
