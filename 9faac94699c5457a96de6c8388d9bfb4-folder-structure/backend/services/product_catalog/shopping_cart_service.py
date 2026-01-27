@@ -25,3 +25,10 @@ class ShoppingCartService:
             total_price = sum(item['price'] * item['quantity'] for item in cart.values())
             return {'status': 'success', 'total_price': total_price}
         return {'status': 'error', 'message': 'Product not found in cart'}
+
+    def modify_product_quantity(self, cart: Dict, product_id: int, quantity: int) -> dict:
+        if product_id in cart:
+            cart[product_id]['quantity'] = quantity
+            total_price = sum(item['price'] * item['quantity'] for item in cart.values())
+            return {'status': 'success', 'total_price': total_price}
+        return {'status': 'error', 'message': 'Product not found in cart'}
