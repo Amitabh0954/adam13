@@ -12,4 +12,3 @@ class Product(Base):
     name = Column(String(255), unique=True, nullable=False)
     description = Column(String(255), nullable=False)
     price = Column(Float, nullable=False)
-    category = Column(String(255), nullable=False)  # Adding category field
