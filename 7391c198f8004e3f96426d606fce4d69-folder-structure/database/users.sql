@@ -6,5 +6,7 @@ CREATE TABLE IF NOT EXISTS user (
     current_login_at DATETIME DEFAULT NULL,
     login_count INT DEFAULT 0 NOT NULL,
     first_name VARCHAR(50) DEFAULT NULL,
-    last_name VARCHAR(50) DEFAULT NULL
+    last_name VARCHAR(50) DEFAULT NULL,
+    is_admin BOOLEAN DEFAULT FALSE,
+    invalid_login_attempts INT DEFAULT 0 NOT NULL
 );
