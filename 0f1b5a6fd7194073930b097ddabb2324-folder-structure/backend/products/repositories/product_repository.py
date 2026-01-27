@@ -23,3 +23,11 @@ class ProductRepository:
         if product:
             product.is_active = False
             db.session.commit()
+
+    def search_products(self, query: str, page: int, per_page: int):
+        search = f"%{query}%"
+        products = Product.query.filter(
+            Product.is_active,
+            db.or_(Product.name.like(search), Product.description.like(search))
+        ).paginate(page, per_page, False)
+        return products.items, products.total
