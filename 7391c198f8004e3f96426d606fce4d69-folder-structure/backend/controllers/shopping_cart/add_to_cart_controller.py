@@ -19,4 +19,4 @@ def add_to_cart():
         return jsonify({"error": "Product not found"}), 404
 
     cart_repository.add_to_cart(current_user.id, product_id, quantity)
-    return jsonify({"message":
+    return jsonify({"message": "Product added to cart successfully"}),
