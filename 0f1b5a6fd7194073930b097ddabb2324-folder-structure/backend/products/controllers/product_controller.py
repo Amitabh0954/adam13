@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_login import login_required, current_user
 from backend.products.repositories.product_repository import ProductRepository
 
 product_blueprint = Blueprint('product', __name__)
@@ -14,6 +15,7 @@ def add_product():
     name = data.get('name')
     price = data.get('price')
     description = data.get('description')
+    category_ids = data.get('category_ids')
 
     if product_repository.get_product_by_name(name):
         return jsonify({"error": "Product name must be unique"}), 400
@@ -24,7 +26,7 @@ def add_product():
     if not description:
         return jsonify({"error": "Product description cannot be empty"}), 400
 
-    new_product = product_repository.create_product(name, price, description)
+    new_product = product_repository.create_product(name, price, description, category_ids)
     return jsonify({"message": "Product added successfully", "product": new_product.to_dict()}), 201
 
 @product_blueprint.route('/update_product/<int:product_id>', methods=['PUT'])
@@ -36,6 +38,7 @@ def update_product(product_id):
     data = request.get_json()
     price = data.get('price')
     description = data.get('description')
+    category_ids = data.get('category_ids')
 
     product = product_repository.get_product_by_id(product_id)
 
@@ -52,7 +55,7 @@ def update_product(product_id):
     else:
         return jsonify({"error": "Product description cannot be emptied"}), 400
 
-    updated_product = product_repository.update_product(product)
+    updated_product = product_repository.update_product(product, category_ids)
     return jsonify({"message": "Product updated successfully", "product": updated_product.to_dict()}), 200
 
 @product_blueprint.route('/delete_product/<int:product_id>', methods=['DELETE'])
