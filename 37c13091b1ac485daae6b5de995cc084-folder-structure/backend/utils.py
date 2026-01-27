@@ -1,5 +1,5 @@
 # Inline comment referencing the Epic Title
-# Epic Title: Shopping Cart Functionality
+# Epic Title: Product Catalog Management
 
 from itsdangerous import URLSafeTimedSerializer
 from .extensions import db
