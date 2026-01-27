@@ -1,14 +1,14 @@
-# Epic Title: User Account Management
+# Epic Title: Product Catalog Management
 
 from flask import Flask
-from backend.controllers.account.user_controller import user_bp
+from backend.controllers.product.product_controller import product_bp
 from backend.database import engine, Base
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Choose a secure key for production
 
 # Register Blueprints
-app.register_blueprint(user_bp, url_prefix='/account')
+app.register_blueprint(product_bp, url_prefix='/products')
 
 # Create tables
 Base.metadata.create_all(bind=engine)
