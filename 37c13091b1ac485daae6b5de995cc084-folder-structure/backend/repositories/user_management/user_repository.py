@@ -2,9 +2,6 @@ from backend.models.user import User
 from backend.extensions import db
 
 class UserRepository:
-    # Inline comment referencing the Epic Title
-    # Epic Title: Product Catalog Management
-
     def find_by_email(self, email: str) -> User:
         return User.query.filter_by(email=email).first()
     
