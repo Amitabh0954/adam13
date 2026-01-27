@@ -30,3 +30,28 @@ def add_product():
     db_session.commit()
 
     return jsonify({'message': 'Product added successfully'}), 201
+
+@catalog_bp.route('/product/<int:id>', methods=['PUT'])
+def update_product(id):
+    data = request.get_json()
+    price = data.get('price')
+    description = data.get('description')
+
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({'message': 'Product not found'}), 404
+
+    # Validate product price is numeric and positive
+    if not isinstance(price, (int, float)) or price <= 0:
+        return jsonify({'message': 'Product price must be a positive number'}), 400
+
+    # Description can be modified but not removed
+    if description is None:
+        return jsonify({'message': 'Product description cannot be removed'}), 400
+
+    product.price = price
+    product.description = description
+    db_session.commit()
+
+    return jsonify({'message': 'Product updated successfully'}), 200
