@@ -1,6 +1,7 @@
 # Epic Title: User Account Management
 
 from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.models.user import User
 from typing import Dict
 
 class UserService:
@@ -13,3 +14,6 @@ class UserService:
         
         self.user_repository.create_user(email, hashed_password)
         return {'status': 'success', 'message': 'User registered successfully'}
+
+    def get_user_by_email(self, email: str) -> User:
+        return self.user_repository.get_user_by_email(email)
