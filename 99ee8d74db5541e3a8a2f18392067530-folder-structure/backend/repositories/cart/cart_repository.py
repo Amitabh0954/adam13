@@ -2,6 +2,7 @@
 
 from backend.database import db_session
 from backend.models.cart import Cart, CartItem
+from json import dumps, loads
 
 class CartRepository:
     def add_to_cart(self, user_id: int, product_id: int, quantity: int):
@@ -43,7 +44,7 @@ class CartRepository:
             db_session.commit()
 
     def update_quantity(self, user_id: int, product_id: int, quantity: int):
-        cart = db_session.query(Cart).filter_by(user_id=user_id).first()
+        cart = db_session.query(Cart), product_id).first()
         if not cart:
             return
 
@@ -56,3 +57,26 @@ class CartRepository:
             else:
                 db_session.delete(cart_item)
                 db_session.commit()
+    
+    def save_cart(self, user_id: int, cart_data: Dict[str, Any]):
+        cart = db_session.query(Cart).filter_by(user_id=user_id).first()
+        if not cart:
+            cart = Cart(user_id=user_id)
+            db_session.add(cart)
+            db_session.commit()
+
+        cart.items = [CartItem(cart_id=cart.id, product_id=item['product_id'], quantity=item['quantity']) for item in cart_data['items']]
+        db_session.add(cart)
+        db_session.commit()
+
+    def load_cart(self, user_id: int) -> Dict[str, Any]:
+        cart = db_session.query(Cart).filter_by(user_id=user_id).first()
+        if not cart:
+            return {}
+
+        return {
+            'cart_id': cart.id,
+            'user_id': cart.user_id,
+            'items': [{'product_id': item.product_id, 'quantity': item.quantity} for item in cart.items],
+            'total_price': sum(item.quantity * item.product.price for item in cart.items)  # total price calculation
+        }
