@@ -60,3 +60,33 @@ def update_quantity():
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Product quantity updated successfully'}), 200
+
+@cart_bp.route('/save', methods=['POST'])
+def save_cart():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return jsonify({'message': 'User must be logged in to save the cart'}), 400
+
+    cart_service = CartService()
+    result = cart_service.save_cart(user_id)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Cart saved successfully'}), 200
+
+@cart_bp.route('/load', methods=['GET'])
+def load_cart():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return jsonify({'message': 'User must be logged in to load the cart'}), 400
+
+    cart_service = CartService()
+    result = cart_service.load_cart(user_id)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify(result), 200
