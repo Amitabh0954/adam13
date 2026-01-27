@@ -32,5 +32,9 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), unique=True, nullable=False)
+    parent_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
+
+    parent = relationship('Category', remote_side=[id], back_populates='children')
+    children = relationship('Category', remote_side=[parent_id], back_populates='parent')
 
     products = relationship('Product', back_populates='category')
