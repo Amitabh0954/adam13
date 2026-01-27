@@ -10,3 +10,12 @@ CREATE TABLE IF NOT EXISTS user (
     is_admin BOOLEAN DEFAULT FALSE,
     invalid_login_attempts INT DEFAULT 0 NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS password_reset_token (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token VARCHAR(100) NOT NULL UNIQUE,
+    created_at DATETIME NOT NULL,
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE
+);
