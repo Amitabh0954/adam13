@@ -73,20 +73,3 @@ def update_product(product_id):
 
     db.session.commit()
     return jsonify({"message": "Product updated successfully"}), 200
-
-@product_blueprint.route('/delete_product/<int:product_id>', methods=['DELETE'])
-@login_required
-def delete_product(product_id):
-    # Ensure user is an admin
-    if not current_user.is_admin:
-        return jsonify({"error": "Only admins can delete products"}), 403
-
-    data = request.get_json()
-    confirmation = data.get('confirmation')
-    if confirmation != "yes":
-        return jsonify({"error": "Deletion requires confirmation"}), 400
-
-    product = Product.query.get_or_404(product_id)
-    product.is_active = False
-    db.session.commit()
-    return jsonify({"message": "Product deleted successfully"}), 200
