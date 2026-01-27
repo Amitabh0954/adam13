@@ -28,7 +28,8 @@ class CartRepository:
         return {
             'cart_id': cart.id,
             'user_id': cart.user_id,
-            'items': [{'product_id': item.product_id, 'quantity': item.quantity} for item in cart.items]
+            'items': [{'product_id': item.product_id, 'quantity': item.quantity} for item in cart.items],
+            'total_price': sum(item.quantity * item.product.price for item in cart.items)  # total price calculation
         }
 
     def remove_from_cart(self, user_id: int, product_id: int):
