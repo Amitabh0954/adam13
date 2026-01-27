@@ -1,9 +1,0 @@
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(120) NOT NULL UNIQUE,
-    password VARCHAR(120) NOT NULL,
-    name VARCHAR(120),
-    phone VARCHAR(20),
-    address VARCHAR(200),
-    is_admin BOOLEAN DEFAULT FALSE
-);
