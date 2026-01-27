@@ -1,4 +1,4 @@
-# Epic Title: Shopping Cart Functionality
+# Epic Title: Product Catalog Management
 
 from flask import Flask
 from backend.account.registration.routes import registration_bp
@@ -8,7 +8,6 @@ from backend.account.profile_management.routes import profile_management_bp
 from backend.product.catalog.routes import catalog_bp
 from backend.product.search.routes import search_bp
 from backend.product.categorization.routes import categorization_bp
-from backend.cart.add.routes import add_bp
 from backend.database import engine, Base
 from backend.mail import mail
 from flask_mail import Mail
@@ -24,7 +23,6 @@ app.register_blueprint(profile_management_bp, url_prefix='/account')
 app.register_blueprint(catalog_bp, url_prefix='/product')
 app.register_blueprint(search_bp, url_prefix='/product')
 app.register_blueprint(categorization_bp, url_prefix='/product')
-app.register_blueprint(add_bp, url_prefix='/cart')
 
 # Config Mail
 app.config.update(
