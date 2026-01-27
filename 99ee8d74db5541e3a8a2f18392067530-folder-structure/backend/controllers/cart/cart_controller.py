@@ -11,6 +11,9 @@ def add_to_cart():
     product_id = data.get('product_id')
     quantity = data.get('quantity', 1)
 
+    if quantity <= 0:
+        return jsonify({'message': 'Quantity must be a positive integer'}), 400
+
     cart_service = CartService()
     cart_service.add_to_cart(session, product_id, quantity)
 
@@ -29,7 +32,6 @@ def remove_from_cart():
     data = request.get_json()
     product_id = data.get('product_id')
 
-    # Confirm removal
     confirmation = data.get('confirmation')
     if not confirmation:
         return jsonify({'message': 'Remove confirmation required'}), 400
@@ -40,3 +42,19 @@ def remove_from_cart():
     cart_contents = cart_service.get_cart(session)
     session['cart'] = cart_contents
     return jsonify({'message': 'Product removed from cart successfully', 'cart': cart_contents}), 200
+
+@cart_bp.route('/update_quantity', methods=['POST'])
+def update_quantity():
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if quantity <= 0:
+        return jsonify({'message': 'Quantity must be a positive integer'}), 400
+
+    cart_service = CartService()
+    cart_service.update_quantity(session, product_id, quantity)
+
+    cart_contents = cart_service.get_cart(session)
+    session['cart'] = cart_contents
+    return jsonify({'message': 'Product quantity updated successfully', 'cart': cart_contents}), 200
