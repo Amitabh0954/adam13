@@ -30,15 +30,3 @@ class CartRepository:
             cart.items.remove(existing_item)
             db.session.delete(existing_item)
             db.session.commit()
-
-    def update_cart_quantity(self, cart: Cart, product_id: int, quantity: int):
-        existing_item = next((item for item in cart.items if item.product_id == product_id), None)
-        if existing_item:
-            existing_item.quantity = quantity
-        db.session.commit()
-
-    def save_cart_state(self, cart: Cart):
-        db.session.commit()
-
-    def get_cart_state(self, user_id: int) -> Cart:
-        return Cart.query.filter_by(user_id=user_id).first()
