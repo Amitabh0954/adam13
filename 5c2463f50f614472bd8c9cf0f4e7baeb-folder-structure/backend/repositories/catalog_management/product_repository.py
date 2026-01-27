@@ -8,6 +8,15 @@ class ProductRepository:
     def find_by_id(self, product_id: int) -> Product:
         return Product.query.get(product_id)
     
+    def search(self, term: str):
+        search_pattern = f'%{term}%'
+        return Product.query.filter(
+            db.or_(
+                Product.name.ilike(search_pattern),
+                Product.description.ilike(search_pattern)
+            )
+        )
+    
     def save_product(self, product: Product):
         db.session.add(product)
         db.session.commit()
