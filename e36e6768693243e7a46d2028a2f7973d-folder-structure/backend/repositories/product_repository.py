@@ -2,6 +2,7 @@
 
 from backend.database import db_session
 from backend.models.product import Product
+from sqlalchemy.orm import load_only
 
 class ProductRepository:
     def get_product_by_name(self, name: str) -> Product:
@@ -23,3 +24,11 @@ class ProductRepository:
     def delete_product(self, product: Product):
         db_session.delete(product)
         db_session.commit()
+
+    def search_products(self, query: str, page: int, per_page: int):
+        search_query = "%{}%".format(query)
+        return db_session.query(Product).filter(
+            Product.name.like(search_query) |
+            Product.description.like(search_query) |
+            Product.category.has(name=search_query)
+        ).options(load_only('id', 'name', 'description', 'price', 'category_id')).paginate(page, per_page, False)
