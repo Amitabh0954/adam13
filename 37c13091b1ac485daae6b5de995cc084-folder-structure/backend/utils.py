@@ -1,6 +1,3 @@
-# Inline comment referencing the Epic Title
-# Epic Title: Product Catalog Management
-
 from itsdangerous import URLSafeTimedSerializer
 from .extensions import db
 
