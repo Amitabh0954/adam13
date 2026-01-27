@@ -7,6 +7,7 @@ from typing import Dict
 class UserService:
     def __init__(self):
         self.user_repository = UserRepository()
+        self.failed_login_attempts = {}
 
     def register_user(self, email: str, password: str) -> Dict[str, str]:
         if not self.is_email_unique(email):
@@ -17,6 +18,24 @@ class UserService:
 
         self.user_repository.create_user(email, password)
         return {'status': 'success', 'message': 'User registered successfully'}
+
+    def login_user(self, email: str, password: str) -> Dict[str, str]:
+        user = self.user_repository.get_user_by_email_and_password(email, password)
+        if not user:
+            self.track_failed_login(email)
+            return {'status': 'error', 'message': 'Invalid email or password'}
+
+        self.reset_failed_login_attempts(email)
+        return {'status': 'success', 'user_id': user.id}
+
+    def track_failed_login(self, email: str):
+        if email not in self.failed_login_attempts:
+            self.failed_login_attempts[email] = 0
+        self.failed_login_attempts[email] += 1
+    
+    def reset_failed_login_attempts(self, email: str):
+        if email in self.failed_login_attempts:
+            self.failed_login_attempts[email] = 0
 
     def is_email_unique(self, email: str) -> bool:
         return self.user_repository.get_user_by_email(email) is None
