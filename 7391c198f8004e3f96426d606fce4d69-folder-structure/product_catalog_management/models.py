@@ -1,14 +1,13 @@
 from .extensions import db
 
 class Product(db.Model):
-    id = db.Column(db.Integer, primary key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True, nullable=False)
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(500), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     categories = db.relationship('Category', secondary='product_category', lazy='subquery',
                                  backref=db.backref('products', lazy=True))
-    cart_items = db.relationship('CartItem', backref='product', lazy=True)
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary key=True)
@@ -17,13 +16,6 @@ class Category(db.Model):
     parent = db.relationship('Category', remote_side=[id], backref=db.backref('children', lazy=True))
 
 product_category = db.Table('product_category',
-    db.Column('product_id', db.Integer, db.ForeignKey('product.id'), primary key=True),
-    db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary key=True)
+    db.Column('product_id', db.Integer, db.ForeignKey('product.id'), primary_key=True),
+    db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
 )
-
-class CartItem(db.Model):
-    id = db.Column(db.Integer, primary key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-    total_price = db.Column(db.Float, nullable=False)
