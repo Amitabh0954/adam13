@@ -3,7 +3,7 @@ from backend.extensions import db
 
 class UserRepository:
     # Inline comment referencing the Epic Title
-    # Epic Title: Product Catalog Management
+    # Epic Title: Shopping Cart Functionality
 
     def find_by_email(self, email: str) -> User:
         return User.query.filter_by(email=email).first()
