@@ -1,1 +1,3 @@
-Based on the folder structure and user stories, we will implement user registration by ensuring email uniqueness and password security. The code will follow the Flask framework and use MySQL as the database.
+To address the user story for handling user login and security measures like limiting invalid login attempts and session timeout after inactivity, we need to add relevant functionality in the `authentication` and `session` management areas.
+
+We will continue building on the existing structure under the `authentication` modules and add the necessary logic for user login.
