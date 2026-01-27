@@ -13,3 +13,11 @@ class CartService:
 
         self.cart_repository.add_to_cart(user_id, product_id, quantity)
         return {'status': 'success', 'message': 'Product added to cart'}
+
+    def remove_from_cart(self, user_id: Optional[int], product_id: int) -> Dict[str, str]:
+        self.cart_repository.remove_from_cart(user_id, product_id)
+        return {'status': 'success', 'message': 'Product removed from cart'}
+
+    def update_cart(self, user_id: Optional[int], product_id: int, quantity: int) -> Dict[str, str]:
+        self.cart_repository.update_cart(user_id, product_id, quantity)
+        return {'status': 'success', 'message': 'Cart updated successfully'}
