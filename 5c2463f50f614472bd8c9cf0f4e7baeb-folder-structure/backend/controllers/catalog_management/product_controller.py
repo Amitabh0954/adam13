@@ -19,7 +19,16 @@ def add_product():
 def update_product(product_id: int):
     data = request.get_json()
     try:
-        product = product_service.update_product(current_user, product_id, data) 
+        product = product_service.update_product(current_user, product_id, data)
         return jsonify(product), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@product_blueprint.route('/products/<int:product_id>', methods=['DELETE'])
+@login_required
+def delete_product(product_id: int):
+    try:
+        product_service.delete_product(current_user, product_id)
+        return jsonify({"message": "Product deleted successfully"}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
