@@ -2,7 +2,6 @@
 
 from backend.database import db_session
 from backend.models.product import Product
-from sqlalchemy import or_
 
 class ProductRepository:
     def get_product_by_id(self, product_id: int) -> Product:
@@ -24,26 +23,3 @@ class ProductRepository:
     def delete_product(self, product: Product):
         db_session.delete(product)
         db_session.commit()
-
-    def search_products(self, query: str, page: int, per_page: int) -> List[Product]:
-        offset = (page - 1) * per_page
-        products = db_session.query(Product).filter(
-            or_(
-                Product.name.like(f'%{query}%'),
-                Product.description.like(f'%{query}%'),
-                # Assuming there is a 'category' field in the product model
-                Product.category.like(f'%{query}%')  
-            )
-        ).offset(offset).limit(per_page).all()
-        return products
-
-    def count_search_results(self, query: str) -> int:
-        count = db_session.query(Product).filter(
-            or_(
-                Product.name.like(f'%{query}%'),
-                Product.description.like(f'%{query}%'),
-                # Assuming there is a 'category' field in the product model
-                Product.category.like(f'%{query}%')
-            )
-        ).count()
-        return count
