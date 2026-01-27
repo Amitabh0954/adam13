@@ -8,7 +8,7 @@ class UserService:
     def __init__(self):
         self.user_repository = UserRepository()
         self.failed_login_attempts = {}
-
+        
     def register_user(self, email: str, password: str) -> Dict[str, str]:
         if not self.is_email_unique(email):
             return {'status': 'error', 'message': 'Email already exists'}
@@ -52,3 +52,19 @@ class UserService:
         if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
             return False
         return True
+
+    def update_user_profile(self, user_id: int, data: Dict[str, str]) -> Dict[str, str]:
+        user = self.user_repository.get_user_by_id(user_id)
+        if not user:
+            return {'status': 'error', 'message': 'User not found'}
+
+        user.name = data.get('name', user.name)
+        user.address = data.get('address', user.address)
+        self.user_repository.update_user(user)
+        return {'status': 'success', 'message': 'Profile updated successfully'}
+
+    def get_user_profile(self, user_id: int) -> Dict[str, str]:
+        user = self.user_repository.get_user_by_id(user_id)
+        if not user:
+            return None
+        return {"name": user.name, "email": user.email, "address": user.address}
