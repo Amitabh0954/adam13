@@ -2,7 +2,8 @@ import logging
 from flask import Flask
 from user_account_management import user_blueprint
 from config import Config
-from user_account_management.extensions import db, login_manager
+from user_account_management.extensions import db, login_manager, mail
+from user_account_management.utils import setup_database
 
 # Initialize structured logging
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +16,12 @@ def create_app() -> Flask:
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
-    
+    mail.init_app(app)
+
+    # Set up the database
+    with app.app_context():
+        setup_database()
+
     # Register blueprints
     app.register_blueprint(user_blueprint)
 
