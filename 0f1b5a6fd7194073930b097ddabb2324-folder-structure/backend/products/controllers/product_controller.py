@@ -40,7 +40,7 @@ def update_product(product_id):
     description = data.get('description')
 
     product = product_repository.get_product_by_id(product_id)
-    
+
     if not product:
         return jsonify({"error": "Product not found"}), 404
 
@@ -56,3 +56,23 @@ def update_product(product_id):
 
     updated_product = product_repository.update_product(product)
     return jsonify({"message": "Product updated successfully", "product": updated_product.to_dict()}), 200
+
+@product_blueprint.route('/delete_product/<int:product_id>', methods=['DELETE'])
+@login_required
+def delete_product(product_id):
+    if not current_user.is_admin:
+        return jsonify({"error": "Only admins can delete products"}), 403
+
+    data = request.get_json()
+    confirmation = data.get('confirmation')
+
+    if confirmation != 'CONFIRM':
+        return jsonify({"error": "Deletion confirmation required"}), 400
+
+    product = product_repository.get_product_by_id(product_id)
+
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    product_repository.delete_product(product_id)
+    return jsonify({"message": "Product deleted successfully"}), 200
