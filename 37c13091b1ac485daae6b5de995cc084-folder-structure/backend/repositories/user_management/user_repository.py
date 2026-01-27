@@ -8,3 +8,6 @@ class UserRepository:
     def save_user(self, user: User):
         db.session.add(user)
         db.session.commit()
+
+    def update_user(self, user: User):
+        db.session.commit()
