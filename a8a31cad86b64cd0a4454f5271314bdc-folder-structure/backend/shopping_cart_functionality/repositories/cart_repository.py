@@ -2,6 +2,7 @@
 
 from backend.database import db_session
 from backend.shopping_cart_functionality.models.cart import Cart
+from typing import List
 
 class CartRepository:
     def add_to_cart(self, user_id: int, product_id: int, quantity: int):
@@ -26,3 +27,6 @@ class CartRepository:
             cart_item.quantity = quantity
             db_session.add(cart_item)
             db_session.commit()
+    
+    def get_cart_by_user(self, user_id: int) -> List[Cart]:
+        return db_session.query(Cart).filter_by(user_id=user_id).all()
