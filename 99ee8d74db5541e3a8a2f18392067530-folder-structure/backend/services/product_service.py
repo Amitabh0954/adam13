@@ -41,3 +41,11 @@ class ProductService:
 
         self.product_repository.update_product(product)
         return {'status': 'success', 'message': 'Product updated successfully'}
+
+    def delete_product(self, product_id: int) -> Dict[str, str]:
+        product = self.product_repository.get_product_by_id(product_id)
+        if not product:
+            return {'status': 'error', 'message': 'Product not found'}
+
+        self.product_repository.delete_product(product)
+        return {'status': 'success', 'message': 'Product deleted successfully'}
