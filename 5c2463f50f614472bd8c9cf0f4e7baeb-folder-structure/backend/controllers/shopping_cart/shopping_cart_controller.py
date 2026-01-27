@@ -66,3 +66,9 @@ def update_cart():
             return jsonify({"error": "Product not in cart"}), 400
 
     return jsonify({"message": "Cart updated successfully", "cart": cart}), 200
+
+@shopping_cart_blueprint.route('/cart/save', methods=['POST'])
+@login_required
+def save_cart():
+    shopping_cart_service.save_cart(current_user.id)
+    return jsonify({"message": "Cart saved successfully"}), 200
