@@ -23,3 +23,19 @@ def add_product():
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Product added successfully'}), 201
+
+@product_bp.route('/update/<int:product_id>', methods=['PUT'])
+def update_product(product_id: int):
+    data = request.get_json()
+    name = data.get('name')
+    description = data.get('description')
+    price = data.get('price')
+    category_id = data.get('category_id')
+
+    product_service = ProductService()
+    result = product_service.update_product(product_id, name, description, price, category_id)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Product updated successfully'}), 200
