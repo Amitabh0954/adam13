@@ -5,7 +5,6 @@ from backend.account.registration.routes import registration_bp
 from backend.account.login.routes import login_bp
 from backend.account.password_recovery.routes import password_recovery_bp
 from backend.account.profile_management.routes import profile_management_bp
-from backend.product.catalog.routes import catalog_bp
 from backend.database import engine, Base
 from backend.mail import mail
 from flask_mail import Mail
@@ -18,7 +17,6 @@ app.register_blueprint(registration_bp, url_prefix='/account')
 app.register_blueprint(login_bp, url_prefix='/account')
 app.register_blueprint(password_recovery_bp, url_prefix='/account')
 app.register_blueprint(profile_management_bp, url_prefix='/account')
-app.register_blueprint(catalog_bp, url_prefix='/product')
 
 # Config Mail
 app.config.update(
