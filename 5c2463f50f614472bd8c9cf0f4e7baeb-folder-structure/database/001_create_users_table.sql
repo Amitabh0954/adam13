@@ -2,6 +2,5 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(200) NOT NULL,
-    preferences JSON NULL,
-    is_admin BOOLEAN DEFAULT FALSE
+    preferences JSON NULL
 );
