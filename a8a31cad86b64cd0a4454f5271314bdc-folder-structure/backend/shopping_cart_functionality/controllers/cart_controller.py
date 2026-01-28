@@ -44,3 +44,68 @@ def remove_from_cart():
         return jsonify({'message': result['message']}), 400
 
     return jsonify({'message': 'Product removed from cart'}), 200
+
+@cart_bp.route('/increase', methods=['POST'])
+def increase_quantity():
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity', 1)
+
+    if not product_id:
+        return jsonify({'message': 'Product ID is required'}), 400
+
+    if quantity < 1:
+        return jsonify({'message': 'Quantity must be at least 1'}), 400
+
+    user_id = session.get('user_id')  # For logged-in users
+
+    result = cart_service.increase_quantity(user_id, product_id, quantity)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Quantity updated'}), 200
+
+@cart_bp.route('/decrease', methods=['POST'])
+def decrease_quantity():
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity', 1)
+
+    if not product_id:
+        return jsonify({'message': 'Product ID is required'}), 400
+
+    if quantity < 1:
+        return jsonify({'message': 'Quantity must be at least 1'}), 400
+
+    user_id = session.get('user_id')  # For logged-in users
+
+    result = cart_service.decrease_quantity(user_id, product_id, quantity)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Quantity updated'}), 200
+
+@cart_bp.route('/save', methods=['POST'])
+def save_cart():
+    data = request.get_json()
+    user_id = session.get('user_id')  # For logged-in users
+
+    result = cart_service.save_cart(user_id)
+
+    if result['status'] == 'error':
+        return jsonify({'message': result['message']}), 400
+
+    return jsonify({'message': 'Cart saved successfully'}), 200
+
+@cart_bp.route('/retrieve', methods=['GET'])
+def retrieve_cart():
+    user_id = session.get('user_id')  # For logged-in users
+
+    cart_data = cart_service.retrieve_cart(user_id)
+
+    if cart_data['status'] == 'error':
+        return jsonify({'message': cart_data['message']}), 400
+
+    return jsonify(cart_data), 200
