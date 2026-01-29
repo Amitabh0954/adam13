@@ -69,13 +69,3 @@ class UserRepository:
         """
         cursor.execute(query, (new_password_hash, email))
         self.db_connection.commit()
-
-    def update_user_profile(self, email: str, profile_data: Dict[str, str]) -> None:
-        cursor = self.db_connection.cursor()
-        columns = ", ".join(f"{key} = %s" for key in profile_data.keys())
-        values = list(profile_data.values())
-        query = f"""
-        UPDATE users SET {columns} WHERE email = %s
-        """
-        cursor.execute(query, values + [email])
-        self.db_connection.commit()
