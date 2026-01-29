@@ -22,6 +22,12 @@ class CartRepository:
         self.session.commit()
         return item
 
+    def remove_item_from_cart(self, cart: Cart, product_id: int) -> None:
+        item = self.session.query(CartItem).filter_by(cart_id=cart.id, product_id=product_id).first()
+        if item:
+            self.session.delete(item)
+            self.session.commit()
+
     def create_cart_for_user(self, user_id: int) -> Cart:
         cart = Cart(user_id=user_id)
         self.session.add(cart)
