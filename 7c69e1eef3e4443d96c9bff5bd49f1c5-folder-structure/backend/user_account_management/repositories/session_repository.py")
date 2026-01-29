@@ -1,0 +1,44 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/user_account_management/services/
+# File: login_service.py
+file_content = 
+# Epic Title: User Account Management System
+
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.repositories.session_repository import SessionRepository
+from backend.user_account_management.models.user import User
+from backend.user_account_management.models.session import Session as SessionModel
+import hashlib
+import uuid
+
+class LoginService:
+    def __init__(self, user_repository: UserRepository, session_repository: SessionRepository):
+        self.user_repository = user_repository
+        self.session_repository = session_repository
+
+    def login_user(self, email: str, password: str) -> SessionModel:
+        user = self.user_repository.get_user_by_email(email)
+        if user and user.password == self.hash_password(password):
+            new_session = SessionModel(user_id=user.id, session_token=str(uuid.uuid4()))
+            self.session_repository.invalidate_old_sessions(user.id, timeout_minutes=30)
+            self.session_repository.add_session(new_session)
+            return new_session
+        else:
+            raise ValueError("Invalid email or password")
+
+    def hash_password(self, password: str) -> str:
+        return hashlib.sha256(password.encode()).hexdigest()
+
+    def logout_user(self, session_token: str) -> None:
+        self.session_repository.invalidate_session(session_token)
+
+
+memory_ledger["emitted_file_paths"].append("backend/user_account_management/services/login_service.py")
+memory_ledger["public_interfaces"].append("LoginService")
+memory_ledger["imports"].append("backend/user_account_management/repositories/session_repository:SessionRepository")
+memory_ledger["folder_file_mapping"]["backend/user_account_management/services/"].append("login_service.py")
+
+print("
