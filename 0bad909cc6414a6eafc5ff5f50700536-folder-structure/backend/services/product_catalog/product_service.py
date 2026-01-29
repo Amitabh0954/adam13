@@ -1,5 +1,6 @@
 # Epic Title: Product Catalog Management
 
+from typing import Optional
 from backend.repositories.product_catalog.product_repository import ProductRepository
 
 class ProductService:
@@ -17,4 +18,13 @@ class ProductService:
             return "Product description cannot be empty"
 
         self.product_repository.add_product(name, price, description, category)
+        return None
+
+    def update_product(self, product_id: int, price: Optional[float] = None, description: Optional[str] = None, category: Optional[str] = None) -> Optional[str]:
+        if price is not None and price <= 0:
+            return "Product price must be a positive number"
+        if description is not None and not description:
+            return "Product description cannot be empty"
+
+        self.product_repository.update_product(product_id, price, description, category)
         return None
