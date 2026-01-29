@@ -1,6 +1,6 @@
 # Epic Title: Product Catalog Management
 
-from typing import Optional, Dict
+from typing import List, Dict, Optional
 import mysql.connector
 from mysql.connector import connection
 
@@ -52,3 +52,16 @@ class ProductRepository:
         """
         cursor.execute(query, (product_id,))
         self.db_connection.commit()
+
+    def search_products(self, term: str, page: int, per_page: int) -> List[Dict[str, str]]:
+        cursor = self.db_connection.cursor(dictionary=True)
+        query = """
+        SELECT * FROM products
+        WHERE name LIKE %s OR description LIKE %s OR category LIKE %s
+        LIMIT %s OFFSET %s
+        """
+        search_term = f"%{term}%"
+        cursor.execute(query, (search_term, search_term, search_term, per_page, (page - 1) * per_page))
+        products = cursor.fetchall()
+        self.db_connection.commit()
+        return products
