@@ -1,0 +1,33 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/user_account_management/session/
+# File: session_repository.py
+file_content = 
+# Epic Title: User Account Management
+
+from sqlalchemy.orm import Session
+from backend.user_account_management.models.user import Session as db_session
+from backend.user_account_management.session.user_session import UserSession
+
+class SessionRepository:
+    def __init__(self, session: Session = db_session()):
+        self.session = session
+    
+    def add_session(self, user_session: UserSession):
+        self.session.add(user_session)
+        self.session.commit()
+    
+    def get_session(self, token: str) -> UserSession:
+        return self.session.query(UserSession).filter_by(token=token).first()
+
+    def delete_session(self, user_session: UserSession):
+        self.session.delete(user_session)
+        self.session.commit()
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/session/session_repository.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/session/"] = ["session_repository.py"]
+
+print("
