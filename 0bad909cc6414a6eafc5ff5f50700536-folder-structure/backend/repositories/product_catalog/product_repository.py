@@ -44,3 +44,11 @@ class ProductRepository:
             values.append(product_id)
             cursor.execute(query, values)
             self.db_connection.commit()
+
+    def delete_product(self, product_id: int) -> None:
+        cursor = self.db_connection.cursor()
+        query = """
+        DELETE FROM products WHERE id = %s
+        """
+        cursor.execute(query, (product_id,))
+        self.db_connection.commit()
