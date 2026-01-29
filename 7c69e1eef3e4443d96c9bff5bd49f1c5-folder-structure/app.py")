@@ -2,9 +2,9 @@
 print("
 print(file_content.strip())
 
-# Requirements file (ensuring dependencies only if Flask and SQLAlchemy were needed)
+# Requirements file (updating Flask)
 requirements = 
-# Epic Title: Product Catalog Management System
+# Epic Title: User Account Management System
 
 Flask==2.2.3
 SQLAlchemy==1.4.32
