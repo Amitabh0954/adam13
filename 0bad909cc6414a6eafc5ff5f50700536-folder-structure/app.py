@@ -55,5 +55,27 @@ def update_product():
 
     return jsonify({'message': 'Product updated successfully'}), 200
 
+@app.route('/delete-product', methods=['DELETE'])
+def delete_product():
+    data = request.get_json()
+    product_id = data['product_id']
+    confirmation = data.get('confirmation')
+
+    if not confirmation or confirmation != 'yes':
+        return jsonify({'error': 'Product deletion not confirmed'}), 400
+
+    db_connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="mydatabase"
+    )
+
+    product_repository = ProductRepository(db_connection)
+    product_service = ProductService(product_repository)
+    product_service.delete_product(product_id)
+
+    return jsonify({'message': 'Product deleted successfully'}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
