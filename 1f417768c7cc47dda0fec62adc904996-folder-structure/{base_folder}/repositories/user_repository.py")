@@ -1,0 +1,36 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/user_account_management/services/
+# File: user_service.py
+file_content = 
+# Epic Title: User Account Management
+
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.models.user import User
+from werkzeug.security import generate_password_hash
+
+class UserService:
+    def __init__(self, user_repository: UserRepository = UserRepository()):
+        self.user_repository = user_repository
+
+    def register_user(self, email: str, password: str):
+        if not email or not password:
+            raise ValueError("Email or password cannot be empty")
+
+        if self.user_repository.user_exists(email):
+            raise ValueError("Email already in use")
+
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+
+        password_hash = generate_password_hash(password)
+        user = User(email=email, password_hash=password_hash)
+        self.user_repository.add_user(user)
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/user_service.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/services/"].append("user_service.py")
+
+print("
