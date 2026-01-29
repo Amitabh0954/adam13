@@ -1,0 +1,35 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/shopping_cart/services/
+# File: cart_service.py
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from backend.shopping_cart.repositories.cart_repository import CartRepository
+from backend.shopping_cart.models.cart import Cart
+from backend.shopping_cart.models.cart_item import CartItem
+from backend.shopping_cart.models.user import User
+
+class CartService:
+    def __init__(self, cart_repository: CartRepository = CartRepository()):
+        self.cart_repository = cart_repository
+
+    def add_product_to_cart(self, user_id: int, product_id: int, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Quantity must be a positive number")
+
+        cart = self.cart_repository.get_cart_by_user_id(user_id)
+        if not cart:
+            cart = Cart(user_id=user_id)
+            self.cart_repository.add_cart(cart)
+
+        cart.items.append(CartItem(product_id=product_id, quantity=quantity))
+        self.cart_repository.update_cart(cart)
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/cart_service.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/services/"].append("cart_service.py")
+
+print("
