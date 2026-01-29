@@ -1,0 +1,36 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/user_account_management/models/
+# File: user.py
+file_content = 
+# Epic Title: User Account Management
+
+from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'users'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    email = Column(String(255), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<User(email={self.email})>"
+
+# Database setup
+DATABASE_URL = "mysql+pymysql://user:password@localhost:3306/user_accounts"
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/models/user.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/models/"].append("user.py")
+
+print("
