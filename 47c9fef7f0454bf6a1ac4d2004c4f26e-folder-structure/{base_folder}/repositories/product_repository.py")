@@ -56,6 +56,19 @@ class ProductService:
 
         self.product_repository.delete_product(product)
 
+    def search_products(self, query: str, page: int, per_page: int) -> list[dict]:
+        products = self.product_repository.search_products(query, page, per_page)
+        return [
+            {
+                "id": product.id,
+                "name": product.name,
+                "price": product.price,
+                "description": product.description,
+                "category_id": product.category_id,
+            }
+            for product in products
+        ]
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/product_service.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/services/"].append("product_service.py")
