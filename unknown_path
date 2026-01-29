@@ -82,6 +82,15 @@ def delete_product(product_id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
+@product_blueprint.route('/search', methods=['GET'])
+def search_products():
+    query = request.args.get('query', '')
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    products = product_service.search_products(query, page, limit)
+
+    return jsonify([product.to_dict() for product in products]), 200
+
 @product_blueprint.route('/products', methods=['GET'])
 def get_products():
     products = product_service.get_all_products()
