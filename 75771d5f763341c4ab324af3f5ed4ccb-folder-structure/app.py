@@ -1,11 +1,11 @@
-# Epic Title: Update Product Details
+# Epic Title: Add New Product
 
 from flask import Flask
-from backend.controllers.product_catalog.product_update_controller import product_update_controller
+from backend.controllers.product_catalog.product_controller import product_controller
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.register_blueprint(product_update_controller, url_prefix='/api')
+    app.register_blueprint(product_controller, url_prefix='/api')
     
     # Additional setup such as logging and lifecycle hooks can be added here
     
