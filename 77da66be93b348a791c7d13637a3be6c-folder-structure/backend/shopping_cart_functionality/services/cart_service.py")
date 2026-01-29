@@ -1,0 +1,35 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/shopping_cart_functionality/controllers/
+# File: cart_controller.py
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from flask import Blueprint, request, jsonify
+from backend.shopping_cart_functionality.services.cart_service import CartService
+from backend.product_catalog_management.models.product import Product
+
+cart_blueprint = Blueprint('cart', __name__)
+cart_service = CartService()
+
+@cart_blueprint.route('/add', methods=['POST'])
+def add_to_cart():
+    data = request.json
+    user_id = data.get('user_id')
+    product_id = data.get('product_id')
+    quantity = data.get('quantity', 1)
+
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+
+    cart = cart_service.add_to_cart(user_id, product, quantity)
+    return jsonify({'message': 'Product added to cart', 'cart_id': cart.id}), 201
+
+
+memory_ledger["emitted_file_paths"].append("backend/shopping_cart_functionality/controllers/cart_controller.py")
+memory_ledger["folder_file_mapping"]["backend/shopping_cart_functionality/controllers/"] = ["cart_controller.py"]
+
+print("
