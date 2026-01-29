@@ -9,6 +9,7 @@ file_content =
 
 from backend.user_account_management.repositories.user_repository import UserRepository
 from backend.user_account_management.models.user import User
+from werkzeug.security import check_password_hash
 import re
 
 class UserService:
@@ -25,8 +26,16 @@ class UserService:
         if self.user_repository.get_user_by_email(email):
             raise ValueError("Email must be unique")
 
-        user = User(email=email, password=password)
+        hashed_password = generate_password_hash(password)
+        user = User(email=email, password=hashed_password)
         self.user_repository.add_user(user)
+
+    def authenticate_user(self, email: str, password: str) -> User:
+        user = self.user_repository.get_user_by_email(email)
+        if not user or not check_password_hash(user.password, password):
+            raise ValueError("Invalid login credentials")
+
+        return user
 
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/user_service.py")
