@@ -1,43 +1,19 @@
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 import mysql.connector
-from backend.repositories.product_catalog.product_repository import ProductRepository
-from backend.services.product_catalog.product_service import ProductService
+from backend.repositories.shopping_cart.shopping_cart_repository import ShoppingCartRepository
+from backend.services.shopping_cart.shopping_cart_service import ShoppingCartService
 
 app = Flask(__name__)
+app.secret_key = 'super_secret_key'
 
-@app.route('/add-product', methods=['POST'])
-def add_product():
+@app.route('/add-to-cart', methods=['POST'])
+def add_to_cart():
     data = request.get_json()
-    name = data['name']
-    price = data['price']
-    description = data['description']
-    category = data['category']
-
-    db_connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="mydatabase"
-    )
-
-    product_repository = ProductRepository(db_connection)
-    product_service = ProductService(product_repository)
-    result = product_service.add_product(name, price, description, category)
-
-    if result:
-        return jsonify({'error': result}), 400
-
-    return jsonify({'message': 'Product added successfully'}), 201
-
-@app.route('/update-product', methods=['PUT'])
-def update_product():
-    data = request.get_json()
+    user_id = session.get('user_id')
     product_id = data['product_id']
-    price = data.get('price')
-    description = data.get('description')
-    category = data.get('category')
+    quantity = data['quantity']
 
     db_connection = mysql.connector.connect(
         host="localhost",
@@ -46,24 +22,39 @@ def update_product():
         database="mydatabase"
     )
 
-    product_repository = ProductRepository(db_connection)
-    product_service = ProductService(product_repository)
-    result = product_service.update_product(product_id, price, description, category)
+    shopping_cart_repository = ShoppingCartRepository(db_connection)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+    result = shopping_cart_service.add_product_to_cart(user_id, product_id, quantity)
 
     if result:
         return jsonify({'error': result}), 400
 
-    return jsonify({'message': 'Product updated successfully'}), 200
+    return jsonify({'message': 'Product added to cart successfully'}), 201
 
-@app.route('/delete-product', methods=['DELETE'])
-def delete_product():
+@app.route('/view-cart', methods=['GET'])
+def view_cart():
+    user_id = session.get('user_id')
+
+    db_connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="mydatabase"
+    )
+
+    shopping_cart_repository = ShoppingCartRepository(db_connection)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+    cart_items = shopping_cart_service.get_cart_items(user_id)
+
+    return jsonify({'cart_items': cart_items}), 200
+
+@app.route('/remove-from-cart', methods=['DELETE'])
+def remove_from_cart():
     data = request.get_json()
+    user_id = session.get('user_id')
     product_id = data['product_id']
     confirmation = data.get('confirmation')
 
-    if not confirmation or confirmation != 'yes':
-        return jsonify({'error': 'Product deletion not confirmed'}), 400
-
     db_connection = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -71,30 +62,14 @@ def delete_product():
         database="mydatabase"
     )
 
-    product_repository = ProductRepository(db_connection)
-    product_service = ProductService(product_repository)
-    product_service.delete_product(product_id)
+    shopping_cart_repository = ShoppingCartRepository(db_connection)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+    result = shopping_cart_service.remove_product_from_cart(user_id, product_id, confirmation)
 
-    return jsonify({'message': 'Product deleted successfully'}), 200
+    if result:
+        return jsonify({'error': result}), 400
 
-@app.route('/search-products', methods=['GET'])
-def search_products():
-    term = request.args.get('term')
-    page = int(request.args.get('page', 1))
-    per_page = int(request.args.get('per_page', 10))
-
-    db_connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="mydatabase"
-    )
-
-    product_repository = ProductRepository(db_connection)
-    product_service = ProductService(product_repository)
-    products = product_service.search_products(term, page, per_page)
-
-    return jsonify({'products': products}), 200
+    return jsonify({'message': 'Product removed from cart successfully'}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
