@@ -2,26 +2,110 @@
 print("
 print(file_content.strip())
 
-# Adding quantity field to CartItem model
+# Final file: app.py (update to support saving and retrieving shopping cart for logged-in users)
 file_content = 
 # Epic Title: Shopping Cart Functionality
 
-from sqlalchemy import Column, Integer, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from flask import Flask, request, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-Base = declarative_base()
+from backend.shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
+from backend.shopping_cart.services.shopping_cart_service import ShoppingCartService
+from backend.shopping_cart.models.shopping_cart import Base as ShoppingCartBase
+from backend.shopping_cart.models.cart_item import Base as CartItemBase
 
-class CartItem(Base):
-    __tablename__ = "cart_items"
+app = Flask(__name__)
 
-    id = Column(Integer, primary_key=True)
-    cart_id = Column(Integer, ForeignKey("shopping_carts.id"), nullable=False)
-    product_id = Column(Integer, nullable=False)
-    quantity = Column(Integer, nullable=False, default=1)
+DATABASE_URL = "mysql://user:password@localhost/mydatabase"
 
-    def __repr__(self) -> str:
-        return f"<CartItem(cart_id={self.cart_id}, product_id={self.product_id}, quantity={self.quantity})>"
+engine = create_engine(DATABASE_URL)
+ShoppingCartBase.metadata.create_all(engine)
+CartItemBase.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
 
+@app.route("/add-to-cart", methods=["POST"])
+def add_to_cart():
+    data = request.json
+    user_id = data.get("user_id")
+    product_id = data["product_id"]
+
+    session = Session()
+    shopping_cart_repository = ShoppingCartRepository(session)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+
+    try:
+        cart = shopping_cart_service.add_product_to_cart(user_id, product_id)
+        return jsonify({
+            "cart_id": cart.id,
+            "user_id": cart.user_id,
+            "items": [{"id": item.id, "product_id": item.product_id, "quantity": item.quantity} for item in cart.cart_items]
+        }), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/remove-from-cart", methods=["DELETE"])
+def remove_from_cart():
+    data = request.json
+    cart_id = data["cart_id"]
+    product_id = data["product_id"]
+
+    session = Session()
+    shopping_cart_repository = ShoppingCartRepository(session)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+
+    try:
+        updated_cart = shopping_cart_service.remove_product_from_cart(cart_id, product_id)
+        return jsonify({
+            "cart_id": updated_cart.id,
+            "user_id": updated_cart.user_id,
+            "items": [{"id": item.id, "product_id": item.product_id, "quantity": item.quantity} for item in updated_cart.cart_items]
+        }), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/modify-cart-quantity", methods=["PUT"])
+def modify_cart_quantity():
+    data = request.json
+    cart_id = data["cart_id"]
+    product_id = data["product_id"]
+    quantity = data["quantity"]
+
+    session = Session()
+    shopping_cart_repository = ShoppingCartRepository(session)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+
+    try:
+        updated_cart = shopping_cart_service.modify_quantity_in_cart(cart_id, product_id, quantity)
+        return jsonify({
+            "cart_id": updated_cart.id,
+            "user_id": updated_cart.user_id,
+            "items": [{"id": item.id, "product_id": item.product_id, "quantity": item.quantity} for item in updated_cart.cart_items]
+        }), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/get-cart", methods=["GET"])
+def get_cart():
+    user_id = request.args.get("user_id")
+
+    session = Session()
+    shopping_cart_repository = ShoppingCartRepository(session)
+    cart = shopping_cart_repository.get_cart_by_user_id(user_id)
+
+    if cart:
+        return jsonify({
+            "cart_id": cart.id,
+            "user_id": cart.user_id,
+            "items": [{"id": item.id, "product_id": item.product_id, "quantity": item.quantity} for item in cart.cart_items]
+        }), 200
+    else:
+        return jsonify({"message": "Cart not found"}), 404
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
 
 print("
