@@ -3,7 +3,7 @@ print("
 print(file_content.strip())
 
 # Folder: backend/product_catalog_management/controllers/
-# File: product_controller.py
+# Update file: product_controller.py to include update product route
 file_content = 
 # Epic Title: Product Catalog Management
 
@@ -23,6 +23,19 @@ def add_product():
     try:
         product = product_service.add_new_product(name, price, description)
         return jsonify({'message': 'Product added successfully', 'product': product.name}), 201
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+
+@product_blueprint.route('/update/<int:product_id>', methods=['PUT'])
+def update_product(product_id):
+    data = request.json
+    name = data.get('name')
+    price = data.get('price')
+    description = data.get('description')
+
+    try:
+        product = product_service.update_product(product_id, name, price, description)
+        return jsonify({'message': 'Product updated successfully', 'product': product.name}), 200
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
