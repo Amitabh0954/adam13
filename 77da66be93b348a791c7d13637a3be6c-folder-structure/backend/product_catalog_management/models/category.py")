@@ -1,0 +1,37 @@
+")
+print("
+print(file_content.strip())
+
+# Update file: product.py to support category relationship
+file_content = 
+# Epic Title: Product Catalog Management
+
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, create_engine
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class Product(Base):
+    __tablename__ = 'products'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(255), unique=True, nullable=False)
+    description = Column(String(255), nullable=False)
+    price = Column(Float, nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'))
+
+    category = relationship('Category', backref='products')
+
+    def __repr__(self):
+        return f"<Product(name={self.name}, price={self.price})>"
+
+DATABASE_URL = 'mysql://user:password@localhost/mydatabase'
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+
+memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/models/product.py")
+
+print("
