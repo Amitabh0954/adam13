@@ -1,0 +1,45 @@
+")
+print("
+print(file_content.strip())
+
+# Final file: app.py
+file_content = 
+# Epic Title: User Account Management System
+
+from flask import Flask, request, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.services.registration_service import RegistrationService
+from backend.user_account_management.models.user import Base
+
+app = Flask(__name__)
+
+DATABASE_URL = "mysql://user:password@localhost/mydatabase"
+
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+@app.route("/register", methods=["POST"])
+def register_user():
+    data = request.json
+    email = data["email"]
+    password = data["password"]
+    
+    session = Session()
+    user_repository = UserRepository(session)
+    registration_service = RegistrationService(user_repository)
+
+    new_user = registration_service.register_user(email, password)
+    
+    return jsonify({"id": new_user.id, "email": new_user.email}), 201
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
