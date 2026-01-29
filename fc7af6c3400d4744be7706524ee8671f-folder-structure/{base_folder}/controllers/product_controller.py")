@@ -7,7 +7,7 @@ print(file_content.strip())
 file_content = 
 # Epic Title: Product Catalog Management
 
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -21,6 +21,7 @@ class Product(Base):
     price = Column(Float, nullable=False)
     description = Column(String(255), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    deleted = Column(Boolean, default=False)
 
     category = relationship('Category', backref='products')
 
