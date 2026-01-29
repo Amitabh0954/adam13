@@ -51,49 +51,5 @@ def login():
 
     return jsonify({'message': 'Login successful'}), 200
 
-@app.route('/password-reset-request', methods=['POST'])
-def password_reset_request():
-    data = request.get_json()
-    email = data['email']
-
-    db_connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="mydatabase"
-    )
-
-    user_repository = UserRepository(db_connection)
-    user_service = UserService(user_repository)
-    result = user_service.send_password_reset_email(email)
-
-    if result:
-        return jsonify({'error': result}), 400
-
-    return jsonify({'message': 'Password reset email sent successfully'}), 200
-
-@app.route('/password-reset', methods=['POST'])
-def password_reset():
-    data = request.get_json()
-    email = data['email']
-    token = data['token']
-    new_password = data['new_password']
-
-    db_connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="mydatabase"
-    )
-
-    user_repository = UserRepository(db_connection)
-    user_service = UserService(user_repository)
-    result = user_service.reset_password(email, token, new_password)
-
-    if result:
-        return jsonify({'error': result}), 400
-
-    return jsonify({'message': 'Password reset successfully'}), 200
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
