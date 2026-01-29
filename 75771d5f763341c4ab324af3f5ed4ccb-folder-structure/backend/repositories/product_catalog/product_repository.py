@@ -1,4 +1,4 @@
-# Epic Title: Delete Product
+# Epic Title: Update Product Details
 
 import sqlite3
 
@@ -15,12 +15,11 @@ class ProductRepository:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
                 price REAL NOT NULL,
-                description TEXT NOT NULL,
-                is_deleted BOOLEAN NOT NULL DEFAULT 0
+                description TEXT NOT NULL
             )""")
 
-    def delete_product(self, product_id: int):
+    def update_product(self, product_id: int, updated_data: dict):
         with self.connection:
             self.connection.execute("""
-            UPDATE products SET is_deleted = 1 WHERE id = ?""",
-            (product_id,))
+            UPDATE products SET name = ?, price = ?, description = ? WHERE id = ?""",
+            (updated_data['name'], updated_data['price'], updated_data['description'], product_id))
