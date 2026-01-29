@@ -21,6 +21,9 @@ class UserRepository:
     def get_user_by_email(self, email: str) -> User:
         return self.session.query(User).filter_by(email=email).first()
 
+    def get_user_by_id(self, user_id: int) -> User:
+        return self.session.query(User).get(user_id)
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/user_repository.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/repositories/"].append("user_repository.py")
