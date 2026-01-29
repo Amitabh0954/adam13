@@ -1,4 +1,4 @@
-# Epic Title: Product Catalog Management
+# Epic Title: User Account Management
 
 # In-memory ledger initialization
 memory_ledger = {
@@ -9,84 +9,74 @@ memory_ledger = {
     "folder_file_mapping": {},
     "persistent_fields": {},
     "folder_responsibilities": {
-        "backend/product_catalog_management/controllers": "Endpoints related to product catalog management",
-        "backend/product_catalog_management/models": "Database models for product catalog management",
-        "backend/product_catalog_management/repositories": "Database interaction for product catalog management",
-        "backend/product_catalog_management/services": "Business logic for product catalog management"
+        "backend/user_account_management/controllers": "Endpoints related to user account management",
+        "backend/user_account_management/models": "Database models for user account management",
+        "backend/user_account_management/repositories": "Database interaction for user account management",
+        "backend/user_account_management/services": "Business logic for user account management"
     }
 }
 
 # Declaring new entities and interfaces
-memory_ledger["declared_entities"].extend(["Product"])
-memory_ledger["public_interfaces"].extend(["ProductRepository", "ProductService", "product_blueprint"])
+memory_ledger["declared_entities"].extend(["User"])
+memory_ledger["public_interfaces"].extend(["UserRepository", "UserService", "user_blueprint"])
 memory_ledger["imports"].extend([
-    "backend.product_catalog_management.models.product:Product",
-    "backend.product_catalog_management.repositories.product_repository:ProductRepository",
-    "backend.product_catalog_management.services.product_service:ProductService"
+    "backend.user_account_management.models.user:User",
+    "backend.user_account_management.repositories.user_repository:UserRepository",
+    "backend.user_account_management.services.user_service:UserService"
 ])
 
 # Folder file mapping
-base_folder = "backend/product_catalog_management"
+base_folder = "backend/user_account_management"
 memory_ledger["folder_file_mapping"] = {
-    f"{base_folder}/controllers/": ["product_controller.py"],
-    f"{base_folder}/models/": ["product.py"],
-    f"{base_folder}/repositories/": ["product_repository.py"],
-    f"{base_folder}/services/": ["product_service.py"]
+    f"{base_folder}/controllers/": ["user_controller.py"],
+    f"{base_folder}/models/": ["user.py"],
+    f"{base_folder}/repositories/": ["user_repository.py"],
+    f"{base_folder}/services/": ["user_service.py"]
 }
 
-# Folder: backend/product_catalog_management/controllers/
-# File: product_controller.py
+# Folder: backend/user_account_management/controllers/
+# File: user_controller.py
 file_content = 
-# Epic Title: Product Catalog Management
+# Epic Title: User Account Management
 
 from flask import Blueprint, request, jsonify
-from flask_login import login_required, current_user
-from backend.product_catalog_management.services.product_service import ProductService
+from flask_login import login_user, logout_user, login_required
+from backend.user_account_management.services.user_service import UserService
 
-product_blueprint = Blueprint('product', __name__)
-product_service = ProductService()
+user_blueprint = Blueprint('user', __name__)
+user_service = UserService()
 
-@product_blueprint.route('/add', methods=['POST'])
-@login_required
-def add_product():
+@user_blueprint.route('/register', methods=['POST'])
+def register_user():
     data = request.json
-    name = data.get('name')
-    price = data.get('price')
-    description = data.get('description')
-    category_id = data.get('category_id')
+    email = data.get('email')
+    password = data.get('password')
     try:
-        product_service.add_product(name, price, description, category_id)
-        return jsonify({'message': 'Product added successfully'}), 201
+        user_service.register_user(email, password)
+        return jsonify({'message': 'User registered successfully'}), 201
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
-@product_blueprint.route('/update/<int:product_id>', methods=['PUT'])
-@login_required
-def update_product(product_id):
+@user_blueprint.route('/login', methods=['POST'])
+def login_user():
     data = request.json
-    price = data.get('price')
-    description = data.get('description')
+    email = data.get('email')
+    password = data.get('password')
     try:
-        product_service.update_product(product_id, price, description)
-        return jsonify({'message': 'Product updated successfully'}), 200
+        user = user_service.authenticate_user(email, password)
+        login_user(user, remember=True)
+        return jsonify({'message': 'User logged in successfully'}), 200
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
-@product_blueprint.route('/delete/<int:product_id>', methods=['DELETE'])
+@user_blueprint.route('/logout', methods=['POST'])
 @login_required
-def delete_product(product_id):
-    confirmation = request.json.get('confirmation', False)
-    try:
-        if not confirmation:
-            raise ValueError('Deletion requires confirmation')
-
-        product_service.delete_product(product_id)
-        return jsonify({'message': 'Product deleted successfully'}), 200
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
+def logout():
+    logout_user()
+    return jsonify({'message': 'User logged out successfully'}), 200
 
 
-memory_ledger["emitted_file_paths"].append(f"{base_folder}/controllers/product_controller.py")
-memory_ledger["folder_file_mapping"][f"{base_folder}/controllers/"].append("product_controller.py")
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/controllers/user_controller.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/controllers/"].append("user_controller.py")
 
 print("
