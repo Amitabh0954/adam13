@@ -35,3 +35,11 @@ class ShoppingCartRepository:
         items = cursor.fetchall()
         self.db_connection.commit()
         return items
+
+    def remove_product_from_cart(self, cart_id: int, product_id: int) -> None:
+        cursor = self.db_connection.cursor()
+        query = """
+        DELETE FROM cart_items WHERE cart_id = %s AND product_id = %s
+        """
+        cursor.execute(query, (cart_id, product_id))
+        self.db_connection.commit()
