@@ -29,6 +29,9 @@ class ProductRepository:
         product.deleted = True
         self.update_product(product)
 
+    def get_product_by_id(self, product_id: int) -> Product:
+        return self.session.query(Product).get(product_id)
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/product_repository.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/repositories/"].append("product_repository.py")
