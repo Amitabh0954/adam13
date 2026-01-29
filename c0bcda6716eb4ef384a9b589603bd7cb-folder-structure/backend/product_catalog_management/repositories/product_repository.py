@@ -15,3 +15,9 @@ class ProductRepository:
 
     def find_by_name(self, name: str) -> Optional[Product]:
         return self.session.query(Product).filter_by(name=name).first()
+    
+    def find_by_id(self, product_id: int) -> Optional[Product]:
+        return self.session.query(Product).filter_by(id=product_id).first()
+
+    def update_product(self, product: Product) -> None:
+        self.session.commit()
