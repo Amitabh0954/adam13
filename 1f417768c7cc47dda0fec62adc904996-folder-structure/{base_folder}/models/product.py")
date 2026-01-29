@@ -19,13 +19,13 @@ class ProductRepository:
         self.session.commit()
 
     def get_product_by_name(self, name: str) -> Product:
-        return self.session.query(Product).filter_by(name=name).first()
+        return self.session.query(Product).filter(Product.name==name, Product.is_deleted==0).first()
 
     def get_product_by_id(self, product_id: int) -> Product:
-        return self.session.query(Product).filter_by(id=product_id).first()
+        return self.session.query(Product).filter(Product.id==product_id, Product.is_deleted==0).first()
 
     def get_all_products(self):
-        return self.session.query(Product).all()
+        return self.session.query(Product).filter(Product.is_deleted==0).all()
 
     def update_product(self, product: Product):
         existing_product = self.get_product_by_id(product.id)
@@ -35,6 +35,14 @@ class ProductRepository:
         existing_product.price = product.price
         existing_product.description = product.description
         existing_product.category_id = product.category_id
+        self.session.commit()
+        return True
+
+    def delete_product(self, product_id: int):
+        product = self.get_product_by_id(product_id)
+        if not product:
+            return False
+        product.is_deleted = 1  # Soft delete
         self.session.commit()
         return True
 
