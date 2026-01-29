@@ -2,7 +2,7 @@
 print("
 print(file_content.strip())
 
-# Final file: app.py (update for shopping cart functionality)
+# Final file: app.py (update for removing items from shopping cart functionality)
 file_content = 
 # Epic Title: Shopping Cart Functionality
 
@@ -41,6 +41,26 @@ def add_to_cart():
             "user_id": cart.user_id,
             "items": [{"id": item.id, "product_id": item.product_id} for item in cart.cart_items]
         }), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/remove-from-cart", methods=["DELETE"])
+def remove_from_cart():
+    data = request.json
+    cart_id = data["cart_id"]
+    product_id = data["product_id"]
+
+    session = Session()
+    shopping_cart_repository = ShoppingCartRepository(session)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+
+    try:
+        updated_cart = shopping_cart_service.remove_product_from_cart(cart_id, product_id)
+        return jsonify({
+            "cart_id": updated_cart.id,
+            "user_id": updated_cart.user_id,
+            "items": [{"id": item.id, "product_id": item.product_id} for item in updated_cart.cart_items]
+        }), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
