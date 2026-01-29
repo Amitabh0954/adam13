@@ -40,3 +40,23 @@ def remove_from_cart():
         return jsonify({'message': 'Failed to remove product from cart'}), 400
     
     return jsonify({'message': 'Product removed from cart successfully'})
+
+@cart_blueprint.route('/cart/modify', methods=['POST'])
+def modify_quantity_in_cart():
+    data = request.json
+    user_id = data.get('user_id')
+    session_id = data.get('session_id')
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if not isinstance(quantity, int) or quantity <= 0:
+        return jsonify({'message': 'Quantity must be a positive integer'}), 400
+
+    cart_repository = CartRepository()  # Ideally should be injected
+    cart_service = CartService(cart_repository)
+
+    success = cart_service.modify_quantity_in_cart(user_id, session_id, product_id, quantity)
+    if not success:
+        return jsonify({'message': 'Failed to modify quantity in cart'}), 400
+    
+    return jsonify({'message': 'Quantity modified successfully'})
