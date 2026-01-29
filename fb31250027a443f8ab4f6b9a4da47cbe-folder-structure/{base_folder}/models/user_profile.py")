@@ -1,0 +1,29 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/user_account_management/repositories/
+# File: user_profile_repository.py
+file_content = 
+# Epic Title: User Account Management
+
+from sqlalchemy.orm import Session
+from backend.user_account_management.models.user import Session as db_session
+from backend.user_account_management.models.user_profile import UserProfile
+
+class UserProfileRepository:
+    def __init__(self, session: Session = db_session()):
+        self.session = session
+    
+    def add_or_update_profile(self, user_profile: UserProfile):
+        self.session.add(user_profile)
+        self.session.commit()
+    
+    def get_profile_by_user_id(self, user_id: int) -> UserProfile:
+        return self.session.query(UserProfile).filter_by(user_id=user_id).first()
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/user_profile_repository.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/repositories/"].append("user_profile_repository.py")
+
+print("
