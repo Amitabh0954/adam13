@@ -38,6 +38,10 @@ class ProductService:
         product.category_id = category_id
         self.product_repository.update_product(product)
 
+    def delete_product(self, product_id: int):
+        if not self.product_repository.delete_product(product_id):
+            raise ValueError("Product not found")
+
     def get_all_products(self):
         return self.product_repository.get_all_products()
 
