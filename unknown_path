@@ -42,54 +42,27 @@ memory_ledger["folder_file_mapping"] = {
     "backend/shopping_cart/services/": ["shopping_cart_service.py"]
 }
 
-# Folder: backend/shopping_cart/services/
-# Update file: shopping_cart_service.py for modifying quantity in cart
+# Folder: backend/shopping_cart/models/
+# Update file: cart_item.py to include cart persistence
 file_content = 
 # Epic Title: Shopping Cart Functionality
 
-from backend.shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
-from backend.shopping_cart.models.shopping_cart import ShoppingCart
-from backend.shopping_cart.models.cart_item import CartItem
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
 
-class ShoppingCartService:
-    def __init__(self, shopping_cart_repository: ShoppingCartRepository):
-        self.shopping_cart_repository = shopping_cart_repository
+Base = declarative_base()
 
-    def add_product_to_cart(self, user_id: int, product_id: int) -> ShoppingCart:
-        cart = self.shopping_cart_repository.get_cart_by_user_id(user_id)
-        if not cart:
-            cart = ShoppingCart(user_id=user_id)
-            self.shopping_cart_repository.create_cart(cart)
+class CartItem(Base):
+    __tablename__ = "cart_items"
 
-        cart_item = CartItem(cart_id=cart.id, product_id=product_id, quantity=1)
-        self.shopping_cart_repository.add_item_to_cart(cart_item)
-        return cart
+    id = Column(Integer, primary_key=True)
+    cart_id = Column(Integer, ForeignKey("shopping_carts.id"), nullable=False)
+    product_id = Column(Integer, nullable=False)
+    quantity = Column(Integer, nullable=False, default=1)
 
-    def remove_product_from_cart(self, cart_id: int, product_id: int) -> ShoppingCart:
-        cart_items = self.shopping_cart_repository.get_cart_items_by_cart_id(cart_id)
-        item_to_remove = next((item for item in cart_items if item.product_id == product_id), None)
-        
-        if item_to_remove:
-            self.shopping_cart_repository.session.delete(item_to_remove)
-            self.shopping_cart_repository.session.commit()
+    def __repr__(self) -> str:
+        return f"<CartItem(cart_id={self.cart_id}, product_id={self.product_id}, quantity={self.quantity})>"
 
-        return self.shopping_cart_repository.get_cart_by_user_id(cart_id)
-
-    def modify_quantity_in_cart(self, cart_id: int, product_id: int, quantity: int) -> ShoppingCart:
-        if quantity <= 0:
-            raise ValueError("Quantity must be a positive integer")
-
-        cart_items = self.shopping_cart_repository.get_cart_items_by_cart_id(cart_id)
-        cart_item = next((item for item in cart_items if item.product_id == product_id), None)
-
-        if cart_item:
-            cart_item.quantity = quantity
-            self.shopping_cart_repository.session.commit()
-
-        return self.shopping_cart_repository.get_cart_by_user_id(cart_id)
-
-
-memory_ledger["emitted_file_paths"].append("backend/shopping_cart/services/shopping_cart_service.py")
-memory_ledger["folder_file_mapping"]["backend/shopping_cart/services/"].append("shopping_cart_service.py")
 
 print("
