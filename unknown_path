@@ -82,6 +82,15 @@ def delete_product(product_id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
+@product_blueprint.route('/search', methods=['GET'])
+def search_products():
+    query = request.args.get('query')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    products = product_service.search_products(query, page, per_page)
+    return jsonify(products)
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/controllers/product_controller.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/controllers/"].append("product_controller.py")
