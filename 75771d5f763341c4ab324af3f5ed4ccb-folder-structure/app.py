@@ -1,11 +1,11 @@
-# Epic Title: User Registration
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from flask import Flask
-from backend.controllers.user_account.user_registration_controller import user_registration_controller
+from backend.controllers.shopping_cart.shopping_cart_save_controller import shopping_cart_save_controller
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.register_blueprint(user_registration_controller, url_prefix='/api')
+    app.register_blueprint(shopping_cart_save_controller, url_prefix='/api')
     
     # Additional setup such as logging and lifecycle hooks can be added here
     
