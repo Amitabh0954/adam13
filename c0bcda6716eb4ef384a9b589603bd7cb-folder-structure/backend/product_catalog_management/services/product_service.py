@@ -30,3 +30,22 @@ class ProductService:
         self.product_repository.add_product(product)
         logger.info(f"Product added successfully: {name}")
         return product
+
+    def update_product(self, product_id: int, name: str, price: float, description: str) -> bool:
+        if price <= 0:
+            logger.error(f"Invalid product price: {price}")
+            return False
+
+        product = self.product_repository.find_by_id(product_id)
+        if not product:
+            logger.error(f"Product not found: {product_id}")
+            return False
+
+        # Update only if new values are provided
+        product.name = name if name else product.name
+        product.price = price if price else product.price
+        product.description = description if description else product.description
+
+        self.product_repository.update_product(product)
+        logger.info(f"Product updated successfully: {product_id}")
+        return True
