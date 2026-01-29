@@ -51,3 +51,13 @@ class ShoppingCartRepository:
         """
         cursor.execute(query, (quantity, cart_id, product_id))
         self.db_connection.commit()
+
+    def retrieve_cart_by_user(self, user_id: int) -> Optional[int]:
+        cursor = self.db_connection.cursor()
+        query = """
+        SELECT id FROM shopping_carts WHERE user_id = %s ORDER BY created_at DESC LIMIT 1
+        """
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+        self.db_connection.commit()
+        return result[0] if result else None
