@@ -1,0 +1,32 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/product_catalog_management/repositories/
+# File: product_repository.py
+file_content = 
+# Epic Title: Product Catalog Management
+
+from sqlalchemy.orm import Session
+from backend.product_catalog_management.models.product import Product, Session as db_session
+from backend.product_catalog_management.models.category import Category
+
+class ProductRepository:
+    def __init__(self, session: Session = db_session()):
+        self.session = session
+
+    def add_product(self, product: Product):
+        self.session.add(product)
+        self.session.commit()
+
+    def get_product_by_name(self, name: str) -> Product:
+        return self.session.query(Product).filter_by(name=name).first()
+
+    def get_all_products(self):
+        return self.session.query(Product).all()
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/product_repository.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/repositories/"].append("product_repository.py")
+
+print("
