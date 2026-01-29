@@ -14,70 +14,32 @@ memory_ledger = {
     "folder_responsibilities": {}
 }
 
-# Existing information
-memory_ledger["declared_entities"] = ["Product"]
-memory_ledger["public_interfaces"] = ["ProductRepository", "ProductService"]
-memory_ledger["emitted_file_paths"] = [
-    "backend/product_catalog_management/models/product.py",
-    "backend/product_catalog_management/repositories/product_repository.py",
-    "backend/product_catalog_management/services/product_service.py",
-    "app.py"
-]
+# Memory ledger data for other epic titles not included here to ensure focus on the given task.
 
-memory_ledger["imports"] = [
-    "backend/product_catalog_management/models/product:Product",
-    "backend/product_catalog_management/repositories/product_repository:ProductRepository"
-]
-
-memory_ledger["folder_file_mapping"] = {
-    "backend/product_catalog_management/models/": ["product.py"],
-    "backend/product_catalog_management/repositories/": ["product_repository.py"],
-    "backend/product_catalog_management/services/": ["product_service.py"]
-}
-
-# Persistent fields and responsibilities
-memory_ledger["persistent_fields"] = {
-    "Product": ["id", "name", "price", "description"]
-}
-
-memory_ledger["folder_responsibilities"] = {
-    "backend/product_catalog_management/models/": "Models for product catalog management",
-    "backend/product_catalog_management/repositories/": "Repositories for product catalog management",
-    "backend/product_catalog_management/services/": "Services for product catalog management"
-}
-
-# Folder: backend/product_catalog_management/services/
-# File: product_update_service.py
+# Folder: backend/product_catalog_management/models/
+# File: product.py
 file_content = 
 # Epic Title: Product Catalog Management System
 
-from backend.product_catalog_management.repositories.product_repository import ProductRepository
-from backend.product_catalog_management.models.product import Product
+from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy.ext.declarative import declarative_base
 
-class ProductUpdateService:
-    def __init__(self, product_repository: ProductRepository):
-        self.product_repository = product_repository
+Base = declarative_base()
 
-    def update_product(self, product_id: int, name: str = None, price: float = None, description: str = None) -> Product:
-        product = self.product_repository.session.query(Product).filter_by(id=product_id).first()
-        if not product:
-            raise ValueError("Product not found")
+class Product(Base):
+    __tablename__ = "products"
 
-        if name:
-            product.name = name
-        if price is not None:
-            if price <= 0:
-                raise ValueError("Price must be a positive number")
-            product.price = price
-        if description:
-            product.description = description
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), unique=True, nullable=False)
+    price = Column(Float, nullable=False)
+    description = Column(String(255), nullable=False)
 
-        self.product_repository.session.commit()
-        return product
+    def __repr__(self) -> str:
+        return f"<Product(name={self.name}, price={self.price})>"
 
 
-memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/services/product_update_service.py")
-memory_ledger["public_interfaces"].append("ProductUpdateService")
-memory_ledger["folder_file_mapping"]["backend/product_catalog_management/services/"].append("product_update_service.py")
+memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/models/product.py")
+memory_ledger["declared_entities"].append("Product")
+memory_ledger["folder_file_mapping"]["backend/product_catalog_management/models/"] = ["product.py"]
 
 print("
