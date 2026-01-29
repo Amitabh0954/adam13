@@ -1,4 +1,4 @@
-# Epic Title: Save Shopping Cart for Logged-in Users
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 import sqlite3
 
@@ -20,17 +20,8 @@ class ShoppingCartRepository:
                 FOREIGN KEY (product_id) REFERENCES products (id)
             )""")
 
-    def save_cart(self, user_id: int, cart_items: list):
+    def update_quantity(self, user_id: int, product_id: int, quantity: int):
         with self.connection:
-            self.connection.execute("DELETE FROM shopping_cart WHERE user_id = ?", (user_id,))
-            for item in cart_items:
-                self.connection.execute("""
-                INSERT INTO shopping_cart (user_id, product_id, quantity)
-                VALUES (?, ?, ?)""",
-                (user_id, item['product_id'], item['quantity']))
-
-    def load_cart(self, user_id: int) -> list:
-        cursor = self.connection.execute("""
-        SELECT product_id, quantity FROM shopping_cart WHERE user_id = ?""", (user_id,))
-        cart_items = [{'product_id': row[0], 'quantity': row[1]} for row in cursor.fetchall()]
-        return cart_items
+            self.connection.execute("""
+            UPDATE shopping_cart SET quantity = ? WHERE user_id = ? AND product_id = ?""",
+            (quantity, user_id, product_id))
