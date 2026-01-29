@@ -1,0 +1,33 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/shopping_cart/services/
+# File: shopping_cart_service.py
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from backend.shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
+from backend.shopping_cart.models.shopping_cart import ShoppingCart
+from backend.shopping_cart.models.cart_item import CartItem
+
+class ShoppingCartService:
+    def __init__(self, shopping_cart_repository: ShoppingCartRepository):
+        self.shopping_cart_repository = shopping_cart_repository
+
+    def add_product_to_cart(self, user_id: int, product_id: int) -> ShoppingCart:
+        cart = self.shopping_cart_repository.get_cart_by_user_id(user_id)
+        if not cart:
+            cart = ShoppingCart(user_id=user_id)
+            self.shopping_cart_repository.create_cart(cart)
+
+        cart_item = CartItem(cart_id=cart.id, product_id=product_id)
+        self.shopping_cart_repository.add_item_to_cart(cart_item)
+        return cart
+
+
+memory_ledger["emitted_file_paths"].append("backend/shopping_cart/services/shopping_cart_service.py")
+memory_ledger["public_interfaces"].append("ShoppingCartService")
+memory_ledger["folder_file_mapping"]["backend/shopping_cart/services/"] = ["shopping_cart_service.py"]
+
+print("
