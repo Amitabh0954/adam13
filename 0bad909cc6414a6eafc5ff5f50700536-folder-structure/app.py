@@ -77,5 +77,24 @@ def delete_product():
 
     return jsonify({'message': 'Product deleted successfully'}), 200
 
+@app.route('/search-products', methods=['GET'])
+def search_products():
+    term = request.args.get('term')
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', 10))
+
+    db_connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="mydatabase"
+    )
+
+    product_repository = ProductRepository(db_connection)
+    product_service = ProductService(product_repository)
+    products = product_service.search_products(term, page, per_page)
+
+    return jsonify({'products': products}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
