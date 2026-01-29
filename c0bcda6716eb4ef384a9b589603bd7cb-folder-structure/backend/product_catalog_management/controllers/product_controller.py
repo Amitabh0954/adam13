@@ -39,3 +39,20 @@ def update_product(product_id: int):
         return jsonify({'message': 'Product update failed'}), 400
     
     return jsonify({'message': 'Product updated successfully'})
+
+@product_blueprint.route('/products/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id: int):
+    data = request.json
+    admin_confirmation = data.get('admin_confirmation', False)
+    
+    if not admin_confirmation:
+        return jsonify({'message': 'Admin confirmation required for deletion'}), 400
+    
+    product_repository = ProductRepository()  # Ideally should be injected
+    product_service = ProductService(product_repository)
+    
+    success = product_service.delete_product(product_id)
+    if not success:
+        return jsonify({'message': 'Product deletion failed'}), 400
+    
+    return jsonify({'message': 'Product deleted successfully'})
