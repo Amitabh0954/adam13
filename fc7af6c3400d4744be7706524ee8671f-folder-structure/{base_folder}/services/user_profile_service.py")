@@ -1,0 +1,22 @@
+")
+print(f"
+print(file_content.strip())
+
+# Final file: app.py (entry point)
+file_content = 
+# Epic Title: User Account Management
+
+from flask import Flask
+from backend.user_account_management.controllers.user_profile_controller import user_profile_blueprint
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'this_should_be_changed'
+app.register_blueprint(user_profile_blueprint, url_prefix='/user_profile')
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
