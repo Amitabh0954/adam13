@@ -1,0 +1,13 @@
+")
+print("
+print(file_content.strip())
+
+# Requirements file
+requirements = 
+# Epic Title: User Account Management System
+
+Flask==2.2.3
+SQLAlchemy==1.4.32
+
+
+print("
