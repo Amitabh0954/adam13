@@ -1,0 +1,41 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/product_catalog_management/models/
+# File: product.py
+file_content = 
+# Epic Title: Product Catalog Management
+
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, Float, Boolean
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
+
+Base = declarative_base()
+
+class Product(Base):
+    __tablename__ = 'products'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(255), unique=True, nullable=False)
+    price = Column(Float, nullable=False)
+    description = Column(String(255), nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    deleted = Column(Boolean, default=False)
+
+    category = relationship('Category', backref='products')
+
+    def __repr__(self):
+        return f"<Product(name={self.name}, price={self.price})>"
+
+# Database setup
+DATABASE_URL = "mysql+pymysql://user:password@localhost:3306/product_catalog"
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/models/product.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/models/"].append("product.py")
+
+print("
