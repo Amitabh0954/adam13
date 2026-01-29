@@ -1,6 +1,6 @@
 # Epic Title: Shopping Cart Functionality
 
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from structured_logging import get_logger
 from backend.shopping_cart_functionality.repositories.cart_repository import CartRepository
 from backend.shopping_cart_functionality.models.cart import Cart
@@ -62,3 +62,39 @@ class CartService:
         self.cart_repository.modify_item_quantity(cart, product_id, quantity)
         logger.info("Quantity modified successfully")
         return True
+
+    def save_cart_state(self, user_id: int) -> bool:
+        cart = self.cart_repository.find_cart_by_user_id(user_id)
+        if not cart:
+            logger.error("Cart not found")
+            return False
+        
+        saved = self.cart_repository.save_cart(cart)
+        if not saved:
+            logger.error("Failed to save cart state")
+            return False
+
+        logger.info("Cart state saved successfully")
+        return True
+
+    def load_cart_state(self, user_id: int) -> Optional[Dict[str, Any]]:
+        cart = self.cart_repository.find_cart_by_user_id(user_id)
+        if not cart:
+            logger.error("Cart not found")
+            return None
+        
+        items = []
+        for item in cart.items:
+            items.append({
+                'product_id': item.product_id,
+                'quantity': item.quantity,
+                'product_name': item.product.name  # Assuming accessing product name via relationship
+            })
+
+        cart_state = {
+            'cart_id': cart.id,
+            'items': items
+        }
+        
+        logger.info("Cart state loaded successfully")
+        return cart_state
