@@ -1,0 +1,27 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/user_account_management/services/
+# File: registration_service.py
+file_content = 
+# Epic Title: User Account Management System
+
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.models.user import User
+
+class RegistrationService:
+    def __init__(self, user_repository: UserRepository):
+        self.user_repository = user_repository
+
+    def register_user(self, email: str, password: str) -> User:
+        new_user = User(email=email, password=password)
+        self.user_repository.add_user(new_user)
+        return new_user
+
+
+memory_ledger["emitted_file_paths"].append("backend/user_account_management/services/registration_service.py")
+memory_ledger["imports"].append("backend/user_account_management/repositories/user_repository:UserRepository")
+memory_ledger["folder_file_mapping"]["backend/user_account_management/services/"] = ["registration_service.py"]
+
+print("
