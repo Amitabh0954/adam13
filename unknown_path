@@ -45,7 +45,7 @@ memory_ledger["folder_file_mapping"] = {
 }
 
 # Folder: backend/product_catalog_management/services/
-# Update file: product_service.py to support updating product details
+# Update file: product_service.py to support deleting product
 file_content = 
 # Epic Title: Product Catalog Management
 
@@ -89,6 +89,14 @@ class ProductService:
         product.description = description
         self.product_repository.session.commit()
         return product
+
+    def delete_product(self, product_id: int):
+        product = self.product_repository.session.query(Product).get(product_id)
+        if not product:
+            raise ValueError("Product not found")
+        
+        self.product_repository.session.delete(product)
+        self.product_repository.session.commit()
 
 
 memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/services/product_service.py")
