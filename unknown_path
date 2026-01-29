@@ -1,5 +1,5 @@
 # Error due to Missing Detailed Folder Structure
 
-Even with the provided target folder path (`8d9e9302929840cda71be1ee98e44c40-folder-structure/`) and user stories, necessary details about the sub-folder structure (e.g., `controllers`, `models`, `services`, etc.) are still missing. This specification is essential for valid and compliant file generation.
+While the input specifies a target folder path (`8d9e9302929840cda71be1ee98e44c40-folder-structure/`) and user stories, it lacks a detailed sub-folder structure necessary for organizing components like `controllers`, `models`, `services`, etc. Clear folder organization is mandatory for compliant file generation.
 
-Please provide a detailed folder structure under the target directory to proceed.
+To proceed, please provide a detailed folder structure under the target directory.
