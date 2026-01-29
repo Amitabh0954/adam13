@@ -1,0 +1,53 @@
+")
+print("
+print(file_content.strip())
+
+# Final file: app.py (update for shopping cart functionality)
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from flask import Flask, request, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from backend.shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
+from backend.shopping_cart.services.shopping_cart_service import ShoppingCartService
+from backend.shopping_cart.models.shopping_cart import Base as ShoppingCartBase
+from backend.shopping_cart.models.cart_item import Base as CartItemBase
+
+app = Flask(__name__)
+
+DATABASE_URL = "mysql://user:password@localhost/mydatabase"
+
+engine = create_engine(DATABASE_URL)
+ShoppingCartBase.metadata.create_all(engine)
+CartItemBase.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+@app.route("/add-to-cart", methods=["POST"])
+def add_to_cart():
+    data = request.json
+    user_id = data.get("user_id")
+    product_id = data["product_id"]
+
+    session = Session()
+    shopping_cart_repository = ShoppingCartRepository(session)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+
+    try:
+        cart = shopping_cart_service.add_product_to_cart(user_id, product_id)
+        return jsonify({
+            "cart_id": cart.id,
+            "user_id": cart.user_id,
+            "items": [{"id": item.id, "product_id": item.product_id} for item in cart.cart_items]
+        }), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
