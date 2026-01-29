@@ -1,5 +1,5 @@
 # Failure: Missing or Undefined Folder Structure
 
-The folder structure is missing or undefined. Without an explicit or deterministic folder layout provided for creating valid file paths, it is impossible to proceed without violating the constraints of structured output generation.
+The folder structure is not explicitly provided or determinable from the given input. Without a precise or inferable folder hierarchy guiding file placement, proceeding would violate compliance rules on path safety.
 
-To ensure compliance, please clearly define the folder structure under the target path to organize the files. For example, specify folders like `controllers`, `models`, `services`, or similar relevant to the use case.
+To continue, please specify a detailed folder structure under the target path to organize files properly (e.g., separate folders for `controllers`, `models`, `services`, etc.).
