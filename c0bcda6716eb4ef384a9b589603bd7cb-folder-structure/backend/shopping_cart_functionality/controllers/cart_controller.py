@@ -60,3 +60,37 @@ def modify_quantity_in_cart():
         return jsonify({'message': 'Failed to modify quantity in cart'}), 400
     
     return jsonify({'message': 'Quantity modified successfully'})
+
+@cart_blueprint.route('/cart/save', methods=['POST'])
+def save_cart_state():
+    data = request.json
+    user_id = data.get('user_id')
+
+    if not user_id:
+        return jsonify({'message': 'User ID is required'}), 400
+
+    cart_repository = CartRepository()  # Ideally should be injected
+    cart_service = CartService(cart_repository)
+    
+    success = cart_service.save_cart_state(user_id)
+    if not success:
+        return jsonify({'message': 'Failed to save cart state'}), 400
+
+    return jsonify({'message': 'Cart state saved successfully'})
+
+@cart_blueprint.route('/cart/load', methods=['POST'])
+def load_cart_state():
+    data = request.json
+    user_id = data.get('user_id')
+
+    if not user_id:
+        return jsonify({'message': 'User ID is required'}), 400
+
+    cart_repository = CartRepository()  # Ideally should be injected
+    cart_service = CartService(cart_repository)
+    
+    cart_state = cart_service.load_cart_state(user_id)
+    if cart_state is None:
+        return jsonify({'message': 'Failed to load cart state'}), 400
+
+    return jsonify({'cart_state': cart_state})
