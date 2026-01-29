@@ -1,7 +1,8 @@
 # Epic Title: Product Catalog Management
 
-from typing import Optional
+from typing import Optional, List
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import text
 from backend.product_catalog_management.models.product import Product
 
 class ProductRepository:
@@ -25,3 +26,11 @@ class ProductRepository:
     def delete_product(self, product: Product) -> None:
         self.session.delete(product)
         self.session.commit()
+    
+    def search(self, query: str, page: int, per_page: int) -> List[Product]:
+        offset = (page - 1) * per_page
+        search_query = f"%{query}%"
+        return self.session.query(Product).filter(
+            (Product.name.ilike(search_query)) |
+            (Product.description.ilike(search_query))
+        ).offset(offset).limit(per_page).all()
