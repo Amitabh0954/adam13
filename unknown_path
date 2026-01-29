@@ -1,5 +1,5 @@
 # Failure: Missing or Undefined Folder Structure
 
-The input fails to provide a concrete or determinable folder structure for managing generated files. Without explicit folder definitions or a format to organize source code, I cannot proceed without violating compliance rules.
+The input lacks a clearly defined folder structure for organizing the generated files. Without an explicit or determinable folder hierarchy under the provided target path, it is impossible to ensure compliance with strict output rules governing path safety and file coherence.
 
-To resolve this, please explicitly outline the folder hierarchy required for your project under the target path (e.g., folders for `controllers`, `models`, `services`, etc.).
+To proceed, please provide a precise folder structure detailing where the generated files should reside (e.g., folders for `controllers`, `models`, `services`, etc.). This guidance will allow me to produce valid output.
