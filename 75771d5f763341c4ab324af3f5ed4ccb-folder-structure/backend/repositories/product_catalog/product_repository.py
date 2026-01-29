@@ -1,4 +1,4 @@
-# Epic Title: Search Products
+# Epic Title: Delete Product
 
 import sqlite3
 
@@ -19,19 +19,8 @@ class ProductRepository:
                 is_deleted BOOLEAN NOT NULL DEFAULT 0
             )""")
 
-    def search_products(self, query: str, limit: int, offset: int) -> list:
-        query = f"%{query}%"
-        cursor = self.connection.execute("""
-        SELECT id, name, price, description FROM products
-        WHERE (name LIKE ? OR description LIKE ?) AND is_deleted = 0
-        LIMIT ? OFFSET ?""",
-        (query, query, limit, offset))
-        return [{'id': row[0], 'name': row[1], 'price': row[2], 'description': row[3]} for row in cursor.fetchall()]
-
-    def count_products(self, query: str) -> int:
-        query = f"%{query}%"
-        cursor = self.connection.execute("""
-        SELECT COUNT(*) FROM products
-        WHERE (name LIKE ? OR description LIKE ?) AND is_deleted = 0""",
-        (query, query))
-        return cursor.fetchone()[0]
+    def delete_product(self, product_id: int):
+        with self.connection:
+            self.connection.execute("""
+            UPDATE products SET is_deleted = 1 WHERE id = ?""",
+            (product_id,))
