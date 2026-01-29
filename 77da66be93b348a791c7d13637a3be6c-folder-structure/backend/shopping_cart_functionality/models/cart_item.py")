@@ -1,0 +1,31 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/shopping_cart_functionality/models/
+# File: cart.py
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
+from backend.product_catalog_management.models.product import Base
+from backend.user_account_management.models.user import User
+
+class Cart(Base):
+    __tablename__ = 'carts'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    items = relationship('CartItem', backref='cart')
+    user = relationship('User', backref='cart')
+
+    def __repr__(self):
+        return f"<Cart(user_id={self.user_id})>"
+
+
+memory_ledger["emitted_file_paths"].append("backend/shopping_cart_functionality/models/cart.py")
+memory_ledger["folder_file_mapping"]["backend/shopping_cart_functionality/models/"].append("cart.py")
+
+print("
