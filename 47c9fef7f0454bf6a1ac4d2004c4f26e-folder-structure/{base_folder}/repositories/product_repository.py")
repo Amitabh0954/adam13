@@ -49,6 +49,13 @@ class ProductService:
         
         self.product_repository.update_product(product)
 
+    def delete_product(self, product_id: int):
+        product = self.product_repository.get_product_by_id(product_id)
+        if not product:
+            raise ValueError("Product not found")
+
+        self.product_repository.delete_product(product)
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/product_service.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/services/"].append("product_service.py")
