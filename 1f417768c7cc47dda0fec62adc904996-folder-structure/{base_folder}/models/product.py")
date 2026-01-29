@@ -21,8 +21,22 @@ class ProductRepository:
     def get_product_by_name(self, name: str) -> Product:
         return self.session.query(Product).filter_by(name=name).first()
 
+    def get_product_by_id(self, product_id: int) -> Product:
+        return self.session.query(Product).filter_by(id=product_id).first()
+
     def get_all_products(self):
         return self.session.query(Product).all()
+
+    def update_product(self, product: Product):
+        existing_product = self.get_product_by_id(product.id)
+        if not existing_product:
+            return False
+        existing_product.name = product.name
+        existing_product.price = product.price
+        existing_product.description = product.description
+        existing_product.category_id = product.category_id
+        self.session.commit()
+        return True
 
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/product_repository.py")
