@@ -1,0 +1,78 @@
+")
+print("
+print(file_content.strip())
+
+# Final file: app.py (update for login functionality)
+file_content = 
+# Epic Title: User Account Management System
+
+from flask import Flask, request, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.repositories.session_repository import SessionRepository
+from backend.user_account_management.services.registration_service import RegistrationService
+from backend.user_account_management.services.login_service import LoginService
+from backend.user_account_management.models.user import Base as UserBase
+from backend.user_account_management.models.session import Base as SessionBase
+
+app = Flask(__name__)
+
+DATABASE_URL = "mysql://user:password@localhost/mydatabase"
+
+engine = create_engine(DATABASE_URL)
+UserBase.metadata.create_all(engine)
+SessionBase.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+@app.route("/register", methods=["POST"])
+def register_user():
+    data = request.json
+    email = data["email"]
+    password = data["password"]
+    
+    session = Session()
+    user_repository = UserRepository(session)
+    registration_service = RegistrationService(user_repository)
+
+    new_user = registration_service.register_user(email, password)
+    
+    return jsonify({"id": new_user.id, "email": new_user.email}), 201
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    data = request.json
+    email = data["email"]
+    password = data["password"]
+
+    session = Session()
+    user_repository = UserRepository(session)
+    session_repository = SessionRepository(session)
+    login_service = LoginService(user_repository, session_repository)
+    
+    try:
+        new_session = login_service.login_user(email, password)
+        return jsonify({"session_token": new_session.session_token}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 401
+
+@app.route("/logout", methods=["POST"])
+def logout_user():
+    data = request.json
+    session_token = data["session_token"]
+
+    session = Session()
+    session_repository = SessionRepository(session)
+    login_service = LoginService(None, session_repository)  # Passing None since not using user repository here
+    
+    login_service.logout_user(session_token)
+    return jsonify({"message": "Logged out successfully"}), 200
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
