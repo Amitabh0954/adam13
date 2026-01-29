@@ -1,0 +1,33 @@
+")
+print(f"
+print(file_content.strip())
+
+# Final file: app.py (entry point)
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from flask import Flask
+from flask_login import LoginManager
+from backend.shopping_cart.controllers.cart_controller import cart_blueprint
+from backend.shopping_cart.models.user import User
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'this_should_be_changed'
+
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+
+app.register_blueprint(cart_blueprint, url_prefix='/cart')
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
