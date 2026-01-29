@@ -1,11 +1,11 @@
-# Epic Title: Search Products
+# Epic Title: Delete Product
 
 from flask import Flask
-from backend.controllers.product_catalog.product_search_controller import product_search_controller
+from backend.controllers.product_catalog.product_delete_controller import product_delete_controller
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.register_blueprint(product_search_controller, url_prefix='/api')
+    app.register_blueprint(product_delete_controller, url_prefix='/api')
     
     # Additional setup such as logging and lifecycle hooks can be added here
     
