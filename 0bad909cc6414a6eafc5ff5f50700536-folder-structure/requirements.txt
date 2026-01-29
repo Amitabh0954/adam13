@@ -1,4 +1,4 @@
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 Flask==2.1.1
 mysql-connector-python==8.0.27
