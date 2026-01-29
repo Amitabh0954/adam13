@@ -72,6 +72,19 @@ def update_product(product_id):
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
+@product_blueprint.route('/delete/<int:product_id>', methods=['DELETE'])
+@login_required
+def delete_product(product_id):
+    confirmation = request.json.get('confirmation', False)
+    try:
+        if not confirmation:
+            raise ValueError('Deletion requires confirmation')
+
+        product_service.delete_product(product_id)
+        return jsonify({'message': 'Product deleted successfully'}), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/controllers/product_controller.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/controllers/"].append("product_controller.py")
