@@ -1,5 +1,5 @@
 # Failure: Missing or Ambiguous Folder Structure
 
-The given input lacks a defined or inferable folder structure. Without a concrete folder layout or deterministic derivation rules, I cannot proceed with file generation while maintaining strict compliance with the rules.
+The input lacks a clearly articulated folder structure or a means to deterministically derive one. Without explicit folder definitions or organizational guidance, strict compliance cannot be guaranteed for file generation.
 
-To proceed, please explicitly provide the folder structure where the files should reside.
+To continue, please provide a detailed folder structure specifying where the files should reside.
