@@ -16,14 +16,13 @@ memory_ledger = {
 
 # Existing information
 memory_ledger["declared_entities"] = ["Product"]
-memory_ledger["public_interfaces"] = ["ProductRepository", "ProductService", "ProductUpdateService", "ProductDeletionService", "ProductSearchService"]
+memory_ledger["public_interfaces"] = ["ProductRepository", "ProductService", "ProductUpdateService", "ProductDeletionService"]
 memory_ledger["emitted_file_paths"] = [
     "backend/product_catalog_management/models/product.py",
     "backend/product_catalog_management/repositories/product_repository.py",
     "backend/product_catalog_management/services/product_service.py",
     "backend/product_catalog_management/services/product_update_service.py",
     "backend/product_catalog_management/services/product_deletion_service.py",
-    "backend/product_catalog_management/services/product_search_service.py",
     "app.py"
 ]
 
@@ -35,7 +34,7 @@ memory_ledger["imports"] = [
 memory_ledger["folder_file_mapping"] = {
     "backend/product_catalog_management/models/": ["product.py"],
     "backend/product_catalog_management/repositories/": ["product_repository.py"],
-    "backend/product_catalog_management/services/": ["product_service.py", "product_update_service.py", "product_deletion_service.py", "product_search_service.py"]
+    "backend/product_catalog_management/services/": ["product_service.py", "product_update_service.py", "product_deletion_service.py"]
 }
 
 # Persistent fields and responsibilities
@@ -49,29 +48,34 @@ memory_ledger["folder_responsibilities"] = {
     "backend/product_catalog_management/services/": "Services for product catalog management"
 }
 
-# Folder: backend/product_catalog_management/models/
-# File: category.py
+# Folder: backend/product_catalog_management/services/
+# File: product_search_service.py
 file_content = 
 # Epic Title: Product Catalog Management System
 
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import query_expression
+from sqlalchemy.sql import or_
+from backend.product_catalog_management.models.product import Product
 
-Base = declarative_base()
+class ProductSearchService:
+    def __init__(self, session: Session):
+        self.session = session
 
-class Category(Base):
-    __tablename__ = "categories"
+    def search_products(self, term: str, page: int, per_page: int):
+        query = self.session.query(Product).filter(
+            or_(
+                Product.name.like(f"%{term}%"),
+                Product.description.like(f"%{term}%")
+            )
+        )
+        total_results = query.count()
+        results = query.offset((page - 1) * per_page).limit(per_page).all()
+        return {"results": results, "total": total_results}
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), unique=True, nullable=False)
-    parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
 
-    subcategories = relationship("Category", backref="parent", remote_side=[id])
-
-
-memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/models/category.py")
-memory_ledger["declared_entities"].append("Category")
-memory_ledger["folder_file_mapping"]["backend/product_catalog_management/models/"].append("category.py")
+memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/services/product_search_service.py")
+memory_ledger["public_interfaces"].append("ProductSearchService")
+memory_ledger["folder_file_mapping"]["backend/product_catalog_management/services/"].append("product_search_service.py")
 
 print("
