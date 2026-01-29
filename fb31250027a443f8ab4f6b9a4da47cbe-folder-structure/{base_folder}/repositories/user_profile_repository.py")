@@ -1,0 +1,32 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/user_account_management/services/
+# File: user_profile_service.py
+file_content = 
+# Epic Title: User Account Management
+
+from backend.user_account_management.repositories.user_profile_repository import UserProfileRepository
+from backend.user_account_management.models.user_profile import UserProfile
+
+class UserProfileService:
+    def __init__(self, user_profile_repository: UserProfileRepository = UserProfileRepository()):
+        self.user_profile_repository = user_profile_repository
+
+    def update_profile(self, user_id: int, new_profile_data: dict):
+        user_profile = self.user_profile_repository.get_profile_by_user_id(user_id)
+        if not user_profile:
+            user_profile = UserProfile(user_id=user_id)
+
+        user_profile.full_name = new_profile_data.get('full_name')
+        user_profile.address = new_profile_data.get('address')
+        user_profile.phone_number = new_profile_data.get('phone_number')
+
+        self.user_profile_repository.add_or_update_profile(user_profile)
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/user_profile_service.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/services/"].append("user_profile_service.py")
+
+print("
