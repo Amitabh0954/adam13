@@ -1,0 +1,5 @@
+# Failure: Missing or Ambiguous Folder Structure
+
+The input does not provide a clearly defined folder structure to organize the files, nor can it be inferred deterministically based on the information given.
+
+To proceed, please explicitly outline the folder structure where the files should be created. For instance, define folders such as `controllers`, `models`, `repositories`, and `services`, or any similar organization relevant to your tech stack and application logic.
