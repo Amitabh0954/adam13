@@ -44,6 +44,9 @@ class ProductService:
 
     def get_all_products(self):
         return self.product_repository.get_all_products()
+    
+    def search_products(self, query: str, page: int, limit: int):
+        return self.product_repository.search_products(query, page, limit)
 
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/product_service.py")
