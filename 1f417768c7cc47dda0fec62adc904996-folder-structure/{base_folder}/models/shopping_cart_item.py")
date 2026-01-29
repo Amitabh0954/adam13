@@ -31,6 +31,14 @@ class ShoppingCartRepository:
 
     def get_cart_items(self, cart_id: int):
         return self.session.query(ShoppingCartItem).filter_by(cart_id=cart_id).all()
+    
+    def remove_cart_item(self, item_id: int):
+        cart_item = self.session.query(ShoppingCartItem).filter_by(id=item_id).first()
+        if cart_item:
+            self.session.delete(cart_item)
+            self.session.commit()
+            return True
+        return False
 
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/shopping_cart_repository.py")
