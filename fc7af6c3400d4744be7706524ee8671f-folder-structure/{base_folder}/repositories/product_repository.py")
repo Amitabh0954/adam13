@@ -27,6 +27,20 @@ class ProductService:
         product = Product(name=name, price=price, description=description, category_id=category_id)
         self.product_repository.add_product(product)
 
+    def update_product(self, product_id: int, price: float, description: str):
+        product = self.product_repository.get_product_by_id(product_id)
+        if not product:
+            raise ValueError("Product not found")
+
+        if price <= 0:
+            raise ValueError("Price must be a positive number")
+
+        product.price = price
+        if description:
+            product.description = description
+            
+        self.product_repository.update_product(product)
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/product_service.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/services/"].append("product_service.py")
