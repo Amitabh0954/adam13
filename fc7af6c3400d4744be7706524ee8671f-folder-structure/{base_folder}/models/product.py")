@@ -28,6 +28,10 @@ class ProductRepository:
         self.session.merge(product)
         self.session.commit()
 
+    def delete_product(self, product: Product):
+        product.deleted = True
+        self.update_product(product)
+
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/product_repository.py")
 memory_ledger["folder_file_mapping"][f"{base_folder}/repositories/"].append("product_repository.py")
