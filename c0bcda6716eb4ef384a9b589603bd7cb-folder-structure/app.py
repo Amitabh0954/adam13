@@ -1,24 +1,26 @@
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 from flask import Flask
 from structured_logging import setup_logging
-from backend.product_catalog_management.controllers.product_controller import product_blueprint
+from backend.shopping_cart_functionality.controllers.cart_controller import cart_blueprint
 
 def create_app() -> Flask:
     app = Flask(__name__)
     
     setup_logging()
     
-    app.register_blueprint(product_blueprint, url_prefix='/api/v1')
+    app.register_blueprint(cart_blueprint, url_prefix='/api/v1')
     
     @app.before_first_request
     def initialize_database():
-        from backend.product_catalog_management.models.product import Base as ProductBase
+        from backend.shopping_cart_functionality.models.cart import Base as CartBase
+        from backend.shopping_cart_functionality.models.cart_item import Base as CartItemBase
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
         
         engine = create_engine('mysql+pymysql://user:password@localhost/dbname')
-        ProductBase.metadata.create_all(engine)
+        CartBase.metadata.create_all(engine)
+        CartItemBase.metadata.create_all(engine)
         session = sessionmaker(bind=engine)()
         app.config['db_session'] = session
     
