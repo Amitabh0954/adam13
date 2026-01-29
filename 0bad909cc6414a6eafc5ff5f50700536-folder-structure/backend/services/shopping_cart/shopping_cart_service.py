@@ -26,3 +26,11 @@ class ShoppingCartService:
         cart_id = self.shopping_cart_repository.create_cart(user_id)
         self.shopping_cart_repository.remove_product_from_cart(cart_id, product_id)
         return None
+
+    def update_product_quantity(self, user_id: Optional[int], product_id: int, quantity: int) -> Optional[str]:
+        if quantity <= 0:
+            return "Quantity must be a positive number"
+
+        cart_id = self.shopping_cart_repository.create_cart(user_id)
+        self.shopping_cart_repository.update_product_quantity(cart_id, product_id, quantity)
+        return None
