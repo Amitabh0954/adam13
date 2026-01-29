@@ -1,0 +1,43 @@
+")
+print(f"
+print(file_content.strip())
+
+# Update the existing user_service.py to support authentication functionality
+file_content = 
+# Epic Title: User Account Management
+
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.models.user import User
+from backend.user_account_management.session.session_service import SessionService
+from werkzeug.security import generate_password_hash, check_password_hash
+
+class UserService:
+    def __init__(self, user_repository: UserRepository = UserRepository(), session_service: SessionService = SessionService()):
+        self.user_repository = user_repository
+        self.session_service = session_service
+
+    def register_user(self, email: str, password: str):
+        if not email or not password:
+            raise ValueError("Email or password cannot be empty")
+        
+        if self.user_repository.get_user_by_email(email):
+            raise ValueError("Email already in use")
+
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+        
+        password_hash = generate_password_hash(password)
+        user = User(email=email, password_hash=password_hash)
+        self.user_repository.add_user(user)
+
+    def authenticate_user(self, email: str, password: str) -> str:
+        user = self.user_repository.get_user_by_email(email)
+        if not user or not check_password_hash(user.password_hash, password):
+            raise ValueError("Invalid email or password")
+        
+        return self.session_service.create_session(user.id)
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/user_service.py")
+
+print("
