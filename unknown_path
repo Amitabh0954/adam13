@@ -1,7 +1,7 @@
 # Generating files as per the provided folder structure and user stories
 
 # Epic title
-Epic_Title = "Product Catalog Management System"
+Epic_Title = "User Account Management System"
 
 # In-memory ledger initialization
 memory_ledger = {
@@ -14,32 +14,82 @@ memory_ledger = {
     "folder_responsibilities": {}
 }
 
-# Memory ledger data for other epic titles not included here to ensure focus on the given task.
+# Existing information
+memory_ledger["declared_entities"] = ["User", "Session", "PasswordReset"]
+memory_ledger["public_interfaces"] = ["UserRepository", "RegistrationService", "SessionRepository", "LoginService", "PasswordResetRepository", "PasswordRecoveryService"]
+memory_ledger["emitted_file_paths"] = [
+    "backend/user_account_management/models/user.py",
+    "backend/user_account_management/models/session.py",
+    "backend/user_account_management/models/password_reset.py",
+    "backend/user_account_management/repositories/user_repository.py",
+    "backend/user_account_management/repositories/session_repository.py",
+    "backend/user_account_management/repositories/password_reset_repository.py",
+    "backend/user_account_management/services/registration_service.py",
+    "backend/user_account_management/services/login_service.py",
+    "backend/user_account_management/services/password_recovery_service.py",
+    "app.py"
+]
 
-# Folder: backend/product_catalog_management/models/
-# File: product.py
+memory_ledger["imports"] = [
+    "backend/user_account_management/models/user:User",
+    "backend/user_account_management/models/session:Session as SessionModel",
+    "backend/user_account_management/models/password_reset:PasswordReset",
+    "backend/user_account_management/repositories/user_repository:UserRepository",
+    "backend/user_account_management/repositories/session_repository:SessionRepository",
+    "backend/user_account_management/repositories/password_reset_repository:PasswordResetRepository"
+]
+
+memory_ledger["folder_file_mapping"] = {
+    "backend/user_account_management/models/": ["user.py", "session.py", "password_reset.py"],
+    "backend/user_account_management/repositories/": ["user_repository.py", "session_repository.py", "password_reset_repository.py"],
+    "backend/user_account_management/services/": ["registration_service.py", "login_service.py", "password_recovery_service.py"]
+}
+
+# Persistent fields and responsibilities
+memory_ledger["persistent_fields"] = {
+    "User": ["id", "email", "password", "is_active"],
+    "Session": ["id", "user_id", "session_token", "created_at", "is_active"],
+    "PasswordReset": ["id", "user_id", "reset_token", "expires_at"]
+}
+
+memory_ledger["folder_responsibilities"] = {
+    "backend/user_account_management/models/": "Models for user account management",
+    "backend/user_account_management/repositories/": "Repositories for user account management",
+    "backend/user_account_management/services/": "Services for user account management"
+}
+
+# Folder: backend/user_account_management/services/
+# File: profile_service.py
 file_content = 
-# Epic Title: Product Catalog Management System
+# Epic Title: User Account Management System
 
-from sqlalchemy import Column, Integer, String, Float
-from sqlalchemy.ext.declarative import declarative_base
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.models.user import User
 
-Base = declarative_base()
+class ProfileService:
+    def __init__(self, user_repository: UserRepository):
+        self.user_repository = user_repository
 
-class Product(Base):
-    __tablename__ = "products"
+    def update_profile(self, user_id: int, email: str = None, password: str = None) -> User:
+        user = self.user_repository.session.query(User).filter_by(id=user_id).first()
+        if not user:
+            raise ValueError("User not found")
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), unique=True, nullable=False)
-    price = Column(Float, nullable=False)
-    description = Column(String(255), nullable=False)
+        if email:
+            user.email = email
+        if password:
+            user.password = self.hash_password(password)
 
-    def __repr__(self) -> str:
-        return f"<Product(name={self.name}, price={self.price})>"
+        self.user_repository.session.commit()
+        return user
+
+    def hash_password(self, password: str) -> str:
+        import hashlib
+        return hashlib.sha256(password.encode()).hexdigest()
 
 
-memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/models/product.py")
-memory_ledger["declared_entities"].append("Product")
-memory_ledger["folder_file_mapping"]["backend/product_catalog_management/models/"] = ["product.py"]
+memory_ledger["emitted_file_paths"].append("backend/user_account_management/services/profile_service.py")
+memory_ledger["public_interfaces"].append("ProfileService")
+memory_ledger["folder_file_mapping"]["backend/user_account_management/services/"].append("profile_service.py")
 
 print("
