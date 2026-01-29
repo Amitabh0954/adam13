@@ -1,7 +1,7 @@
 # Generating files as per the provided folder structure and user stories
 
 # Epic title
-Epic_Title = "Shopping Cart Functionality"
+Epic_Title = "Product Catalog Management System"
 
 # In-memory ledger initialization
 memory_ledger = {
@@ -14,30 +14,64 @@ memory_ledger = {
     "folder_responsibilities": {}
 }
 
-# Folder: backend/shopping_cart/models/
-# File: cart_item.py
-file_content = 
-# Epic Title: Shopping Cart Functionality
+# Existing information
+memory_ledger["declared_entities"] = ["Product"]
+memory_ledger["public_interfaces"] = ["ProductRepository", "ProductService", "ProductUpdateService", "ProductDeletionService", "ProductSearchService"]
+memory_ledger["emitted_file_paths"] = [
+    "backend/product_catalog_management/models/product.py",
+    "backend/product_catalog_management/repositories/product_repository.py",
+    "backend/product_catalog_management/services/product_service.py",
+    "backend/product_catalog_management/services/product_update_service.py",
+    "backend/product_catalog_management/services/product_deletion_service.py",
+    "backend/product_catalog_management/services/product_search_service.py",
+    "app.py"
+]
 
-from sqlalchemy import Column, Integer, ForeignKey
+memory_ledger["imports"] = [
+    "backend/product_catalog_management/models/product:Product",
+    "backend/product_catalog_management/repositories/product_repository:ProductRepository"
+]
+
+memory_ledger["folder_file_mapping"] = {
+    "backend/product_catalog_management/models/": ["product.py"],
+    "backend/product_catalog_management/repositories/": ["product_repository.py"],
+    "backend/product_catalog_management/services/": ["product_service.py", "product_update_service.py", "product_deletion_service.py", "product_search_service.py"]
+}
+
+# Persistent fields and responsibilities
+memory_ledger["persistent_fields"] = {
+    "Product": ["id", "name", "price", "description"]
+}
+
+memory_ledger["folder_responsibilities"] = {
+    "backend/product_catalog_management/models/": "Models for product catalog management",
+    "backend/product_catalog_management/repositories/": "Repositories for product catalog management",
+    "backend/product_catalog_management/services/": "Services for product catalog management"
+}
+
+# Folder: backend/product_catalog_management/models/
+# File: category.py
+file_content = 
+# Epic Title: Product Catalog Management System
+
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-class CartItem(Base):
-    __tablename__ = "cart_items"
+class Category(Base):
+    __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True)
-    cart_id = Column(Integer, ForeignKey("shopping_carts.id"), nullable=False)
-    product_id = Column(Integer, nullable=False)
+    name = Column(String(255), unique=True, nullable=False)
+    parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
 
-    def __repr__(self) -> str:
-        return f"<CartItem(cart_id={self.cart_id}, product_id={self.product_id})>"
+    subcategories = relationship("Category", backref="parent", remote_side=[id])
 
 
-memory_ledger["emitted_file_paths"].append("backend/shopping_cart/models/cart_item.py")
-memory_ledger["declared_entities"].append("CartItem")
-memory_ledger["folder_file_mapping"]["backend/shopping_cart/models/"] = ["cart_item.py"]
+memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/models/category.py")
+memory_ledger["declared_entities"].append("Category")
+memory_ledger["folder_file_mapping"]["backend/product_catalog_management/models/"].append("category.py")
 
 print("
