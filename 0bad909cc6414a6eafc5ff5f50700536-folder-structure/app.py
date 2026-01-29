@@ -94,5 +94,25 @@ def update_cart():
 
     return jsonify({'message': 'Product quantity updated successfully'}), 200
 
+@app.route('/save-cart', methods=['POST'])
+def save_cart():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return jsonify({'error': 'User not logged in'}), 400
+
+    db_connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="mydatabase"
+    )
+
+    shopping_cart_repository = ShoppingCartRepository(db_connection)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+    message = shopping_cart_service.save_shopping_cart(user_id)
+
+    return jsonify({'message': message}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
