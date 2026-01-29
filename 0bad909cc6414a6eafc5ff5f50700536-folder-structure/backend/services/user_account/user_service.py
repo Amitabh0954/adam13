@@ -3,9 +3,6 @@
 from typing import Optional
 from backend.repositories.user_account.user_repository import UserRepository
 import bcrypt
-import secrets
-import smtplib
-from email.message import EmailMessage
 
 class UserService:
     MAX_FAILED_ATTEMPTS = 5  # configurable
@@ -47,38 +44,3 @@ class UserService:
         else:
             self.user_repository.register_failed_attempt(email)
             return "Invalid email or password"
-    
-    def send_password_reset_email(self, email: str) -> Optional[str]:
-        user = self.user_repository.find_user_by_email(email)
-        if not user:
-            return "No account associated with this email address."
-        
-        token = secrets.token_urlsafe(16)  # Generates a 24 character base64 token
-        self.user_repository.create_password_reset_token(email, token)
-
-        msg = EmailMessage()
-        msg.set_content(f"Use the following link to reset your password: http://yourdomain.com/reset-password?token={token}&email={email}")
-        msg['Subject'] = 'Password Reset Request'
-        msg['From'] = 'noreply@yourdomain.com'
-        msg['To'] = email
-
-        try:
-            with smtplib.SMTP('localhost') as server:
-                server.send_message(msg)
-        except Exception as e:
-            return f"Cannot send email: {str(e)}"
-
-        return None
-
-    def reset_password(self, email: str, token: str, new_password: str) -> Optional[str]:
-        if not self.validate_password(new_password):
-            return "Password must be at least 8 characters long and include both letters and numbers."
-        
-        token_record = self.user_repository.find_password_reset_token(email, token)
-        if not token_record:
-            return "Invalid or expired password reset token."
-        
-        hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
-        self.user_repository.update_password(email, hashed_password.decode('utf-8'))
-        
-        return None
