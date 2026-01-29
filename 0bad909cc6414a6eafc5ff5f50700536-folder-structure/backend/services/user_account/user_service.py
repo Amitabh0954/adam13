@@ -1,6 +1,6 @@
 # Epic Title: User Account Management
 
-from typing import Optional, Dict
+from typing import Optional
 from backend.repositories.user_account.user_repository import UserRepository
 import bcrypt
 import secrets
@@ -81,12 +81,4 @@ class UserService:
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
         self.user_repository.update_password(email, hashed_password.decode('utf-8'))
         
-        return None
-
-    def update_user_profile(self, email: str, profile_data: Dict[str, str]) -> Optional[str]:
-        user = self.user_repository.find_user_by_email(email)
-        if not user:
-            return "User not found."
-        
-        self.user_repository.update_user_profile(email, profile_data)
         return None
