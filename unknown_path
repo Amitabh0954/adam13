@@ -16,7 +16,10 @@ memory_ledger = {
 
 # Existing entities and interfaces
 memory_ledger["declared_entities"] = ["ShoppingCart", "CartItem"]
-memory_ledger["public_interfaces"] = ["ShoppingCartRepository", "ShoppingCartService"]
+memory_ledger["public_interfaces"] = [
+    "ShoppingCartRepository",
+    "ShoppingCartService"
+]
 memory_ledger["emitted_file_paths"] = [
     "backend/shopping_cart/models/cart_item.py",
     "backend/shopping_cart/models/shopping_cart.py",
@@ -25,12 +28,14 @@ memory_ledger["emitted_file_paths"] = [
     "app.py"
 ]
 
+# Imports for existing services and models
 memory_ledger["imports"] = [
     "backend/shopping_cart/models/cart_item:CartItem",
     "backend/shopping_cart/models/shopping_cart:ShoppingCart",
     "backend/shopping_cart/repositories/shopping_cart_repository:ShoppingCartRepository"
 ]
 
+# Folder file mapping
 memory_ledger["folder_file_mapping"] = {
     "backend/shopping_cart/models/": ["cart_item.py", "shopping_cart.py"],
     "backend/shopping_cart/repositories/": ["shopping_cart_repository.py"],
@@ -38,7 +43,7 @@ memory_ledger["folder_file_mapping"] = {
 }
 
 # Folder: backend/shopping_cart/services/
-# Update file: shopping_cart_service.py for removing items
+# Update file: shopping_cart_service.py for modifying quantity in cart
 file_content = 
 # Epic Title: Shopping Cart Functionality
 
@@ -56,7 +61,7 @@ class ShoppingCartService:
             cart = ShoppingCart(user_id=user_id)
             self.shopping_cart_repository.create_cart(cart)
 
-        cart_item = CartItem(cart_id=cart.id, product_id=product_id)
+        cart_item = CartItem(cart_id=cart.id, product_id=product_id, quantity=1)
         self.shopping_cart_repository.add_item_to_cart(cart_item)
         return cart
 
@@ -66,6 +71,19 @@ class ShoppingCartService:
         
         if item_to_remove:
             self.shopping_cart_repository.session.delete(item_to_remove)
+            self.shopping_cart_repository.session.commit()
+
+        return self.shopping_cart_repository.get_cart_by_user_id(cart_id)
+
+    def modify_quantity_in_cart(self, cart_id: int, product_id: int, quantity: int) -> ShoppingCart:
+        if quantity <= 0:
+            raise ValueError("Quantity must be a positive integer")
+
+        cart_items = self.shopping_cart_repository.get_cart_items_by_cart_id(cart_id)
+        cart_item = next((item for item in cart_items if item.product_id == product_id), None)
+
+        if cart_item:
+            cart_item.quantity = quantity
             self.shopping_cart_repository.session.commit()
 
         return self.shopping_cart_repository.get_cart_by_user_id(cart_id)
