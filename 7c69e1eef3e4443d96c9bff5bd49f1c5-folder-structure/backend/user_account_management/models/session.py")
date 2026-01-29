@@ -1,0 +1,46 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/user_account_management/repositories/
+# File: session_repository.py
+file_content = 
+# Epic Title: User Account Management System
+
+from sqlalchemy.orm import Session
+from backend.user_account_management.models.session import Session as SessionModel
+from datetime import datetime, timedelta
+
+class SessionRepository:
+    def __init__(self, session: Session):
+        self.session = session
+
+    def add_session(self, session_model: SessionModel) -> None:
+        self.session.add(session_model)
+        self.session.commit()
+
+    def get_active_session(self, session_token: str) -> SessionModel:
+        return self.session.query(SessionModel).filter_by(session_token=session_token, is_active=True).first()
+
+    def invalidate_session(self, session_token: str) -> None:
+        session_model = self.get_active_session(session_token)
+        if session_model:
+            session_model.is_active = False
+            self.session.commit()
+
+    def invalidate_old_sessions(self, user_id: int, timeout_minutes: int) -> None:
+        timeout_threshold = datetime.utcnow() - timedelta(minutes=timeout_minutes)
+        self.session.query(SessionModel).filter(
+            SessionModel.user_id == user_id,
+            SessionModel.created_at < timeout_threshold,
+            SessionModel.is_active == True
+        ).update({"is_active": False})
+        self.session.commit()
+
+
+memory_ledger["emitted_file_paths"].append("backend/user_account_management/repositories/session_repository.py")
+memory_ledger["public_interfaces"].append("SessionRepository")
+memory_ledger["imports"].append("backend/user_account_management/models/session:Session as SessionModel")
+memory_ledger["folder_file_mapping"]["backend/user_account_management/repositories/"].append("session_repository.py")
+
+print("
