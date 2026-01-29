@@ -1,4 +1,4 @@
-# Epic Title: User Registration
+# Epic Title: Profile Management
 
 import sqlite3
 
@@ -19,10 +19,8 @@ class UserRepository:
                 last_name TEXT
             )""")
 
-    def save_user(self, user_data: dict) -> sqlite3.Cursor:
+    def update_user_profile(self, user_id: int, updated_data: dict):
         with self.connection:
-            cursor = self.connection.execute("""
-            INSERT INTO users (email, password, first_name, last_name)
-            VALUES (?, ?, ?, ?)""", 
-            (user_data['email'], user_data['password'], user_data['first_name'], user_data['last_name']))
-        return cursor
+            self.connection.execute("""
+            UPDATE users SET first_name = ?, last_name = ? WHERE id = ?""",
+            (updated_data['first_name'], updated_data['last_name'], user_id))
