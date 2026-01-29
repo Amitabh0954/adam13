@@ -1,1 +1,77 @@
-# Epic Title: User Account Management
+# Generating files as per the provided folder structure and user stories
+
+# Epic title
+Epic_Title = "Shopping Cart Functionality"
+
+# In-memory ledger initialization
+memory_ledger = {
+    "emitted_file_paths": [],
+    "declared_entities": [],
+    "public_interfaces": [],
+    "imports": [],
+    "folder_file_mapping": {},
+    "persistent_fields": {},
+    "folder_responsibilities": {}
+}
+
+# Existing entities and interfaces
+memory_ledger["declared_entities"] = ["ShoppingCart", "CartItem"]
+memory_ledger["public_interfaces"] = ["ShoppingCartRepository", "ShoppingCartService"]
+memory_ledger["emitted_file_paths"] = [
+    "backend/shopping_cart/models/cart_item.py",
+    "backend/shopping_cart/models/shopping_cart.py",
+    "backend/shopping_cart/repositories/shopping_cart_repository.py",
+    "backend/shopping_cart/services/shopping_cart_service.py",
+    "app.py"
+]
+
+memory_ledger["imports"] = [
+    "backend/shopping_cart/models/cart_item:CartItem",
+    "backend/shopping_cart/models/shopping_cart:ShoppingCart",
+    "backend/shopping_cart/repositories/shopping_cart_repository:ShoppingCartRepository"
+]
+
+memory_ledger["folder_file_mapping"] = {
+    "backend/shopping_cart/models/": ["cart_item.py", "shopping_cart.py"],
+    "backend/shopping_cart/repositories/": ["shopping_cart_repository.py"],
+    "backend/shopping_cart/services/": ["shopping_cart_service.py"]
+}
+
+# Folder: backend/shopping_cart/services/
+# Update file: shopping_cart_service.py for removing items
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from backend.shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
+from backend.shopping_cart.models.shopping_cart import ShoppingCart
+from backend.shopping_cart.models.cart_item import CartItem
+
+class ShoppingCartService:
+    def __init__(self, shopping_cart_repository: ShoppingCartRepository):
+        self.shopping_cart_repository = shopping_cart_repository
+
+    def add_product_to_cart(self, user_id: int, product_id: int) -> ShoppingCart:
+        cart = self.shopping_cart_repository.get_cart_by_user_id(user_id)
+        if not cart:
+            cart = ShoppingCart(user_id=user_id)
+            self.shopping_cart_repository.create_cart(cart)
+
+        cart_item = CartItem(cart_id=cart.id, product_id=product_id)
+        self.shopping_cart_repository.add_item_to_cart(cart_item)
+        return cart
+
+    def remove_product_from_cart(self, cart_id: int, product_id: int) -> ShoppingCart:
+        cart_items = self.shopping_cart_repository.get_cart_items_by_cart_id(cart_id)
+        item_to_remove = next((item for item in cart_items if item.product_id == product_id), None)
+        
+        if item_to_remove:
+            self.shopping_cart_repository.session.delete(item_to_remove)
+            self.shopping_cart_repository.session.commit()
+
+        return self.shopping_cart_repository.get_cart_by_user_id(cart_id)
+
+
+memory_ledger["emitted_file_paths"].append("backend/shopping_cart/services/shopping_cart_service.py")
+memory_ledger["folder_file_mapping"]["backend/shopping_cart/services/"].append("shopping_cart_service.py")
+
+print("
