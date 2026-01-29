@@ -1,0 +1,32 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/user_account_management/models/
+# File: user_profile.py
+file_content = 
+# Epic Title: User Account Management
+
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+from .user import Base, User
+
+class UserProfile(Base):
+    __tablename__ = 'user_profiles'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    full_name = Column(String(255), nullable=True)
+    address = Column(String(255), nullable=True)
+    phone_number = Column(String(20), nullable=True)
+
+    user = relationship('User', backref='profile')
+
+    def __repr__(self):
+        return f"<UserProfile(user_id={self.user_id}, full_name={self.full_name})>"
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/models/user_profile.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/models/"].append("user_profile.py")
+
+print("
