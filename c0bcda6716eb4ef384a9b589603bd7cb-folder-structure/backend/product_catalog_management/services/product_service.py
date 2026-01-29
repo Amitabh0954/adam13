@@ -49,3 +49,13 @@ class ProductService:
         self.product_repository.update_product(product)
         logger.info(f"Product updated successfully: {product_id}")
         return True
+
+    def delete_product(self, product_id: int) -> bool:
+        product = self.product_repository.find_by_id(product_id)
+        if not product:
+            logger.error(f"Product not found: {product_id}")
+            return False
+
+        self.product_repository.delete_product(product)
+        logger.info(f"Product deleted successfully: {product_id}")
+        return True
