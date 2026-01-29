@@ -24,6 +24,20 @@ class ProductService:
         product = Product(name=name, price=price, description=description, category_id=category_id)
         self.product_repository.add_product(product)
 
+    def update_product(self, product_id: int, name: str, price: float, description: str, category_id: int):
+        if not name or not description or price <= 0:
+            raise ValueError("Invalid product details")
+        
+        product = self.product_repository.get_product_by_id(product_id)
+        if not product:
+            raise ValueError("Product not found")
+
+        product.name = name
+        product.price = price
+        product.description = description
+        product.category_id = category_id
+        self.product_repository.update_product(product)
+
     def get_all_products(self):
         return self.product_repository.get_all_products()
 
