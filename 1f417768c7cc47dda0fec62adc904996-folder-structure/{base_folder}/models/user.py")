@@ -17,7 +17,7 @@ class UserRepository:
     def add_user(self, user: User):
         self.session.add(user)
         self.session.commit()
-    
+
     def get_user_by_email(self, email: str) -> User:
         return self.session.query(User).filter_by(email=email).first()
 
