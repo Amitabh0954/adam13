@@ -25,3 +25,22 @@ class ProductRepository:
         product = cursor.fetchone()
         self.db_connection.commit()
         return product
+
+    def update_product(self, product_id: int, price: Optional[float] = None, description: Optional[str] = None, category: Optional[str] = None) -> None:
+        cursor = self.db_connection.cursor()
+        updates = []
+        values = []
+        if price is not None:
+            updates.append("price = %s")
+            values.append(price)
+        if description is not None:
+            updates.append("description = %s")
+            values.append(description)
+        if category is not None:
+            updates.append("category = %s")
+            values.append(category)
+        if updates:
+            query = f"UPDATE products SET {', '.join(updates)} WHERE id = %s"
+            values.append(product_id)
+            cursor.execute(query, values)
+            self.db_connection.commit()
