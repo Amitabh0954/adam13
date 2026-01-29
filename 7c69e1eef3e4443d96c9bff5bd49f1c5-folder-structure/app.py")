@@ -4,7 +4,7 @@ print(file_content.strip())
 
 # Requirements file (ensuring dependencies only if Flask and SQLAlchemy were needed)
 requirements = 
-# Epic Title: Shopping Cart Functionality
+# Epic Title: Product Catalog Management System
 
 Flask==2.2.3
 SQLAlchemy==1.4.32
