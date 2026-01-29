@@ -43,3 +43,11 @@ class ShoppingCartRepository:
         """
         cursor.execute(query, (cart_id, product_id))
         self.db_connection.commit()
+
+    def update_product_quantity(self, cart_id: int, product_id: int, quantity: int) -> None:
+        cursor = self.db_connection.cursor()
+        query = """
+        UPDATE cart_items SET quantity = %s WHERE cart_id = %s AND product_id = %s
+        """
+        cursor.execute(query, (quantity, cart_id, product_id))
+        self.db_connection.commit()
