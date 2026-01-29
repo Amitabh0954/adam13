@@ -1,0 +1,31 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/product_catalog_management/models/
+# Updating file: product.py to establish relationship with Category
+file_content = 
+# Epic Title: Product Catalog Management System
+
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class Product(Base):
+    __tablename__ = "products"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), unique=True, nullable=False)
+    price = Column(Float, nullable=False)
+    description = Column(String(255), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"))
+    
+    category = relationship("Category", backref="products")
+
+    def __repr__(self) -> str:
+        return f"<Product(name={self.name}, price={self.price})>"
+
+
+print("
