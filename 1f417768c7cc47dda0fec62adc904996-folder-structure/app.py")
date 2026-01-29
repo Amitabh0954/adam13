@@ -2,13 +2,14 @@
 print("
 print(file_content.strip())
 
-# Requirements file (ensuring dependencies only if Flask and SQLAlchemy were needed)
+# Requirements file (ensuring dependencies only if Flask, SQLAlchemy, and other necessary libraries were needed)
 requirements = 
 # Epic Title: User Account Management
 
 Flask==2.2.3
 SQLAlchemy==1.4.32
 Werkzeug==2.0.2
+PyMySQL==1.0.2
 
 
 memory_ledger["emitted_file_paths"].append("requirements.txt")
