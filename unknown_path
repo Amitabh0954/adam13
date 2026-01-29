@@ -1,5 +1,5 @@
 # Failure: Missing or Undefined Folder Structure
 
-The provided input is still missing a clear folder structure within the specified target path. Without an explicit or determinable file organization schema, I cannot ensure compliance with strict rules governing file paths, folder completeness, and dependency resolution.
+The input once again lacks a clearly defined folder structure for organizing the generated files. Without a precise folder hierarchy under the target path, it is impossible to guaranty compliance with rules related to path safety, folder completeness, and memory consistency.
 
-To proceed, please provide a detailed folder structure under the target folder path (e.g., folders like `controllers`, `models`, `services`, etc.). This will enable compliant, production-grade file generation.
+Please provide an explicitly defined folder structure (e.g., `controllers/`, `models/`, `services/`, etc.) within the specified target folder path to enable valid, production-grade file generation.
