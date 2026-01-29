@@ -1,0 +1,37 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/product_catalog_management/services/
+# File: category_service.py
+file_content = 
+# Epic Title: Product Catalog Management System
+
+from backend.product_catalog_management.repositories.category_repository import CategoryRepository
+from backend.product_catalog_management.models.category import Category
+
+class CategoryService:
+    def __init__(self, category_repository: CategoryRepository):
+        self.category_repository = category_repository
+
+    def create_category(self, name: str, parent_id: int = None) -> Category:
+        if not name:
+            raise ValueError("Category name cannot be empty")
+
+        existing_category = self.category_repository.get_category_by_name(name)
+        if existing_category:
+            raise ValueError("Category name must be unique")
+
+        new_category = Category(name=name, parent_id=parent_id)
+        self.category_repository.add_category(new_category)
+        return new_category
+
+    def get_all_categories(self) -> list:
+        return self.category_repository.get_all_categories()
+
+
+memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/services/category_service.py")
+memory_ledger["public_interfaces"].append("CategoryService")
+memory_ledger["folder_file_mapping"]["backend/product_catalog_management/services/"].append("category_service.py")
+
+print("
