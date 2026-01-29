@@ -16,7 +16,10 @@ class ShoppingCartService:
         return None
 
     def get_cart_items(self, user_id: Optional[int]) -> List[Dict[str, int]]:
-        cart_id = self.shopping_cart_repository.create_cart(user_id)
+        if user_id:
+            cart_id = self.shopping_cart_repository.retrieve_cart_by_user(user_id)
+        else:
+            cart_id = self.shopping_cart_repository.create_cart(user_id)
         return self.shopping_cart_repository.get_cart_items(cart_id)
 
     def remove_product_from_cart(self, user_id: Optional[int], product_id: int, confirmation: str) -> Optional[str]:
@@ -34,3 +37,7 @@ class ShoppingCartService:
         cart_id = self.shopping_cart_repository.create_cart(user_id)
         self.shopping_cart_repository.update_product_quantity(cart_id, product_id, quantity)
         return None
+
+    def save_shopping_cart(self, user_id: int) -> str:
+        cart_id = self.shopping_cart_repository.create_cart(user_id)
+        return f"Shopping cart saved for user {user_id} with cart id {cart_id}"
