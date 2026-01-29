@@ -1,0 +1,22 @@
+")
+print(f"
+print(file_content.strip())
+
+# Final file: app.py (entry point)
+file_content = 
+# Epic Title: Shopping Cart Functionality
+
+from flask import Flask
+from backend.shopping_cart_functionality.controllers.shopping_cart_controller import shopping_cart_blueprint
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'this_should_be_changed'
+app.register_blueprint(shopping_cart_blueprint, url_prefix='/shopping_cart')
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
