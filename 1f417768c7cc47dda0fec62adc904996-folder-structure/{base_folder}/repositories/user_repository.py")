@@ -9,7 +9,7 @@ file_content =
 
 from backend.user_account_management.repositories.user_repository import UserRepository
 from backend.user_account_management.models.user import User
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserService:
     def __init__(self, user_repository: UserRepository = UserRepository()):
@@ -28,6 +28,13 @@ class UserService:
         password_hash = generate_password_hash(password)
         user = User(email=email, password_hash=password_hash)
         self.user_repository.add_user(user)
+
+    def login_user(self, email: str, password: str) -> int:
+        user = self.user_repository.get_user_by_email(email)
+        if not user or not check_password_hash(user.password_hash, password):
+            raise ValueError("Invalid email or password")
+
+        return user.id
 
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/services/user_service.py")
