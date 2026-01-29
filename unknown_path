@@ -15,41 +15,35 @@ memory_ledger = {
 }
 
 # Existing information
-memory_ledger["declared_entities"] = ["User", "Session", "PasswordReset"]
-memory_ledger["public_interfaces"] = ["UserRepository", "RegistrationService", "SessionRepository", "LoginService", "PasswordResetRepository", "PasswordRecoveryService"]
+memory_ledger["declared_entities"] = ["User", "Session"]
+memory_ledger["public_interfaces"] = ["UserRepository", "RegistrationService", "SessionRepository", "LoginService"]
 memory_ledger["emitted_file_paths"] = [
     "backend/user_account_management/models/user.py",
     "backend/user_account_management/models/session.py",
-    "backend/user_account_management/models/password_reset.py",
     "backend/user_account_management/repositories/user_repository.py",
     "backend/user_account_management/repositories/session_repository.py",
-    "backend/user_account_management/repositories/password_reset_repository.py",
     "backend/user_account_management/services/registration_service.py",
     "backend/user_account_management/services/login_service.py",
-    "backend/user_account_management/services/password_recovery_service.py",
     "app.py"
 ]
 
 memory_ledger["imports"] = [
     "backend/user_account_management/models/user:User",
     "backend/user_account_management/models/session:Session as SessionModel",
-    "backend/user_account_management/models/password_reset:PasswordReset",
     "backend/user_account_management/repositories/user_repository:UserRepository",
-    "backend/user_account_management/repositories/session_repository:SessionRepository",
-    "backend/user_account_management/repositories/password_reset_repository:PasswordResetRepository"
+    "backend/user_account_management/repositories/session_repository:SessionRepository"
 ]
 
 memory_ledger["folder_file_mapping"] = {
-    "backend/user_account_management/models/": ["user.py", "session.py", "password_reset.py"],
-    "backend/user_account_management/repositories/": ["user_repository.py", "session_repository.py", "password_reset_repository.py"],
-    "backend/user_account_management/services/": ["registration_service.py", "login_service.py", "password_recovery_service.py"]
+    "backend/user_account_management/models/": ["user.py", "session.py"],
+    "backend/user_account_management/repositories/": ["user_repository.py", "session_repository.py"],
+    "backend/user_account_management/services/": ["registration_service.py", "login_service.py"]
 }
 
 # Persistent fields and responsibilities
 memory_ledger["persistent_fields"] = {
     "User": ["id", "email", "password", "is_active"],
-    "Session": ["id", "user_id", "session_token", "created_at", "is_active"],
-    "PasswordReset": ["id", "user_id", "reset_token", "expires_at"]
+    "Session": ["id", "user_id", "session_token", "created_at", "is_active"]
 }
 
 memory_ledger["folder_responsibilities"] = {
@@ -58,38 +52,36 @@ memory_ledger["folder_responsibilities"] = {
     "backend/user_account_management/services/": "Services for user account management"
 }
 
-# Folder: backend/user_account_management/services/
-# File: profile_service.py
+# Folder: backend/user_account_management/models/
+# File: password_reset.py
 file_content = 
 # Epic Title: User Account Management System
 
-from backend.user_account_management.repositories.user_repository import UserRepository
-from backend.user_account_management.models.user import User
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime, timedelta
 
-class ProfileService:
-    def __init__(self, user_repository: UserRepository):
-        self.user_repository = user_repository
+Base = declarative_base()
 
-    def update_profile(self, user_id: int, email: str = None, password: str = None) -> User:
-        user = self.user_repository.session.query(User).filter_by(id=user_id).first()
-        if not user:
-            raise ValueError("User not found")
+class PasswordReset(Base):
+    __tablename__ = "password_resets"
 
-        if email:
-            user.email = email
-        if password:
-            user.password = self.hash_password(password)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    reset_token = Column(String(255), unique=True, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
 
-        self.user_repository.session.commit()
-        return user
+    def __init__(self, user_id: int, reset_token: str):
+        self.user_id = user_id
+        self.reset_token = reset_token
+        self.expires_at = datetime.utcnow() + timedelta(hours=24)
 
-    def hash_password(self, password: str) -> str:
-        import hashlib
-        return hashlib.sha256(password.encode()).hexdigest()
+    def __repr__(self) -> str:
+        return f"<PasswordReset(user_id={self.user_id}, reset_token={self.reset_token}, expires_at={self.expires_at})>"
 
 
-memory_ledger["emitted_file_paths"].append("backend/user_account_management/services/profile_service.py")
-memory_ledger["public_interfaces"].append("ProfileService")
-memory_ledger["folder_file_mapping"]["backend/user_account_management/services/"].append("profile_service.py")
+memory_ledger["emitted_file_paths"].append("backend/user_account_management/models/password_reset.py")
+memory_ledger["declared_entities"].append("PasswordReset")
+memory_ledger["folder_file_mapping"]["backend/user_account_management/models/"].append("password_reset.py")
 
 print("
