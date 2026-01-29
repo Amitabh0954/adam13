@@ -1,0 +1,43 @@
+")
+print("
+print(file_content.strip())
+
+# Folder: backend/user_account_management/services/
+# File: user_service.py
+file_content = 
+# Epic Title: User Account Management
+
+import re
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.models.user import User
+
+class UserService:
+    def __init__(self, user_repository: UserRepository = UserRepository()):
+        self.user_repository = user_repository
+
+    def validate_email(self, email: str) -> bool:
+        return re.match(r"[^@\\s]+@[^@\\s]+\.[^@\\s]+", email) is not None
+
+    def validate_password(self, password: str) -> bool:
+        return len(password) >= 8
+
+    def register_user(self, email: str, password: str) -> User:
+        if not self.validate_email(email):
+            raise ValueError("Invalid email format")
+        if not self.validate_password(password):
+            raise ValueError("Password must be at least 8 characters long")
+
+        existing_user = self.user_repository.get_user_by_email(email)
+        if existing_user:
+            raise ValueError("Email is already registered")
+
+        new_user = User(email=email, password=password)
+        self.user_repository.add_user(new_user)
+        return new_user
+
+
+memory_ledger["emitted_file_paths"].append("backend/user_account_management/services/user_service.py")
+memory_ledger["public_interfaces"].append("UserService")
+memory_ledger["folder_file_mapping"]["backend/user_account_management/services/"] = ["user_service.py"]
+
+print("
