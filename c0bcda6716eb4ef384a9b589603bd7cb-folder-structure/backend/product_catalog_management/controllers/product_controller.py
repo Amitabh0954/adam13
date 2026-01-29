@@ -56,3 +56,15 @@ def delete_product(product_id: int):
         return jsonify({'message': 'Product deletion failed'}), 400
     
     return jsonify({'message': 'Product deleted successfully'})
+
+@product_blueprint.route('/products/search', methods=['GET'])
+def search_products():
+    query = request.args.get('q', '')
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', 10))
+    
+    product_repository = ProductRepository()  # Ideally should be injected
+    product_service = ProductService(product_repository)
+    
+    results = product_service.search_products(query, page, per_page)
+    return jsonify(results)
