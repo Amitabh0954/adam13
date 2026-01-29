@@ -1,0 +1,66 @@
+")
+print("
+print(file_content.strip())
+
+# Final file: app.py (update for product update functionality)
+file_content = 
+# Epic Title: Product Catalog Management System
+
+from flask import Flask, request, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from backend.product_catalog_management.repositories.product_repository import ProductRepository
+from backend.product_catalog_management.services.product_service import ProductService
+from backend.product_catalog_management.services.product_update_service import ProductUpdateService
+from backend.product_catalog_management.models.product import Base as ProductBase
+
+app = Flask(__name__)
+
+DATABASE_URL = "mysql://user:password@localhost/mydatabase"
+
+engine = create_engine(DATABASE_URL)
+ProductBase.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+@app.route("/add-product", methods=["POST"])
+def add_product():
+    data = request.json
+    name = data["name"]
+    price = data["price"]
+    description = data["description"]
+
+    session = Session()
+    product_repository = ProductRepository(session)
+    product_service = ProductService(product_repository)
+
+    try:
+        new_product = product_service.add_new_product(name, price, description)
+        return jsonify({"id": new_product.id, "name": new_product.name, "price": new_product.price}), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/update-product/<int:product_id>", methods=["PUT"])
+def update_product(product_id):
+    data = request.json
+    name = data.get("name")
+    price = data.get("price")
+    description = data.get("description")
+
+    session = Session()
+    product_repository = ProductRepository(session)
+    product_update_service = ProductUpdateService(product_repository)
+
+    try:
+        updated_product = product_update_service.update_product(product_id, name, price, description)
+        return jsonify({"id": updated_product.id, "name": updated_product.name, "price": updated_product.price}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
