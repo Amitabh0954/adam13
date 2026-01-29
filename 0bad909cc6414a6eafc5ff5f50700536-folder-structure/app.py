@@ -71,5 +71,28 @@ def remove_from_cart():
 
     return jsonify({'message': 'Product removed from cart successfully'}), 200
 
+@app.route('/update-cart', methods=['PUT'])
+def update_cart():
+    data = request.get_json()
+    user_id = session.get('user_id')
+    product_id = data['product_id']
+    quantity = data['quantity']
+
+    db_connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="mydatabase"
+    )
+
+    shopping_cart_repository = ShoppingCartRepository(db_connection)
+    shopping_cart_service = ShoppingCartService(shopping_cart_repository)
+    result = shopping_cart_service.update_product_quantity(user_id, product_id, quantity)
+
+    if result:
+        return jsonify({'error': result}), 400
+
+    return jsonify({'message': 'Product quantity updated successfully'}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
