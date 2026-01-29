@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Search Products
 
 import sqlite3
 
@@ -15,13 +15,23 @@ class ProductRepository:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
                 price REAL NOT NULL,
-                description TEXT NOT NULL
+                description TEXT NOT NULL,
+                is_deleted BOOLEAN NOT NULL DEFAULT 0
             )""")
 
-    def save_product(self, product_data: dict) -> int:
-        with self.connection:
-            cursor = self.connection.execute("""
-            INSERT INTO products (name, price, description)
-            VALUES (?, ?, ?)""",
-            (product_data['name'], product_data['price'], product_data['description']))
-        return cursor.lastrowid
+    def search_products(self, query: str, limit: int, offset: int) -> list:
+        query = f"%{query}%"
+        cursor = self.connection.execute("""
+        SELECT id, name, price, description FROM products
+        WHERE (name LIKE ? OR description LIKE ?) AND is_deleted = 0
+        LIMIT ? OFFSET ?""",
+        (query, query, limit, offset))
+        return [{'id': row[0], 'name': row[1], 'price': row[2], 'description': row[3]} for row in cursor.fetchall()]
+
+    def count_products(self, query: str) -> int:
+        query = f"%{query}%"
+        cursor = self.connection.execute("""
+        SELECT COUNT(*) FROM products
+        WHERE (name LIKE ? OR description LIKE ?) AND is_deleted = 0""",
+        (query, query))
+        return cursor.fetchone()[0]
