@@ -1,6 +1,6 @@
 # Epic Title: Product Catalog Management
 
-from typing import Optional
+from typing import Optional, List, Dict
 from backend.repositories.product_catalog.product_repository import ProductRepository
 
 class ProductService:
@@ -21,9 +21,9 @@ class ProductService:
         return None
 
     def update_product(self, product_id: int, price: Optional[float] = None, description: Optional[str] = None, category: Optional[str] = None) -> Optional[str]:
-        if price is not None && price <= 0:
+        if price is not None and price <= 0:
             return "Product price must be a positive number"
-        if description is not None && not description:
+        if description is not None and not description:
             return "Product description cannot be empty"
 
         self.product_repository.update_product(product_id, price, description, category)
@@ -31,3 +31,6 @@ class ProductService:
 
     def delete_product(self, product_id: int) -> None:
         self.product_repository.delete_product(product_id)
+
+    def search_products(self, term: str, page: int, per_page: int) -> List[Dict[str, str]]:
+        return self.product_repository.search_products(term, page, per_page)
