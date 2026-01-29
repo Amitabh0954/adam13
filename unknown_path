@@ -1,4 +1,4 @@
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 # In-memory ledger initialization
 memory_ledger = {
@@ -9,95 +9,82 @@ memory_ledger = {
     "folder_file_mapping": {},
     "persistent_fields": {},
     "folder_responsibilities": {
-        "backend/product_catalog_management/controllers": "Endpoints related to product catalog",
-        "backend/product_catalog_management/models": "Database models for product catalog",
-        "backend/product_catalog_management/repositories": "Database interaction for products",
-        "backend/product_catalog_management/services": "Business logic for products"
+        "backend/shopping_cart_functionality/controllers": "Endpoints related to shopping cart functionality",
+        "backend/shopping_cart_functionality/models": "Database models for shopping cart",
+        "backend/shopping_cart_functionality/repositories": "Database interaction for shopping cart",
+        "backend/shopping_cart_functionality/services": "Business logic for shopping cart"
     }
 }
 
 # Declaring new entities and interfaces
-memory_ledger["declared_entities"].extend(["Product", "Category"])
-memory_ledger["public_interfaces"].extend(["ProductRepository", "ProductService", "product_blueprint"])
+memory_ledger["declared_entities"].extend(["ShoppingCart", "ShoppingCartItem", "Product", "User"])
+memory_ledger["public_interfaces"].extend(["ShoppingCartRepository", "ShoppingCartService", "shopping_cart_blueprint"])
 memory_ledger["imports"].extend([
+    "backend.shopping_cart_functionality.models.shopping_cart:ShoppingCart",
+    "backend.shopping_cart_functionality.models.shopping_cart_item:ShoppingCartItem",
     "backend.product_catalog_management.models.product:Product",
-    "backend.product_catalog_management.models.category:Category",
-    "backend.product_catalog_management.repositories.product_repository:ProductRepository",
-    "backend.product_catalog_management.services.product_service:ProductService"
+    "backend.user_account_management.models.user:User",
+    "backend.shopping_cart_functionality.repositories.shopping_cart_repository:ShoppingCartRepository",
+    "backend.shopping_cart_functionality.services.shopping_cart_service:ShoppingCartService"
 ])
 
 # Folder file mapping
-base_folder = "backend/product_catalog_management"
+base_folder = "backend/shopping_cart_functionality"
 memory_ledger["folder_file_mapping"] = {
-    f"{base_folder}/controllers/": ["product_controller.py"],
-    f"{base_folder}/models/": ["product.py", "category.py"],
-    f"{base_folder}/repositories/": ["product_repository.py"],
-    f"{base_folder}/services/": ["product_service.py"]
+    f"{base_folder}/controllers/": ["shopping_cart_controller.py"],
+    f"{base_folder}/models/": ["shopping_cart.py", "shopping_cart_item.py"],
+    f"{base_folder}/repositories/": ["shopping_cart_repository.py"],
+    f"{base_folder}/services/": ["shopping_cart_service.py"]
 }
 
-# Folder: backend/product_catalog_management/controllers/
-# File: product_controller.py
+# Folder: backend/shopping_cart_functionality/controllers/
+# File: shopping_cart_controller.py
 file_content = 
-# Epic Title: Product Catalog Management
+# Epic Title: Shopping Cart Functionality
 
 from flask import Blueprint, request, jsonify
-from backend.product_catalog_management.services.product_service import ProductService
+from flask_login import login_required, current_user
+from backend.shopping_cart_functionality.services.shopping_cart_service import ShoppingCartService
 
-product_blueprint = Blueprint('product', __name__)
-product_service = ProductService()
+shopping_cart_blueprint = Blueprint('shopping_cart', __name__)
+shopping_cart_service = ShoppingCartService()
 
-@product_blueprint.route('/add', methods=['POST'])
-def add_product():
+@shopping_cart_blueprint.route('/add', methods=['POST'])
+@login_required
+def add_to_cart():
     data = request.json
-    name = data.get('name')
-    price = data.get('price')
-    description = data.get('description')
-    category_id = data.get('category_id')
+    product_id = data.get('product_id')
+    quantity = data.get('quantity', 1)
 
     try:
-        product_service.add_product(name, price, description, category_id)
-        return jsonify({'message': 'Product added successfully'}), 201
+        shopping_cart_service.add_product_to_cart(current_user.id, product_id, quantity)
+        return jsonify({'message': 'Product added to cart successfully'}), 201
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
-@product_blueprint.route('/update/<int:product_id>', methods=['PUT'])
-def update_product(product_id):
-    data = request.json
-    name = data.get('name')
-    price = data.get('price')
-    description = data.get('description')
-    category_id = data.get('category_id')
+@shopping_cart_blueprint.route('/items', methods=['GET'])
+@login_required
+def get_cart_items():
+    items = shopping_cart_service.get_cart_items(current_user.id)
+    return jsonify([item.to_dict() for item in items]), 200
 
+@shopping_cart_blueprint.route('/remove/<int:item_id>', methods=['DELETE'])
+@login_required
+def remove_from_cart(item_id):
     try:
-        product_service.update_product(product_id, name, price, description, category_id)
-        return jsonify({'message': 'Product updated successfully'}), 200
+        shopping_cart_service.remove_cart_item(current_user.id, item_id)
+        return jsonify({'message': 'Product removed from cart successfully'}), 200
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
 
-@product_blueprint.route('/delete/<int:product_id>', methods=['DELETE'])
-def delete_product(product_id):
-    try:
-        product_service.delete_product(product_id)
-        return jsonify({'message': 'Product deleted successfully'}), 200
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
-
-@product_blueprint.route('/search', methods=['GET'])
-def search_products():
-    query = request.args.get('query', '')
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', 10))
-    products = product_service.search_products(query, page, limit)
-
-    return jsonify([product.to_dict() for product in products]), 200
-
-@product_blueprint.route('/products', methods=['GET'])
-def get_products():
-    products = product_service.get_all_products()
-    return jsonify([product.to_dict() for product in products]), 200
+@shopping_cart_blueprint.route('/total_price', methods=['GET'])
+@login_required
+def get_total_price():
+    total_price = shopping_cart_service.get_total_cart_price(current_user.id)
+    return jsonify({'total_price': total_price}), 200
 
 
-memory_ledger["emitted_file_paths"].append(f"{base_folder}/controllers/product_controller.py")
-memory_ledger["folder_file_mapping"][f"{base_folder}/controllers/"].append("product_controller.py")
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/controllers/shopping_cart_controller.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/controllers/"].append("shopping_cart_controller.py")
 
 print("
