@@ -1,7 +1,7 @@
 # Generating files as per the provided folder structure and user stories
 
 # Epic title
-Epic_Title = "User Account Management"
+Epic_Title = "Product Catalog Management"
 
 # In-memory ledger initialization
 memory_ledger = {
@@ -15,72 +15,83 @@ memory_ledger = {
 }
 
 # Existing entities and interfaces
-memory_ledger["declared_entities"] = ["User"]
+memory_ledger["declared_entities"] = ["Product"]
 memory_ledger["public_interfaces"] = [
-    "UserRepository",
-    "UserService",
-    "user_blueprint"
+    "ProductRepository",
+    "ProductService",
+    "product_blueprint"
 ]
 memory_ledger["emitted_file_paths"] = [
-    "backend/user_account_management/controllers/user_controller.py",
-    "backend/user_account_management/models/user.py",
-    "backend/user_account_management/repositories/user_repository.py",
-    "backend/user_account_management/services/user_service.py",
+    "backend/product_catalog_management/models/product.py",
+    "backend/product_catalog_management/repositories/product_repository.py",
+    "backend/product_catalog_management/services/product_service.py",
+    "backend/product_catalog_management/controllers/product_controller.py",
     "app.py"
 ]
 
 # Imports for existing services and models
 memory_ledger["imports"] = [
-    "backend/user_account_management/models/user:User",
-    "backend/user_account_management/repositories/user_repository:UserRepository",
-    "backend/user_account_management/services/user_service:UserService"
+    "backend/product_catalog_management/models/product:Product",
+    "backend/product_catalog_management/repositories/product_repository:ProductRepository",
+    "backend/product_catalog_management/services/product_service:ProductService"
 ]
 
 # Folder file mapping
 memory_ledger["folder_file_mapping"] = {
-    "backend/user_account_management/controllers/": ["user_controller.py"],
-    "backend/user_account_management/models/": ["user.py"],
-    "backend/user_account_management/repositories/": ["user_repository.py"],
-    "backend/user_account_management/services/": ["user_service.py"]
+    "backend/product_catalog_management/controllers/": ["product_controller.py"],
+    "backend/product_catalog_management/models/": ["product.py"],
+    "backend/product_catalog_management/repositories/": ["product_repository.py"],
+    "backend/product_catalog_management/services/": ["product_service.py"]
 }
 
-# Folder: backend/user_account_management/models/
-# Update file: user.py to include password hashing (Bcrypt)
+# Folder: backend/product_catalog_management/services/
+# Update file: product_service.py to support updating product details
 file_content = 
-# Epic Title: User Account Management
+# Epic Title: Product Catalog Management
 
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from werkzeug.security import generate_password_hash, check_password_hash
+from backend.product_catalog_management.repositories.product_repository import ProductRepository
+from backend.product_catalog_management.models.product import Product
 
-Base = declarative_base()
+class ProductService:
+    def __init__(self, product_repository: ProductRepository = ProductRepository()):
+        self.product_repository = product_repository
 
-class User(Base):
-    __tablename__ = 'users'
+    def validate_product(self, name: str, price: float, description: str) -> bool:
+        if not name:
+            raise ValueError("Product name cannot be empty")
+        if price <= 0:
+            raise ValueError("Product price must be a positive number")
+        if not description:
+            raise ValueError("Product description cannot be empty")
+        return True
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String(255), unique=True, nullable=False)
-    password_hash = Column(String(255), nullable=False)
+    def add_new_product(self, name: str, price: float, description: str) -> Product:
+        if not self.validate_product(name, price, description):
+            raise ValueError("Invalid product data")
 
-    @property
-    def password(self):
-        raise AttributeError('password is not a readable attribute')
+        if self.product_repository.get_product_by_name(name):
+            raise ValueError("Product name must be unique")
 
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
+        new_product = Product(name=name, price=price, description=description)
+        self.product_repository.add_product(new_product)
+        return new_product
 
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    def update_product(self, product_id: int, name: str, price: float, description: str) -> Product:
+        product = self.product_repository.session.query(Product).get(product_id)
+        if not product:
+            raise ValueError("Product not found")
 
-    def __repr__(self):
-        return f"<User(email={self.email})>"
+        if not self.validate_product(name, price, description):
+            raise ValueError("Invalid product data")
+        
+        product.name = name
+        product.price = price
+        product.description = description
+        self.product_repository.session.commit()
+        return product
 
-DATABASE_URL = 'mysql://user:password@localhost/mydatabase'
-engine = create_engine(DATABASE_URL)
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
 
+memory_ledger["emitted_file_paths"].append("backend/product_catalog_management/services/product_service.py")
+memory_ledger["folder_file_mapping"]["backend/product_catalog_management/services/"] = ["product_service.py"]
 
 print("
