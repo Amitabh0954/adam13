@@ -1,4 +1,4 @@
-# Epic Title: Password Recovery
+# Epic Title: User Login
 
 import sqlite3
 import time
@@ -21,11 +21,10 @@ class UserRepository:
             )""")
             
             self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS password_recoveries (
+            CREATE TABLE IF NOT EXISTS sessions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
-                token TEXT NOT NULL,
-                token_expiry_time INTEGER NOT NULL,
+                start_time INTEGER NOT NULL,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )""")
 
@@ -36,26 +35,10 @@ class UserRepository:
             return {"id": row[0], "email": row[1], "password": row[2], "first_name": row[3], "last_name": row[4]}
         return None
     
-    def save_recovery_token(self, user_id: int, token: str, token_expiry_time: int):
+    def create_session(self, user_id: int) -> int:
         with self.connection:
-            self.connection.execute("""
-            INSERT INTO password_recoveries (user_id, token, token_expiry_time)
-            VALUES (?, ?, ?)""", 
-            (user_id, token, token_expiry_time))
-
-    def find_user_by_token(self, token: str) -> dict|None:
-        cursor = self.connection.execute("""
-        SELECT u.id, u.email, u.password, u.first_name, u.last_name, pr.token_expiry_time
-        FROM users AS u
-        JOIN password_recoveries AS pr ON u.id = pr.user_id
-        WHERE pr.token = ?""", (token,))
-        row = cursor.fetchone()
-        if row:
-            return {"id": row[0], "email": row[1], "password": row[2], "first_name": row[3], "last_name": row[4], "token_expiry_time": row[5]}
-        return None
-
-    def update_password(self, user_id: int, new_password: str):
-        with self.connection:
-            self.connection.execute("""
-            UPDATE users SET password = ? WHERE id = ?""",
-            (new_password, user_id))
+            cursor = self.connection.execute("""
+            INSERT INTO sessions (user_id, start_time)
+            VALUES (?, ?)""", 
+            (user_id, int(time.time())))
+        return cursor.lastrowid
