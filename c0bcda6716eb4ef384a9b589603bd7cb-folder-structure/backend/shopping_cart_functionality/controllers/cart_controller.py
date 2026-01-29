@@ -24,3 +24,19 @@ def add_to_cart():
         return jsonify({'message': 'Failed to add product to cart'}), 400
     
     return jsonify({'message': 'Product added to cart successfully'})
+
+@cart_blueprint.route('/cart/remove', methods=['POST'])
+def remove_from_cart():
+    data = request.json
+    user_id = data.get('user_id')
+    session_id = data.get('session_id')
+    product_id = data.get('product_id')
+
+    cart_repository = CartRepository()  # Ideally should be injected
+    cart_service = CartService(cart_repository)
+
+    success = cart_service.remove_product_from_cart(user_id, session_id, product_id)
+    if not success:
+        return jsonify({'message': 'Failed to remove product from cart'}), 400
+    
+    return jsonify({'message': 'Product removed from cart successfully'})
