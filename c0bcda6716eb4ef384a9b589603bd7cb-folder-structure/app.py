@@ -1,24 +1,24 @@
-# Epic Title: User Account Management
+# Epic Title: Product Catalog Management
 
 from flask import Flask
 from structured_logging import setup_logging
-from backend.user_account_management.controllers.user_controller import user_blueprint
+from backend.product_catalog_management.controllers.product_controller import product_blueprint
 
 def create_app() -> Flask:
     app = Flask(__name__)
     
     setup_logging()
     
-    app.register_blueprint(user_blueprint, url_prefix='/api/v1')
+    app.register_blueprint(product_blueprint, url_prefix='/api/v1')
     
     @app.before_first_request
     def initialize_database():
-        from backend.user_account_management.models.user import Base
+        from backend.product_catalog_management.models.product import Base as ProductBase
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
         
         engine = create_engine('mysql+pymysql://user:password@localhost/dbname')
-        Base.metadata.create_all(engine)
+        ProductBase.metadata.create_all(engine)
         session = sessionmaker(bind=engine)()
         app.config['db_session'] = session
     
