@@ -45,3 +45,11 @@ class CartRepository:
         self.session.add(cart)
         self.session.commit()
         return cart
+
+    def save_cart(self, cart: Cart) -> bool:
+        try:
+            self.session.commit()
+            return True
+        except:
+            self.session.rollback()
+            return False
