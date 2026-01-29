@@ -1,6 +1,6 @@
 # Epic Title: Product Catalog Management
 
-from typing import Optional
+from typing import Optional, List, Dict
 from structured_logging import get_logger
 from backend.product_catalog_management.repositories.product_repository import ProductRepository
 from backend.product_catalog_management.models.product import Product
@@ -59,3 +59,18 @@ class ProductService:
         self.product_repository.delete_product(product)
         logger.info(f"Product deleted successfully: {product_id}")
         return True
+
+    def search_products(self, query: str, page: int, per_page: int) -> List[Dict[str, Any]]:
+        products = self.product_repository.search(query, page, per_page)
+        logger.info(f"Search for query '{query}' returned {len(products)} products")
+        return [self.format_product_result(product, query) for product in products]
+    
+    def format_product_result(self, product: Product, query: str) -> Dict[str, Any]:
+        highlighted_name = product.name.replace(query, f"<b>{query}</b>")
+        highlighted_description = product.description.replace(query, f"<b>{query}</b>")
+        return {
+            'id': product.id,
+            'name': highlighted_name,
+            'price': product.price,
+            'description': highlighted_description
+        }
