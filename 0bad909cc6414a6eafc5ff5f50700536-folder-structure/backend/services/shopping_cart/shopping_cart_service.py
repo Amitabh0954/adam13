@@ -18,3 +18,11 @@ class ShoppingCartService:
     def get_cart_items(self, user_id: Optional[int]) -> List[Dict[str, int]]:
         cart_id = self.shopping_cart_repository.create_cart(user_id)
         return self.shopping_cart_repository.get_cart_items(cart_id)
+
+    def remove_product_from_cart(self, user_id: Optional[int], product_id: int, confirmation: str) -> Optional[str]:
+        if confirmation != 'yes':
+            return "Product removal not confirmed"
+
+        cart_id = self.shopping_cart_repository.create_cart(user_id)
+        self.shopping_cart_repository.remove_product_from_cart(cart_id, product_id)
+        return None
