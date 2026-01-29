@@ -1,0 +1,31 @@
+")
+print(f"
+print(file_content.strip())
+
+# Folder: backend/user_account_management/repositories/
+# File: user_repository.py
+file_content = 
+# Epic Title: User Account Management
+
+from sqlalchemy.orm import Session
+from backend.user_account_management.models.user import User, Session as db_session
+
+class UserRepository:
+    def __init__(self, session: Session = db_session()):
+        self.session = session
+
+    def add_user(self, user: User):
+        self.session.add(user)
+        self.session.commit()
+
+    def get_user_by_email(self, email: str) -> User:
+        return self.session.query(User).filter_by(email=email).first()
+
+    def user_exists(self, email: str) -> bool:
+        return self.get_user_by_email(email) is not None
+
+
+memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/user_repository.py")
+memory_ledger["folder_file_mapping"][f"{base_folder}/repositories/"].append("user_repository.py")
+
+print("
