@@ -1,11 +1,11 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Product Categorization
 
 from flask import Flask
-from backend.controllers.shopping_cart.shopping_cart_controller import shopping_cart_controller
+from backend.controllers.product_catalog.category_controller import category_controller
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.register_blueprint(shopping_cart_controller, url_prefix='/api')
+    app.register_blueprint(category_controller, url_prefix='/api')
     
     # Additional setup such as logging and lifecycle hooks can be added here
     
