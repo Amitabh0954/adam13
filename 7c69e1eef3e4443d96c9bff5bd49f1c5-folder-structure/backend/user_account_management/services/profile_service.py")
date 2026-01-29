@@ -1,0 +1,132 @@
+")
+print("
+print(file_content.strip())
+
+# Final file: app.py (update for profile management functionality)
+file_content = 
+# Epic Title: User Account Management System
+
+from flask import Flask, request, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from backend.user_account_management.repositories.user_repository import UserRepository
+from backend.user_account_management.repositories.session_repository import SessionRepository
+from backend.user_account_management.repositories.password_reset_repository import PasswordResetRepository
+from backend.user_account_management.services.registration_service import RegistrationService
+from backend.user_account_management.services.login_service import LoginService
+from backend.user_account_management.services.password_recovery_service import PasswordRecoveryService
+from backend.user_account_management.services.profile_service import ProfileService
+from backend.user_account_management.models.user import Base as UserBase
+from backend.user_account_management.models.session import Base as SessionBase
+from backend.user_account_management.models.password_reset import Base as PasswordResetBase
+
+app = Flask(__name__)
+
+DATABASE_URL = "mysql://user:password@localhost/mydatabase"
+
+engine = create_engine(DATABASE_URL)
+UserBase.metadata.create_all(engine)
+SessionBase.metadata.create_all(engine)
+PasswordResetBase.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+@app.route("/register", methods=["POST"])
+def register_user():
+    data = request.json
+    email = data["email"]
+    password = data["password"]
+    
+    session = Session()
+    user_repository = UserRepository(session)
+    registration_service = RegistrationService(user_repository)
+
+    new_user = registration_service.register_user(email, password)
+    
+    return jsonify({"id": new_user.id, "email": new_user.email}), 201
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    data = request.json
+    email = data["email"]
+    password = data["password"]
+
+    session = Session()
+    user_repository = UserRepository(session)
+    session_repository = SessionRepository(session)
+    login_service = LoginService(user_repository, session_repository)
+    
+    try:
+        new_session = login_service.login_user(email, password)
+        return jsonify({"session_token": new_session.session_token}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 401
+
+@app.route("/logout", methods=["POST"])
+def logout_user():
+    data = request.json
+    session_token = data["session_token"]
+
+    session = Session()
+    session_repository = SessionRepository(session)
+    login_service = LoginService(None, session_repository)  # Passing None since not using user repository here
+    
+    login_service.logout_user(session_token)
+    return jsonify({"message": "Logged out successfully"}), 200
+
+@app.route("/password-reset", methods=["POST"])
+def request_password_reset():
+    data = request.json
+    email = data["email"]
+
+    session = Session()
+    user_repository = UserRepository(session)
+    password_reset_repository = PasswordResetRepository(session)
+    password_recovery_service = PasswordRecoveryService(user_repository, password_reset_repository)
+
+    try:
+        password_reset = password_recovery_service.request_password_reset(email)
+        return jsonify({"reset_token": password_reset.reset_token}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/password-reset/<reset_token>", methods=["POST"])
+def reset_password(reset_token):
+    data = request.json
+    new_password = data["new_password"]
+
+    session = Session()
+    user_repository = UserRepository(session)
+    password_reset_repository = PasswordResetRepository(session)
+    password_recovery_service = PasswordRecoveryService(user_repository, password_reset_repository)
+
+    try:
+        password_recovery_service.reset_password(reset_token, new_password)
+        return jsonify({"message": "Password reset successfully"}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/profile", methods=["POST"])
+def update_profile():
+    data = request.json
+    user_id = data["user_id"]
+    email = data.get("email")
+    password = data.get("password")
+
+    session = Session()
+    user_repository = UserRepository(session)
+    profile_service = ProfileService(user_repository)
+
+    try:
+        updated_user = profile_service.update_profile(user_id, email, password)
+        return jsonify({"id": updated_user.id, "email": updated_user.email}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+memory_ledger["emitted_file_paths"].append("app.py")
+
+print("
