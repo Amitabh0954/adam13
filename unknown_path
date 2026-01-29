@@ -14,64 +14,30 @@ memory_ledger = {
     "folder_responsibilities": {}
 }
 
-# Existing information
-memory_ledger["declared_entities"] = ["User"]
-memory_ledger["public_interfaces"] = ["UserRepository", "RegistrationService"]
-memory_ledger["emitted_file_paths"] = [
-    "backend/user_account_management/models/user.py",
-    "backend/user_account_management/repositories/user_repository.py",
-    "backend/user_account_management/services/registration_service.py",
-    "app.py"
-]
-
-memory_ledger["imports"] = [
-    "backend/user_account_management/models/user:User",
-    "backend/user_account_management/repositories/user_repository:UserRepository"
-]
-
-memory_ledger["folder_file_mapping"] = {
-    "backend/user_account_management/models/": ["user.py"],
-    "backend/user_account_management/repositories/": ["user_repository.py"],
-    "backend/user_account_management/services/": ["registration_service.py"]
-}
-
-# Persistent fields and responsibilities
-memory_ledger["persistent_fields"] = {
-    "User": ["id", "email", "password", "is_active"]
-}
-
-memory_ledger["folder_responsibilities"] = {
-    "backend/user_account_management/models/": "Models for user account management",
-    "backend/user_account_management/repositories/": "Repositories for user account management",
-    "backend/user_account_management/services/": "Services for user account management"
-}
-
 # Folder: backend/user_account_management/models/
-# File: session.py
+# File: user.py
 file_content = 
 # Epic Title: User Account Management System
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
 
 Base = declarative_base()
 
-class Session(Base):
-    __tablename__ = "sessions"
+class User(Base):
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    session_token = Column(String(255), unique=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    email = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)  # Password to meet security criteria
     is_active = Column(Boolean, default=True)
 
     def __repr__(self) -> str:
-        return f"<Session(user_id={self.user_id}, session_token={self.session_token})>"
+        return f"<User(email={self.email}, is_active={self.is_active})>"
 
 
-memory_ledger["emitted_file_paths"].append("backend/user_account_management/models/session.py")
-memory_ledger["declared_entities"].append("Session")
-memory_ledger["folder_file_mapping"]["backend/user_account_management/models/"].append("session.py")
+memory_ledger["emitted_file_paths"].append("backend/user_account_management/models/user.py")
+memory_ledger["declared_entities"].append("User")
+memory_ledger["folder_file_mapping"]["backend/user_account_management/models/"] = ["user.py"]
 
 print("
