@@ -21,3 +21,7 @@ class ProductRepository:
 
     def update_product(self, product: Product) -> None:
         self.session.commit()
+
+    def delete_product(self, product: Product) -> None:
+        self.session.delete(product)
+        self.session.commit()
