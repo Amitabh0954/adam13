@@ -14,36 +14,8 @@ memory_ledger = {
     "folder_responsibilities": {}
 }
 
-# Existing entities and interfaces
-memory_ledger["declared_entities"] = ["ShoppingCart", "CartItem"]
-memory_ledger["public_interfaces"] = [
-    "ShoppingCartRepository",
-    "ShoppingCartService"
-]
-memory_ledger["emitted_file_paths"] = [
-    "backend/shopping_cart/models/cart_item.py",
-    "backend/shopping_cart/models/shopping_cart.py",
-    "backend/shopping_cart/repositories/shopping_cart_repository.py",
-    "backend/shopping_cart/services/shopping_cart_service.py",
-    "app.py"
-]
-
-# Imports for existing services and models
-memory_ledger["imports"] = [
-    "backend/shopping_cart/models/cart_item:CartItem",
-    "backend/shopping_cart/models/shopping_cart:ShoppingCart",
-    "backend/shopping_cart/repositories/shopping_cart_repository:ShoppingCartRepository"
-]
-
-# Folder file mapping
-memory_ledger["folder_file_mapping"] = {
-    "backend/shopping_cart/models/": ["cart_item.py", "shopping_cart.py"],
-    "backend/shopping_cart/repositories/": ["shopping_cart_repository.py"],
-    "backend/shopping_cart/services/": ["shopping_cart_service.py"]
-}
-
 # Folder: backend/shopping_cart/models/
-# Update file: cart_item.py to include cart persistence
+# File: cart_item.py
 file_content = 
 # Epic Title: Shopping Cart Functionality
 
@@ -59,10 +31,13 @@ class CartItem(Base):
     id = Column(Integer, primary_key=True)
     cart_id = Column(Integer, ForeignKey("shopping_carts.id"), nullable=False)
     product_id = Column(Integer, nullable=False)
-    quantity = Column(Integer, nullable=False, default=1)
 
     def __repr__(self) -> str:
-        return f"<CartItem(cart_id={self.cart_id}, product_id={self.product_id}, quantity={self.quantity})>"
+        return f"<CartItem(cart_id={self.cart_id}, product_id={self.product_id})>"
 
+
+memory_ledger["emitted_file_paths"].append("backend/shopping_cart/models/cart_item.py")
+memory_ledger["declared_entities"].append("CartItem")
+memory_ledger["folder_file_mapping"]["backend/shopping_cart/models/"] = ["cart_item.py"]
 
 print("
