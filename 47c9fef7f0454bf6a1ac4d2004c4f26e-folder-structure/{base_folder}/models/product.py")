@@ -8,6 +8,7 @@ file_content =
 # Epic Title: Product Catalog Management
 
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import or_
 from backend.product_catalog_management.models.product import Product, Session as db_session
 
 class ProductRepository:
@@ -31,6 +32,14 @@ class ProductRepository:
 
     def get_product_by_id(self, product_id: int) -> Product:
         return self.session.query(Product).get(product_id)
+
+    def search_products(self, query: str, page: int, per_page: int) -> list[Product]:
+        return self.session.query(Product).filter(
+            or_(
+                Product.name.ilike(f'%{query}%'),
+                Product.description.ilike(f'%{query}%')
+            )
+        ).filter_by(deleted=False).offset((page - 1) * per_page).limit(per_page).all()
 
 
 memory_ledger["emitted_file_paths"].append(f"{base_folder}/repositories/product_repository.py")
