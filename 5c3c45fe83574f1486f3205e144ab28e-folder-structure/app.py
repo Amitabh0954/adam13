@@ -1,17 +1,23 @@
-# Epic Title: Product Catalog Management
+# Epic Title: User Account Management
 from flask import Flask, session
-from backend.product_catalog.routes.add_product import add_product_bp
+from backend.user_account.routes.user_registration import user_registration_bp
+from backend.user_account.routes.user_login import user_login_bp
+from backend.user_account.routes.password_recovery import password_recovery_bp
+from backend.user_account.routes.profile_management import profile_management_bp
 
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'supersecretkey'
     app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # Session will timeout after 30 minutes of inactivity
     
-    app.register_blueprint(add_product_bp, url_prefix='/api/product_catalog')
+    app.register_blueprint(user_registration_bp, url_prefix='/api/user_account')
+    app.register_blueprint(user_login_bp, url_prefix='/api/user_account')
+    app.register_blueprint(password_recovery_bp, url_prefix='/api/user_account')
+    app.register_blueprint(profile_management_bp, url_prefix='/api/user_account')
     
     @app.route('/')
     def index():
-        return "Welcome to the Product Catalog Management System"
+        return "Welcome to the User Account Management System"
 
     return app
 
