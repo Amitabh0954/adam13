@@ -36,3 +36,13 @@ class ShoppingCartService:
             return {"error": "Failed to remove product from cart"}
 
         return {"message": "Product removed from cart successfully"}
+
+    def update_quantity_in_cart(self, user_id: int, product_id: int, quantity: int) -> dict:
+        if not CartItem.validate_quantity(quantity):
+            return {"error": "Quantity must be a positive integer"}
+
+        success = self.shopping_cart_repository.update_quantity(user_id, product_id, quantity)
+        if not success:
+            return {"error": "Failed to update product quantity in cart"}
+
+        return {"message": "Product quantity updated successfully"}
