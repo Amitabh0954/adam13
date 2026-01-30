@@ -5,11 +5,14 @@ class ShoppingCartService:
     def __init__(self):
         self.shopping_cart_repository = ShoppingCartRepository()
 
-    def add_product_to_cart(self, user_id: int, product_id: int, quantity: int) -> dict:
-        if not self.shopping_cart_repository.is_product_available(product_id):
-            return {"error": "Product is not available"}
+    def save_cart(self, user_id: int) -> dict:
+        success = self.shopping_cart_repository.save_cart(user_id)
+        if success:
+            return {"message": "Shopping cart saved successfully"}
+        return {"error": "Failed to save shopping cart"}
 
-        cart_item_id = self.shopping_cart_repository.add_product_to_cart(user_id, product_id, quantity)
-        if cart_item_id:
-            return {"cart_item_id": cart_item_id, "message": "Product added to cart successfully"}
-        return {"error": "Failed to add product to cart"}
+    def retrieve_cart(self, user_id: int) -> dict:
+        cart_items = self.shopping_cart_repository.retrieve_cart(user_id)
+        if cart_items:
+            return {"cart_items": cart_items}
+        return {"error": "Failed to retrieve shopping cart"}
