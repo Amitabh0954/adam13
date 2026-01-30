@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Add New Product
 
 import os
 import django
@@ -12,7 +12,6 @@ from backend.services.user_account.user_login_service import UserLoginService
 from backend.services.user_account.password_reset_service import PasswordResetService
 from backend.services.user_account.user_profile_service import UserProfileService
 from backend.services.product_catalog.product_service import ProductService
-from backend.services.product_catalog.product_update_service import ProductUpdateService
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -53,7 +52,6 @@ user_login_service = UserLoginService()
 password_reset_service = PasswordResetService()
 user_profile_service = UserProfileService()
 product_service = ProductService()
-product_update_service = ProductUpdateService()
 
 @csrf_exempt
 def register_user(request):
@@ -186,27 +184,6 @@ def add_product(request):
             return JsonResponse({'error': message}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def update_product(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        product_id = data.get('product_id')
-        name = data.get('name')
-        price = data.get('price')
-        description = data.get('description')
-        
-        if not product_id:
-            return JsonResponse({'error': 'Product ID is required'}, status=400)
-        
-        success, message = product_update_service.update_product(product_id, name, price, description)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
 def list_products(request):
     if request.method == 'GET':
         products = product_service.get_all_products()
@@ -225,7 +202,6 @@ urlpatterns = [
     path('update-profile/', update_profile),
     path('get-profile/', get_profile),
     path('add-product/', add_product),
-    path('update-product/', update_product),
     path('list-products/', list_products),
 ]
 
