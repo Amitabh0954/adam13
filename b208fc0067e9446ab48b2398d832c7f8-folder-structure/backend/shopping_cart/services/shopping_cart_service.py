@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 from shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
 from product_catalog_management.models.product import Product
@@ -21,3 +21,9 @@ class ShoppingCartService:
     def remove_product_from_cart(self, user: Optional[User], session: Optional[Session], product: Product) -> None:
         cart = self.shopping_cart_repository.get_or_create_cart(user, session)
         self.shopping_cart_repository.remove_product_from_cart(cart, product)
+
+    def modify_product_quantity(self, user: Optional[User], session: Optional[Session], product: Product, quantity: int) -> Optional[str]:
+        cart = self.shopping_cart_repository.get_or_create_cart(user, session)
+        if quantity <= 0:
+            return "Quantity must be a positive integer"
+        return self.shopping_cart_repository.modify_product_quantity(cart, product, quantity)
