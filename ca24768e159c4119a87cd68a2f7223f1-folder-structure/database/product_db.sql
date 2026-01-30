@@ -10,19 +10,3 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT NOT NULL,
     PRIMARY KEY (id)
 );
-
-CREATE TABLE IF NOT EXISTS categories (
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    parent_id INT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE SET NULL
-);
-
-CREATE TABLE IF NOT EXISTS product_categories (
-    product_id INT NOT NULL,
-    category_id INT NOT NULL,
-    PRIMARY KEY (product_id, category_id),
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
-);
