@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Product Categorization
 
 import os
 import django
@@ -12,7 +12,6 @@ from account.controllers.profile_controller import update_profile
 from catalog.controllers.product_controller import add_product, update_product, delete_product
 from catalog.controllers.search_controller import search_products
 from catalog.controllers.category_controller import add_category
-from cart.controllers.cart_controller import add_product_to_cart
 
 settings.configure(
     DEBUG=os.getenv('DEBUG', 'on') == 'on',
@@ -21,7 +20,6 @@ settings.configure(
         'django.contrib.contenttypes',
         'account',
         'catalog',
-        'cart',
     ],
     MIDDLEWARE=[
         'django.middleware.common.CommonMiddleware',
@@ -58,7 +56,6 @@ urlpatterns = [
     path('delete-product/<int:product_id>/', delete_product),
     path('search-products/', search_products),
     path('add-category/', add_category),
-    path('add-product-to-cart/', add_product_to_cart),
 ]
 
 if __name__ == '__main__':
