@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 import os
 import django
@@ -321,6 +321,30 @@ def remove_product_from_cart(request):
             return JsonResponse({'error': message}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
+@csrf_exempt
+def update_cart_item_quantity(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        
+        user_id = request.session.get('user_id')
+        session_key = request.session.session_key
+        product_id = data.get('product_id')
+        quantity = data.get('quantity')
+        
+        if not product_id:
+            return JsonResponse({'error': 'Product ID is required'}, status=400)
+        
+        if quantity <= 0:
+            return JsonResponse({'error': 'Quantity must be a positive integer'}, status=400)
+        
+        success, message = cart_service.update_product_quantity_in_cart(user_id, session_key, product_id, quantity)
+        
+        if success:
+            return JsonResponse({'message': message}, status=200)
+        else:
+            return JsonResponse({'error': message}, status=400)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
 def list_cart_items(request):
     if request.method == 'GET':
         user_id = request.session.get('user_id')
@@ -349,6 +373,7 @@ urlpatterns = [
     path('list-categories/', list_categories),
     path('add-product-to-cart/', add_product_to_cart),
     path('remove-product-from-cart/', remove_product_from_cart),
+    path('update-cart-item-quantity/', update_cart_item_quantity),
     path('list-cart-items/', list_cart_items),
 ]
 
