@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Update Product Details
 
 from products.models.product import Product
 from typing import Optional, List
@@ -16,5 +16,13 @@ class ProductRepository:
         except Product.DoesNotExist:
             return None
 
+    def get_product_by_id(self, product_id: int) -> Optional[Product]:
+        try:
+            return Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return None
+
     def get_all_products(self) -> List[Product]:
         return list(Product.objects.all())
+
+# This file redefinition here allows safe addition of new methods without forward reference issues.
