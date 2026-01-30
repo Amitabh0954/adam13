@@ -5,16 +5,11 @@ class ProductService:
     def __init__(self):
         self.product_repository = ProductRepository()
 
-    def search_products(self, search_term: str, page: int, page_size: int) -> dict:
-        if not search_term:
-            return {"error": "Search term cannot be empty"}
+    def delete_product(self, product_id: int) -> dict:
+        if product_id is None:
+            return {"error": "Product ID is required"}
 
-        results, total = self.product_repository.search_products(search_term, page, page_size)
-        total_pages = (total // page_size) + (1 if total % page_size > 0 else 0)
-
-        return {
-            "results": results,
-            "total": total,
-            "page": page,
-            "total_pages": total_pages
-        }
+        deleted = self.product_repository.delete_product(product_id)
+        if deleted:
+            return {"message": "Product deleted successfully"}
+        return {"error": "Failed to delete product"}
