@@ -11,7 +11,6 @@ from backend.product_catalog.routes.delete_product import delete_product_bp
 from backend.product_catalog.routes.search_product import search_product_bp
 from backend.product_catalog.routes.product_categorization import product_categorization_bp
 from backend.shopping_cart.routes.add_to_cart import add_to_cart_bp
-from backend.shopping_cart.routes.remove_from_cart import remove_from_cart_bp
 from flask_login import LoginManager
 
 def create_app() -> Flask:
@@ -32,7 +31,6 @@ def create_app() -> Flask:
     app.register_blueprint(search_product_bp, url_prefix='/api/product_catalog')
     app.register_blueprint(product_categorization_bp, url_prefix='/api/product_catalog')
     app.register_blueprint(add_to_cart_bp, url_prefix='/api/shopping_cart')
-    app.register_blueprint(remove_from_cart_bp, url_prefix='/api/shopping_cart')
 
     @app.route('/')
     def index():
