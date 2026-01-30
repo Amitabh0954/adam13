@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 from typing import Optional
 from shopping_cart_management.repositories.cart_repository import CartRepository
@@ -21,3 +21,13 @@ class CartService:
         if cart:
             return self.cart_repository.remove_product_from_cart(cart, product)
         return False
+
+    def modify_product_quantity(self, user: User, product: Product, quantity: int) -> Optional[ShoppingCartItem]:
+        cart = self.cart_repository.get_cart_by_user(user)
+        if cart:
+            if quantity <= 0:
+                self.cart_repository.remove_product_from_cart(cart, product)
+                return None
+            else:
+                return self.cart_repository.update_product_quantity(cart, product, quantity)
+        return None
