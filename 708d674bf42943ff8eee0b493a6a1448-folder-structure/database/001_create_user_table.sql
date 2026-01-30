@@ -1,4 +1,4 @@
-# Epic Title: User Registration
+# Epic Title: User Login
 
 CREATE TABLE IF NOT EXISTS `account_user` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
