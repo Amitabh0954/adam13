@@ -71,6 +71,6 @@
       }
     ]
   ],
-  "techstack": "Flask",
+  "techstack": "Django",
   "database": "mysql"
 }
