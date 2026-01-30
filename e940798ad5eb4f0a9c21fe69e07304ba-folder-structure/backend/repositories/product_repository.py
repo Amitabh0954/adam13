@@ -16,13 +16,15 @@ class ProductRepository:
         self.cursor.execute("SELECT * FROM products WHERE id = %s", (product_id,))
         return self.cursor.fetchone()
 
-    def delete_product(self, product_id: int) -> bool:
-        self.cursor.execute("DELETE FROM products WHERE id = %s", (product_id,))
+    def update_product(self, product: Product) -> bool:
+        query = """
+        UPDATE products SET name = %s, description = %s, price = %s, category_id = %s WHERE id = %s
+        """
+        self.cursor.execute(query, (product.name, product.description, product.price, product.category_id, product.id))
         self.connection.commit()
         return self.cursor.rowcount > 0
-
-    # Existing methods for managing products
-
+    
+    # Existing method for adding a product
     def get_product_by_name(self, name: str) -> dict:
         self.cursor.execute("SELECT * FROM products WHERE name = %s", (name,))
         return self.cursor.fetchone()
@@ -32,13 +34,5 @@ class ProductRepository:
         INSERT INTO products (name, description, price, category_id) VALUES (%s, %s, %s, %s)
         """
         self.cursor.execute(query, (product.name, product.description, product.price, product.category_id))
-        self.connection.commit()
-        return self.cursor.rowcount > 0
-
-    def update_product(self, product: Product) -> bool:
-        query = """
-        UPDATE products SET name = %s, description = %s, price = %s, category_id = %s WHERE id = %s
-        """
-        self.cursor.execute(query, (product.name, product.description, product.price, product.category_id, product.id))
         self.connection.commit()
         return self.cursor.rowcount > 0
