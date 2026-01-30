@@ -4,7 +4,6 @@ from datetime import timedelta
 from backend.user_account.routes.user_registration import user_registration_bp
 from backend.user_session.routes.user_login import user_login_bp
 from backend.user_account.routes.password_recovery import password_recovery_bp
-from backend.user_account.routes.profile_management import profile_management_bp
 from flask_login import LoginManager
 
 def create_app() -> Flask:
@@ -18,7 +17,6 @@ def create_app() -> Flask:
     app.register_blueprint(user_registration_bp, url_prefix='/api/user_account')
     app.register_blueprint(user_login_bp, url_prefix='/api/user_session')
     app.register_blueprint(password_recovery_bp, url_prefix='/api/user_account')
-    app.register_blueprint(profile_management_bp, url_prefix='/api/user_account')
 
     @app.route('/')
     def index():
