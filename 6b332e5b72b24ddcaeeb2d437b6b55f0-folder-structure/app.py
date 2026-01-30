@@ -1,4 +1,4 @@
-# Epic Title: Product Categorization
+# Epic Title: Search Products
 
 import os
 import django
@@ -15,7 +15,6 @@ from backend.services.product_catalog.product_service import ProductService
 from backend.services.product_catalog.product_update_service import ProductUpdateService
 from backend.services.product_catalog.product_delete_service import ProductDeleteService
 from backend.services.product_catalog.product_search_service import ProductSearchService
-from backend.services.product_catalog.category_service import CategoryService
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -59,7 +58,6 @@ product_service = ProductService()
 product_update_service = ProductUpdateService()
 product_delete_service = ProductDeleteService()
 product_search_service = ProductSearchService()
-category_service = CategoryService()
 
 @csrf_exempt
 def register_user(request):
@@ -180,12 +178,11 @@ def add_product(request):
         name = data.get('name')
         price = data.get('price')
         description = data.get('description')
-        category_ids = data.get('category_ids', [])
         
         if not name or not price or not description:
             return JsonResponse({'error': 'All fields are required'}, status=400)
         
-        success, message = product_service.add_product(name, price, description, category_ids)
+        success, message = product_service.add_product(name, price, description)
         
         if success:
             return JsonResponse({'message': message}, status=201)
@@ -202,12 +199,11 @@ def update_product(request):
         name = data.get('name')
         price = data.get('price')
         description = data.get('description')
-        category_ids = data.get('category_ids', [])
         
         if not product_id:
             return JsonResponse({'error': 'Product ID is required'}, status=400)
         
-        success, message = product_update_service.update_product(product_id, name, price, description, category_ids)
+        success, message = product_update_service.update_product(product_id, name, price, description)
         
         if success:
             return JsonResponse({'message': message}, status=200)
@@ -250,34 +246,6 @@ def search_products(request):
             return JsonResponse({'message': 'No products found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def add_category(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        name = data.get('name')
-        parent_id = data.get('parent_id')
-        
-        if not name:
-            return JsonResponse({'error': 'Category name is required'}, status=400)
-        
-        success, message = category_service.add_category(name, parent_id)
-        
-        if success:
-            return JsonResponse({'message': message}, status=201)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-def list_categories(request):
-    if request.method == 'GET':
-        categories = category_service.get_all_categories()
-        if categories:
-            return JsonResponse({'categories': categories}, status=200)
-        else:
-            return JsonResponse({'message': 'No categories found'}, status=404)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
 def list_products(request):
     if request.method == 'GET':
         products = product_service.get_all_products()
@@ -299,8 +267,6 @@ urlpatterns = [
     path('update-product/', update_product),
     path('delete-product/', delete_product),
     path('search-products/', search_products),
-    path('add-category/', add_category),
-    path('list-categories/', list_categories),
     path('list-products/', list_products),
 ]
 
