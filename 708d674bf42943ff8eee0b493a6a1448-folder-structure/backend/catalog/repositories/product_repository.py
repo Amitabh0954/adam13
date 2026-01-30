@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Update Product Details
 
 from catalog.models.product import Product
 from typing import Optional, List
@@ -15,6 +15,22 @@ class ProductRepository:
             return Product.objects.get(name=name)
         except Product.DoesNotExist:
             return None
+
+    def get_product_by_id(self, product_id: int) -> Optional[Product]:
+        try:
+            return Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return None
+
+    def update_product(self, product: Product, name: Optional[str], description: Optional[str], price: Optional[float]) -> Product:
+        if name is not None:
+            product.name = name
+        if description is not None:
+            product.description = description
+        if price is not None:
+            product.price = price
+        product.save()
+        return product
 
     def get_all_products(self) -> List[Product]:
         return list(Product.objects.all())
