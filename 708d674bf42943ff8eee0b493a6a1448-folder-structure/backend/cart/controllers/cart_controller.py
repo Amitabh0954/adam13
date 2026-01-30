@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,8 +17,8 @@ def add_product_to_cart(request):
         product_id = data.get('product_id')
         quantity = data.get('quantity', 1)
 
-        if not product_id:
-            return JsonResponse({'error': 'Product ID is required'}, status=400)
+        if not product_id or quantity < 1:
+            return JsonResponse({'error': 'Product ID and positive quantity are required'}, status=400)
 
         try:
             product = Product.objects.get(id=product_id)
@@ -45,5 +45,23 @@ def remove_product_from_cart(request):
         success = cart_service.remove_product_from_cart(cart_item_id)
         if success:
             return JsonResponse({'message': 'Product removed from cart'}, status=200)
+        return JsonResponse({'error': 'Cart item not found'}, status=404)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+
+@csrf_exempt
+@login_required
+def modify_quantity_in_cart(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        cart_item_id = data.get('cart_item_id')
+        quantity = data.get('quantity')
+
+        if not cart_item_id or quantity < 1:
+            return JsonResponse({'error': 'Valid cart_item_id and positive quantity are required'}, status=400)
+
+        success = cart_service.modify_quantity_in_cart(cart_item_id, quantity)
+        if success:
+            return JsonResponse({'message': 'Quantity updated'}, status=200)
         return JsonResponse({'error': 'Cart item not found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
