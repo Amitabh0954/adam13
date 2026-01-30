@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from product_catalog_management.models.product import Product
 from typing import Optional
@@ -21,3 +21,6 @@ class ProductRepository:
             setattr(product, attr, value)
         product.save()
         return product
+
+    def delete_product(self, product: Product) -> None:
+        product.delete()
