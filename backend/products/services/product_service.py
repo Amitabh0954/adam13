@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from backend.products.repositories.product_repository import ProductRepository
 from backend.products.models.product import Product
@@ -36,3 +36,7 @@ class ProductService:
         product = self.product_repository.update_product(name, new_description, new_price)
         logger.info(f"Product {name} updated with new price: {new_price} and new description")
         return product
+
+    def delete_product(self, name: str) -> None:
+        self.product_repository.delete_product(name)
+        logger.info(f"Product {name} removed from the inventory")
