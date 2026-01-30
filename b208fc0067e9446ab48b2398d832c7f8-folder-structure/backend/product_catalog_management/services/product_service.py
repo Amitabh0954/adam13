@@ -1,8 +1,8 @@
-# Epic Title: Delete Product
+# Epic Title: Search Products
 
 from product_catalog_management.repositories.product_repository import ProductRepository
 from product_catalog_management.models.product import Product
-from typing import Optional
+from typing import Optional, List
 
 class ProductService:
     def __init__(self):
@@ -27,3 +27,6 @@ class ProductService:
             self.product_repository.delete_product(product)
             return True
         return False
+
+    def search_products(self, query: str, page: int = 1, items_per_page: int = 10) -> List[Product]:
+        return self.product_repository.search_products(query, page, items_per_page)
