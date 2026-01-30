@@ -6,7 +6,6 @@ from backend.controllers.user_account.password_reset_controller import password_
 from backend.controllers.user_account.profile_controller import profile_bp
 from backend.controllers.product_catalog.product_controller import product_bp
 from backend.controllers.product_catalog.product_update_controller import product_update_bp
-from backend.controllers.product_catalog.product_deletion_controller import product_deletion_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -17,7 +16,6 @@ app.register_blueprint(password_reset_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(product_bp)
 app.register_blueprint(product_update_bp)
-app.register_blueprint(product_deletion_bp)
 
 @app.route('/')
 def index():
