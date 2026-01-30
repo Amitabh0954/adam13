@@ -1,4 +1,4 @@
-# Epic Title: User Registration
+# Epic Title: Password Recovery
 
 Django==3.2
 mysqlclient==2.1.0
