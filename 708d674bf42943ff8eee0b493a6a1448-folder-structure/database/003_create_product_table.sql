@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 CREATE TABLE IF NOT EXISTS `catalog_product` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
