@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from cart.models.cart import Cart, CartItem
 from catalog.models.product import Product
@@ -7,10 +7,10 @@ from typing import Optional
 
 class CartRepository:
 
-    def get_cart_by_user(self, user: User) -> Cart:
+    def get_cart_by_user(self, user: User) -> Optional[Cart]:
         return Cart.objects.filter(user=user).first()
 
-    def get_cart_by_session_id(self, session_id: str) -> Cart:
+    def get_cart_by_session_id(self, session_id: str) -> Optional[Cart]:
         return Cart.objects.filter(session_id=session_id).first()
 
     def create_cart_for_user(self, user: User) -> Cart:
@@ -27,3 +27,11 @@ class CartRepository:
             cart_item.quantity = quantity
         cart_item.save()
         return cart_item
+
+    def remove_product_from_cart(self, cart_item_id: int) -> bool:
+        try:
+            cart_item = CartItem.objects.get(id=cart_item_id)
+            cart_item.delete()
+            return True
+        except CartItem.DoesNotExist:
+            return False
