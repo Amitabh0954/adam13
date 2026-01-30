@@ -5,8 +5,8 @@ class ShoppingCartService:
     def __init__(self):
         self.shopping_cart_repository = ShoppingCartRepository()
 
-    def modify_quantity(self, user_id: int, cart_item_id: int, quantity: int) -> dict:
-        success = self.shopping_cart_repository.modify_quantity(user_id, cart_item_id, quantity)
+    def remove_product_from_cart(self, user_id: int, cart_item_id: int) -> dict:
+        success = self.shopping_cart_repository.remove_product_from_cart(user_id, cart_item_id)
         if success:
-            return {"message": "Product quantity updated successfully"}
-        return {"error": "Failed to update product quantity"}
+            return {"message": "Product removed from cart successfully"}
+        return {"error": "Failed to remove product from cart"}
