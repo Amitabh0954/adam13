@@ -1,11 +1,13 @@
 # Epic Title: Product Catalog Management
-CREATE DATABASE IF NOT EXISTS product_catalog_db;
-USE product_catalog_db;
+-- Adding categories to the schema for product categorization
 
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    price DECIMAL(10, 2) NOT NULL,
-    description TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    name VARCHAR(255) NOT NULL,
+    parent_id INT,
+    FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE CASCADE
 );
+
+ALTER TABLE products
+ADD COLUMN category_id INT,
+ADD FOREIGN KEY (category_id) REFERENCES categories(id);
