@@ -28,12 +28,3 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-CREATE TABLE IF NOT EXISTS profiles (
-    user_id INT NOT NULL PRIMARY KEY,
-    first_name VARCHAR(255),
-    last_name VARCHAR(255),
-    email VARCHAR(255) NOT NULL UNIQUE,
-    preferences TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
