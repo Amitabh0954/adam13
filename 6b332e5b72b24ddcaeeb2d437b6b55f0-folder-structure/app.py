@@ -1,4 +1,4 @@
-# Epic Title: Save Shopping Cart for Logged-in Users
+# Epic Title: Add Product to Shopping Cart
 
 import os
 import django
@@ -254,7 +254,7 @@ def search_products(request):
 
 @csrf_exempt
 def add_category(request):
-    if request.method == 'POST'):
+    if request.method == 'POST':
         data = json.loads(request.body)
         
         name = data.get('name')
@@ -301,73 +301,37 @@ def add_product_to_cart(request):
             return JsonResponse({'error': message}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def remove_product_from_cart(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        user_id = request.session.get('user_id')
-        session_key = request.session.session_key
-        product_id = data.get('product_id')
-        
-        if not product_id:
-            return JsonResponse({'error': 'Product ID is required'}, status=400)
-        
-        success, message = cart_service.remove_product_from_cart(user_id, session_key, product_id)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-@csrf_exempt
-def update_cart_item_quantity(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        user_id = request.session.get('user_id')
-        session_key = request.session.session_key
-        product_id = data.get('product_id')
-        quantity = data.get('quantity')
-        
-        if not product_id:
-            return JsonResponse({'error': 'Product ID is required'}, status=400)
-        
-        if quantity <= 0:
-            return JsonResponse({'error': 'Quantity must be a positive integer'}, status=400)
-        
-        success, message = cart_service.update_product_quantity_in_cart(user_id, session_key, product_id, quantity)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-@csrf_exempt
-def save_cart_state(request):
-    if request.method == 'POST':
-        user_id = request.session.get('user_id')
-        if not user_id:
-            return JsonResponse({'error': 'User not authenticated'}, status=403)
-        
-        success = cart_service.save_cart_state(user_id)
-        if success:
-            return JsonResponse({'message': 'Cart state saved successfully'}, status=200)
-        else:
-            return JsonResponse({'error': 'Cart not found'}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-def retrieve_cart_state(request):
+def list_cart_items(request):
     if request.method == 'GET':
         user_id = request.session.get('user_id')
-        if not user_id:
-            return JsonResponse({'error': 'User not authenticated'}, status=403)
+        session_key = request.session.session_key
+        cart_items = cart_service.list_cart_items(user_id, session_key)
         
-        cart_data = cart_service.retrieve_cart_state(user_id)
-        if cart_data:
-            return JsonResponse({'cart': cart_data}, status=200)
+        if cart_items:
+            return JsonResponse({'cart_items': cart_items}, status=200)
         else:
-            return JsonResponse({'error': 'Cart not found'}, status=404)
-    return JsonResponse({'error': 'Invalid HTTP
+            return JsonResponse({'message': 'No items in cart'}, status=404)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+urlpatterns = [
+    path('register/', register_user),
+    path('login/', login_user),
+    path('logout/', logout_user),
+    path('request-password-reset/', request_password_reset),
+    path('reset-password/<str:token>/', reset_password, name='reset_password'),
+    path('update-profile/', update_profile),
+    path('get-profile/', get_profile),
+    path('add-product/', add_product),
+    path('update-product/', update_product),
+    path('delete-product/', delete_product),
+    path('search-products/', search_products),
+    path('add-category/', add_category),
+    path('list-categories/', list_categories),
+    path('add-product-to-cart/', add_product_to_cart),
+    path('list-cart-items/', list_cart_items),
+]
+
+if __name__ == '__main__':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', __name__)
+    django.setup()
+    execute_from_command_line(sys.argv)
