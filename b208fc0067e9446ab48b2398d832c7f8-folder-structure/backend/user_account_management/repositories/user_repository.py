@@ -1,4 +1,4 @@
-# Epic Title: User Login
+# Epic Title: Profile Management
 
 from user_account_management.models.user import User
 from django.contrib.auth.hashers import make_password, check_password
@@ -22,3 +22,9 @@ class UserRepository:
         if user and check_password(password, user.password):
             return user
         return None
+
+    def update_user_profile(self, user: User, **kwargs) -> User:
+        for attr, value in kwargs.items():
+            setattr(user, attr, value)
+        user.save()
+        return user
