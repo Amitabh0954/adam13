@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 import os
 import django
@@ -254,7 +254,7 @@ def search_products(request):
 
 @csrf_exempt
 def add_category(request):
-    if request.method == 'POST':
+    if request.method == 'POST'):
         data = json.loads(request.body)
         
         name = data.get('name')
@@ -345,39 +345,29 @@ def update_cart_item_quantity(request):
             return JsonResponse({'error': message}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-def list_cart_items(request):
-    if request.method == 'GET':
+@csrf_exempt
+def save_cart_state(request):
+    if request.method == 'POST':
         user_id = request.session.get('user_id')
-        session_key = request.session.session_key
-        cart_items = cart_service.list_cart_items(user_id, session_key)
+        if not user_id:
+            return JsonResponse({'error': 'User not authenticated'}, status=403)
         
-        if cart_items:
-            return JsonResponse({'cart_items': cart_items}, status=200)
+        success = cart_service.save_cart_state(user_id)
+        if success:
+            return JsonResponse({'message': 'Cart state saved successfully'}, status=200)
         else:
-            return JsonResponse({'message': 'No items in cart'}, status=404)
+            return JsonResponse({'error': 'Cart not found'}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-urlpatterns = [
-    path('register/', register_user),
-    path('login/', login_user),
-    path('logout/', logout_user),
-    path('request-password-reset/', request_password_reset),
-    path('reset-password/<str:token>/', reset_password, name='reset_password'),
-    path('update-profile/', update_profile),
-    path('get-profile/', get_profile),
-    path('add-product/', add_product),
-    path('update-product/', update_product),
-    path('delete-product/', delete_product),
-    path('search-products/', search_products),
-    path('add-category/', add_category),
-    path('list-categories/', list_categories),
-    path('add-product-to-cart/', add_product_to_cart),
-    path('remove-product-from-cart/', remove_product_from_cart),
-    path('update-cart-item-quantity/', update_cart_item_quantity),
-    path('list-cart-items/', list_cart_items),
-]
-
-if __name__ == '__main__':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', __name__)
-    django.setup()
-    execute_from_command_line(sys.argv)
+def retrieve_cart_state(request):
+    if request.method == 'GET':
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'error': 'User not authenticated'}, status=403)
+        
+        cart_data = cart_service.retrieve_cart_state(user_id)
+        if cart_data:
+            return JsonResponse({'cart': cart_data}, status=200)
+        else:
+            return JsonResponse({'error': 'Cart not found'}, status=404)
+    return JsonResponse({'error': 'Invalid HTTP
