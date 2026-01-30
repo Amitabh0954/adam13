@@ -34,3 +34,11 @@ class ShoppingCartRepository:
         self.cursor.execute("DELETE FROM shopping_cart WHERE user_id = %s AND product_id = %s", (user_id, product_id))
         self.connection.commit()
         return self.cursor.rowcount > 0
+
+    def update_quantity(self, user_id: int, product_id: int, quantity: int) -> bool:
+        query = """
+        UPDATE shopping_cart SET quantity = %s WHERE user_id = %s AND product_id = %s
+        """
+        self.cursor.execute(query, (quantity, user_id, product_id))
+        self.connection.commit()
+        return self.cursor.rowcount > 0
