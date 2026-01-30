@@ -3,7 +3,6 @@ from flask import Flask
 from backend.controllers.user_account.registration_controller import registration_bp
 from backend.controllers.user_account.login_controller import login_bp
 from backend.controllers.user_account.password_reset_controller import password_reset_bp
-from backend.controllers.user_account.profile_controller import profile_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -11,7 +10,6 @@ app.config['SECRET_KEY'] = 'supersecretkey'
 app.register_blueprint(registration_bp)
 app.register_blueprint(login_bp)
 app.register_blueprint(password_reset_bp)
-app.register_blueprint(profile_bp)
 
 @app.route('/')
 def index():
