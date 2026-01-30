@@ -40,3 +40,27 @@ class ShoppingCartRepository:
         self.cursor.execute(query, (cart_id, product_id, quantity, quantity))
         self.connection.commit()
         return self.cursor.rowcount > 0
+
+    def product_in_cart(self, cart_id: int, product_id: int) -> bool:
+        query = "SELECT COUNT(*) FROM cart_items WHERE cart_id = %s AND product_id = %s"
+        self.cursor.execute(query, (cart_id, product_id))
+        result = self.cursor.fetchone()
+        return result[0] > 0
+
+    def remove_product(self, cart_id: int, product_id: int) -> bool:
+        query = "DELETE FROM cart_items WHERE cart_id = %s AND product_id = %s"
+        self.cursor.execute(query, (cart_id, product_id))
+        self.connection.commit()
+        return self.cursor.rowcount > 0
+
+    def update_product_quantity(self, cart_id: int, product_id: int, quantity: int) -> bool:
+        query = "UPDATE cart_items SET quantity = %s WHERE cart_id = %s AND product_id = %s"
+        self.cursor.execute(query, (quantity, cart_id, product_id))
+        self.connection.commit()
+        return self.cursor.rowcount > 0
+
+    def save_cart_state(self, user_id: int, cart_id: int) -> bool:
+        query = "UPDATE carts SET active = 0 WHERE user_id = %s AND id = %s"
+        self.cursor.execute(query, (user_id, cart_id))
+        self.connection.commit()
+        return self.cursor.rowcount > 0
