@@ -1,42 +1,196 @@
-# Epic Title: User Account Management
+# Epic Title: Shopping Cart Functionality
 from flask import Flask, request, jsonify
-from flask_login import LoginManager, UserMixin, login_user
-from datetime import timedelta
-from backend.services.user_account_management.register_service import RegisterService
+from backend.services.product_catalog_management.add_product_service import AddProductService
+from backend.services.product_catalog_management.update_product_service import UpdateProductService
+from backend.services.product_catalog_management.delete_product_service import DeleteProductService
+from backend.services.product_catalog_management.search_product_service import SearchProductService
+from backend.services.product_catalog_management.category_management_service import CategoryManagementService
+from backend.services.shopping_cart.add_to_cart_service import AddToCartService
+from backend.services.shopping_cart.remove_from_cart_service import RemoveFromCartService
+from backend.services.shopping_cart.update_cart_item_service import UpdateCartItemService
+from backend.services.shopping_cart.save_cart_service import SaveCartService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
-login_manager = LoginManager()
-login_manager.init_app(app)
+add_product_service = AddProductService()
+update_product_service = UpdateProductService()
+delete_product_service = DeleteProductService()
+search_product_service = SearchProductService()
+category_management_service = CategoryManagementService()
+add_to_cart_service = AddToCartService()
+remove_from_cart_service = RemoveFromCartService()
+update_cart_item_service = UpdateCartItemService()
+save_cart_service = SaveCartService()
 
-register_service = RegisterService()
-
-@login_manager.user_loader
-def load_user(user_id):
-    from backend.models.user import User
-    return User.get(user_id)
-
-@app.route('/api/user_management/register', methods=['POST'])
-def register():
+@app.route('/api/product_catalog_management/add_product', methods=['POST'])
+def add_product():
     data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    name = data.get('name')
+    description = data.get('description')
+    price = data.get('price')
+    category_id = data.get('category_id')
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+    if not name or not description or price is None or category_id is None:
+        return jsonify({"error": "Name, description, price, and category_id are required"}), 400
     
-    response = register_service.register_user(email, password)
+    response = add_product_service.add_product(name, description, price, category_id)
 
     if response.get("error"):
         return jsonify(response), 400
 
     return jsonify(response), 200
 
+@app.route('/api/product_catalog_management/update_product/<int:product_id>', methods=['PUT'])
+def update_product(product_id):
+    data = request.get_json()
+    response = update_product_service.update_product(product_id, data)
+
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/product_catalog_management/delete_product/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    response = delete_product_service.delete_product(product_id)
+
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/product_catalog_management/search_products', methods=['GET'])
+def search_products():
+    query = request.args.get('query')
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', 10))
+
+    if not query:
+        return jsonify({"error": "Query parameter is required"}), 400
+
+    response = search_product_service.search_products(query, page, per_page)
+    return jsonify(response), 200
+
+@app.route('/api/product_catalog_management/categories', methods=['GET'])
+def get_categories():
+    response = category_management_service.get_all_categories()
+    return jsonify(response), 200
+
+@app.route('/api/product_catalog_management/category', methods=['POST'])
+def create_category():
+    data = request.get_json()
+    name = data.get('name')
+    parent_id = data.get('parent_id')
+
+    if not name:
+        return jsonify({"error": "Category name is required"}), 400
+
+    response = category_management_service.create_category(name, parent_id)
+    return jsonify(response), 200
+
+@app.route('/api/product_catalog_management/category/<int:category_id>', methods=['PUT'])
+def update_category(category_id):
+    data = request.get_json()
+    name = data.get('name')
+    parent_id = data.get('parent_id')
+
+    if not name:
+        return jsonify({"error": "Category name is required"}), 400
+
+    response = category_management_service.update_category(category_id, name, parent_id)
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/product_catalog_management/category/<int:category_id>', methods=['DELETE'])
+def delete_category(category_id):
+    response = category_management_service.delete_category(category_id)
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/shopping_cart/add_to_cart', methods=['POST'])
+def add_to_cart():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if not product_id or quantity is None:
+        return jsonify({"error": "Product ID and quantity are required"}), 400
+
+    response = add_to_cart_service.add_to_cart(user_id, product_id, quantity)
+
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/shopping_cart/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    product_id = data.get('product_id')
+
+    if not product_id or user_id is None:
+        return jsonify({"error": "User ID and Product ID are required"}), 400
+
+    response = remove_from_cart_service.remove_from_cart(user_id, product_id)
+
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/shopping_cart/update_cart_item', methods=['POST'])
+def update_cart_item():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if not product_id or quantity is None:
+        return jsonify({"error": "Product ID and quantity are required"}), 400
+
+    response = update_cart_item_service.update_cart_item(user_id, product_id, quantity)
+
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/shopping_cart/save_cart', methods=['POST'])
+def save_cart():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    cart_items = data.get('cart_items')
+
+    if not user_id or not cart_items:
+        return jsonify({"error": "User ID and cart items are required"}), 400
+
+    response = save_cart_service.save_cart_state(user_id, cart_items)
+
+    if response.get("error"):
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@app.route('/api/shopping_cart/retrieve_cart', methods=['GET'])
+def retrieve_cart():
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    response = save_cart_service.retrieve_cart_state(int(user_id))
+    return jsonify(response), 200
+
 @app.route('/')
 def index():
-    return "Welcome to the User Account Management System"
+    return "Welcome to the Product Catalog and Shopping Cart Management System"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
