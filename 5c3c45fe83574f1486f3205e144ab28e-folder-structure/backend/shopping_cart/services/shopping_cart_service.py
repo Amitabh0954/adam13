@@ -43,13 +43,3 @@ class ShoppingCartService:
         if updated:
             return {"message": "Product quantity updated successfully"}
         return {"error": "Failed to update product quantity"}
-
-    def save_cart(self, user_id: int) -> dict:
-        cart_id = self.cart_repository.get_active_cart(user_id)
-        if not cart_id:
-            return {"error": "No active cart found"}
-
-        saved = self.cart_repository.save_cart_state(user_id, cart_id)
-        if saved:
-            return {"message": "Cart saved successfully"}
-        return {"error": "Failed to save cart"}
