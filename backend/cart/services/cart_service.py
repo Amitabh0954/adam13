@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 from backend.cart.repositories.cart_repository import CartRepository
 from backend.products.repositories.product_repository import ProductRepository
@@ -39,6 +39,19 @@ class CartService:
 
         self.cart_repository.remove_product(cart, product)
         logger.info(f"Removed {product_name} from cart {cart.id}")
+
+    def modify_quantity(self, user: Optional[User], session_id: Optional[str], product_name: str, new_quantity: int) -> CartItem:
+        cart = self.cart_repository.get_cart(user=user, session_id=session_id)
+        if not cart:
+            raise ValueError("Cart not found")
+
+        product = self.product_repository.get_product_by_name(product_name)
+        if not product:
+            raise ValueError("Product not found")
+
+        cart_item = self.cart_repository.modify_product_quantity(cart, product, new_quantity)
+        logger.info(f"Updated quantity of {product_name} to {new_quantity} in cart {cart.id}")
+        return cart_item
 
     def get_cart_items(self, user: Optional[User], session_id: Optional[str]) -> Optional[Cart]:
         cart = self.cart_repository.get_cart(user=user, session_id=session_id)
