@@ -1,7 +1,7 @@
-# Epic Title: User Registration
+# Epic Title: User Login
 
 from user_account_management.models.user import User
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from typing import Optional
 
 class UserRepository:
@@ -16,3 +16,9 @@ class UserRepository:
             return User.objects.get(email=email)
         except User.DoesNotExist:
             return None
+
+    def validate_user(self, email: str, password: str) -> Optional[User]:
+        user = self.get_user_by_email(email)
+        if user and check_password(password, user.password):
+            return user
+        return None
