@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from backend.products.models.product import Product
 
@@ -34,3 +34,10 @@ class ProductRepository:
         product.price = new_price
         product.save()
         return product
+
+    def delete_product(self, name: str) -> None:
+        product = self.get_product_by_name(name)
+        if not product:
+            raise ValueError("Product not found")
+        
+        product.delete()
