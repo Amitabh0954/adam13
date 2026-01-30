@@ -1,4 +1,4 @@
-# Epic Title: User Registration
+# Epic Title: User Login
 
 import os
 import django
@@ -6,7 +6,7 @@ from django.core.management import execute_from_command_line
 from django.conf import settings
 from django.urls import path
 from django.apps import apps
-from account.controllers.user_controller import register
+from account.controllers.user_controller import register, login_user, logout_user
 
 settings.configure(
     DEBUG=os.getenv('DEBUG', 'on') == 'on',
@@ -18,6 +18,8 @@ settings.configure(
     MIDDLEWARE=[
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
     ],
     ROOT_URLCONF=__name__,
     DATABASES={
@@ -36,6 +38,8 @@ apps.populate(settings.INSTALLED_APPS)
 
 urlpatterns = [
     path('register/', register),
+    path('login/', login_user),
+    path('logout/', logout_user),
 ]
 
 if __name__ == '__main__':
