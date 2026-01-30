@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify
 from backend.services.product_catalog_management.add_product_service import AddProductService
 from backend.services.product_catalog_management.update_product_service import UpdateProductService
 from backend.services.product_catalog_management.delete_product_service import DeleteProductService
-from backend.services.product_catalog_management.search_product_service import SearchProductService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -11,7 +10,6 @@ app.config['SECRET_KEY'] = 'supersecretkey'
 add_product_service = AddProductService()
 update_product_service = UpdateProductService()
 delete_product_service = DeleteProductService()
-search_product_service = SearchProductService()
 
 @app.route('/api/product_catalog_management/add_product', methods=['POST'])
 def add_product():
@@ -48,18 +46,6 @@ def delete_product(product_id):
     if response.get("error"):
         return jsonify(response), 400
 
-    return jsonify(response), 200
-
-@app.route('/api/product_catalog_management/search_products', methods=['GET'])
-def search_products():
-    query = request.args.get('query')
-    page = int(request.args.get('page', 1))
-    per_page = int(request.args.get('per_page', 10))
-
-    if not query:
-        return jsonify({"error": "Query parameter is required"}), 400
-
-    response = search_product_service.search_products(query, page, per_page)
     return jsonify(response), 200
 
 @app.route('/')
