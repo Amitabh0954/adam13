@@ -39,14 +39,3 @@ class ProductRepository:
         self.cursor.execute(query, (product_id,))
         self.connection.commit()
         return self.cursor.rowcount > 0
-
-    def search_products(self, query: str, offset: int, limit: int) -> list:
-        sql_query = """
-            SELECT *, MATCH(name, description, category) AGAINST (%s IN NATURAL LANGUAGE MODE) AS relevance 
-            FROM products 
-            WHERE MATCH(name, description, category) AGAINST (%s IN NATURAL LANGUAGE MODE) 
-            ORDER BY relevance DESC 
-            LIMIT %s OFFSET %s
-        """
-        self.cursor.execute(sql_query, (query, query, limit, offset))
-        return self.cursor.fetchall()
