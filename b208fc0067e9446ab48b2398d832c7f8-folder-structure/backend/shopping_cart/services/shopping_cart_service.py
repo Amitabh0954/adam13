@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
 from product_catalog_management.models.product import Product
@@ -27,3 +27,8 @@ class ShoppingCartService:
         if quantity <= 0:
             return "Quantity must be a positive integer"
         return self.shopping_cart_repository.modify_product_quantity(cart, product, quantity)
+
+    def transfer_session_cart_to_user(self, user: User, session: Session) -> None:
+        session_cart = self.shopping_cart_repository.get_or_create_cart(None, session)
+        user_cart = self.shopping_cart_repository.get_or_create_cart(user, None)
+        self.shopping_cart_repository.transfer_cart(session_cart, user_cart)
