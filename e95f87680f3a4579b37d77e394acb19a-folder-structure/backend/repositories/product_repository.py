@@ -21,9 +21,9 @@ class ProductRepository:
         self.cursor.execute(query, (name,))
         return self.cursor.fetchone()
 
-    def create_product(self, name: str, description: str, price: float, category_id: int):
-        query = "INSERT INTO products (name, description, price, category_id) VALUES (%s, %s, %s, %s)"
-        self.cursor.execute(query, (name, description, price, category_id))
+    def create_product(self, name: str, description: str, price: float, category: str):
+        query = "INSERT INTO products (name, description, price, category) VALUES (%s, %s, %s, %s)"
+        self.cursor.execute(query, (name, description, price, category))
         self.connection.commit()
 
     def update_product(self, product_id: int, data: dict) -> bool:
@@ -42,9 +42,9 @@ class ProductRepository:
 
     def search_products(self, query: str, offset: int, limit: int) -> list:
         sql_query = """
-            SELECT *, MATCH(name, description) AGAINST (%s IN NATURAL LANGUAGE MODE) AS relevance 
+            SELECT *, MATCH(name, description, category) AGAINST (%s IN NATURAL LANGUAGE MODE) AS relevance 
             FROM products 
-            WHERE MATCH(name, description) AGAINST (%s IN NATURAL LANGUAGE MODE) 
+            WHERE MATCH(name, description, category) AGAINST (%s IN NATURAL LANGUAGE MODE) 
             ORDER BY relevance DESC 
             LIMIT %s OFFSET %s
         """
