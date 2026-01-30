@@ -1,7 +1,11 @@
 # Epic Title: User Account Management
--- Additions to the schema for user profile management
+-- Additions to the schema for password reset functionality
 
-ALTER TABLE users
-ADD COLUMN first_name VARCHAR(255),
-ADD COLUMN last_name VARCHAR(255),
-ADD COLUMN preferences TEXT;
+CREATE TABLE IF NOT EXISTS password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE (token)
+);
