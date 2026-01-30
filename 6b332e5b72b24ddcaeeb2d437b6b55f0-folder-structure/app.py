@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Product Categorization
 
 import os
 import django
@@ -16,7 +16,6 @@ from backend.services.product_catalog.product_update_service import ProductUpdat
 from backend.services.product_catalog.product_delete_service import ProductDeleteService
 from backend.services.product_catalog.product_search_service import ProductSearchService
 from backend.services.product_catalog.category_service import CategoryService
-from backend.services.shopping_cart.cart_service import CartService
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -61,7 +60,6 @@ product_update_service = ProductUpdateService()
 product_delete_service = ProductDeleteService()
 product_search_service = ProductSearchService()
 category_service = CategoryService()
-cart_service = CartService()
 
 @csrf_exempt
 def register_user(request):
@@ -280,37 +278,13 @@ def list_categories(request):
             return JsonResponse({'message': 'No categories found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def add_product_to_cart(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        user_id = request.session.get('user_id')
-        session_key = request.session.session_key
-        product_id = data.get('product_id')
-        quantity = data.get('quantity', 1)
-        
-        if not product_id:
-            return JsonResponse({'error': 'Product ID is required'}, status=400)
-        
-        success, message = cart_service.add_product_to_cart(user_id, session_key, product_id, quantity)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-def list_cart_items(request):
+def list_products(request):
     if request.method == 'GET':
-        user_id = request.session.get('user_id')
-        session_key = request.session.session_key
-        cart_items = cart_service.list_cart_items(user_id, session_key)
-        
-        if cart_items:
-            return JsonResponse({'cart_items': cart_items}, status=200)
+        products = product_service.get_all_products()
+        if products:
+            return JsonResponse({'products': products}, status=200)
         else:
-            return JsonResponse({'message': 'No items in cart'}, status=404)
+            return JsonResponse({'message': 'No products found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
 urlpatterns = [
@@ -327,8 +301,7 @@ urlpatterns = [
     path('search-products/', search_products),
     path('add-category/', add_category),
     path('list-categories/', list_categories),
-    path('add-product-to-cart/', add_product_to_cart),
-    path('list-cart-items/', list_cart_items),
+    path('list-products/', list_products),
 ]
 
 if __name__ == '__main__':
