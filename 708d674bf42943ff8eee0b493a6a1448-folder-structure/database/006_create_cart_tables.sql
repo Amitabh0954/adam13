@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 CREATE TABLE IF NOT EXISTS `cart_cart` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
