@@ -76,3 +76,27 @@ def update_quantity_in_cart():
         return jsonify(response), 400
 
     return jsonify(response), 200
+
+@shopping_cart_bp.route('/api/shopping_cart/save', methods=['POST'])
+def save_cart():
+    data = request.get_json()
+    user_id = data.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    response = shopping_cart_service.save_cart(user_id)
+    if "error" in response:
+        return jsonify(response), 400
+
+    return jsonify(response), 200
+
+@shopping_cart_bp.route('/api/shopping_cart/load', methods=['GET'])
+def load_cart():
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    cart_items = shopping_cart_service.retrieve_saved_cart(int(user_id))
+    return jsonify(cart_items), 200
