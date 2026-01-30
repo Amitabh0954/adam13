@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -47,4 +47,20 @@ def update_product(request):
         if product:
             return JsonResponse({'message': 'Product updated successfully'}, status=200)
         return JsonResponse({'error': 'Product not found or invalid data'}, status=400)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+
+@csrf_exempt
+def delete_product(request):
+    if request.method == 'POST':
+        if not request.user.is_staff:
+            return JsonResponse({'error': 'Unauthorized access'}, status=403)
+
+        data = json.loads(request.body)
+        product_id = data.get('id')
+
+        success = product_service.delete_product(product_id)
+        if success:
+            return JsonResponse({'message': 'Product deleted successfully'}, status=200)
+        return JsonResponse({'error': 'Product not found or already deleted'}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
