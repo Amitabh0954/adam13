@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 from backend.models.cart import Cart, CartItem
 from backend.models.product import Product
@@ -31,5 +31,18 @@ class CartRepository:
             cart_item = CartItem.objects.get(cart=cart, product_id=product_id)
             cart_item.delete()
             return True
+        except CartItem.DoesNotExist:
+            return False
+
+    def update_item_quantity(self, cart: Cart, product_id: int, quantity: int) -> bool:
+        try:
+            cart_item = CartItem.objects.get(cart=cart, product_id=product_id)
+            if quantity > 0:
+                cart_item.quantity = quantity
+                cart_item.save()
+                return True
+            else:
+                cart_item.delete()
+                return True
         except CartItem.DoesNotExist:
             return False
