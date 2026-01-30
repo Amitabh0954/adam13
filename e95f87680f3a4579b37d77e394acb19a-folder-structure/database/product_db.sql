@@ -9,6 +9,5 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT NOT NULL,
     price FLOAT NOT NULL CHECK(price > 0),
     category VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FULLTEXT(name, description, category)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
