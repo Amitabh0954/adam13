@@ -1,12 +1,13 @@
-# Epic Title: Delete Product
+# Epic Title: Product Categorization
 
 from products.models.product import Product
+from categories.models.category import Category
 from typing import Optional, List
 
 class ProductRepository:
 
-    def add_product(self, name: str, description: str, price: float) -> Product:
-        product = Product(name=name, description=description, price=price)
+    def add_product(self, name: str, description: str, price: float, category: Category) -> Product:
+        product = Product(name=name, description=description, price=price, category=category)
         product.save()
         return product
 
@@ -22,7 +23,7 @@ class ProductRepository:
         except Product.DoesNotExist:
             return None
 
-    def get_all_products(self) -> List[Product]:
+    def get_all_products(self) -> List<Product]:
         return list(Product.objects.all())
 
     def delete_product_by_id(self, product_id: int) -> bool:
