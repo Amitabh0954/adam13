@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from shopping_cart.repositories.shopping_cart_repository import ShoppingCartRepository
 from product_catalog_management.models.product import Product
@@ -17,3 +17,7 @@ class ShoppingCartService:
     def get_cart_items(self, user: Optional[User], session: Optional[Session]):
         cart = self.shopping_cart_repository.get_or_create_cart(user, session)
         return self.shopping_cart_repository.get_cart_items(cart)
+
+    def remove_product_from_cart(self, user: Optional[User], session: Optional[Session], product: Product) -> None:
+        cart = self.shopping_cart_repository.get_or_create_cart(user, session)
+        self.shopping_cart_repository.remove_product_from_cart(cart, product)
