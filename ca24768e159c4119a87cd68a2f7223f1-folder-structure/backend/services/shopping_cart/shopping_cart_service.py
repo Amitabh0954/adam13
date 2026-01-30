@@ -34,3 +34,15 @@ class ShoppingCartService:
         self.cursor.execute(query, (user_id,))
         cart_items = self.cursor.fetchall()
         return {"cart_items": cart_items}
+    
+    def remove_product_from_cart(self, user_id: int, product_id: int, confirmation: bool) -> dict:
+        if not confirmation:
+            return {"error": "Removal requires confirmation"}
+        
+        query = "DELETE FROM shopping_cart WHERE user_id = %s AND product_id = %s"
+        self.cursor.execute(query, (user_id, product_id))
+        self.connection.commit()
+
+        if self.cursor.rowcount == 0:
+            return {"error": "Product not found in cart"}
+        return {"message": "Product removed from cart successfully"}
