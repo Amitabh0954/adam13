@@ -1,6 +1,5 @@
 # Epic Title: Product Catalog Management
 import mysql.connector
-from typing import List, Dict
 
 class ProductRepository:
     def __init__(self):
@@ -43,36 +42,3 @@ class ProductRepository:
         self.cursor.execute(query, (product_id,))
         self.connection.commit()
         return self.cursor.rowcount > 0
-
-    def search_products(self, query: str, page: int, page_size: int) -> List[Dict[str, any]]:
-        offset = (page - 1) * page_size
-        search_query = f"%{query}%"
-        
-        statement = """
-        SELECT id, name, price, description FROM products
-        WHERE name LIKE %s OR description LIKE %s
-        LIMIT %s OFFSET %s
-        """
-        
-        self.cursor.execute(statement, (search_query, search_query, page_size, offset))
-        results = self.cursor.fetchall()
-        
-        products = []
-        for result in results:
-            products.append({
-                "id": result[0],
-                "name": result[1],
-                "price": result[2],
-                "description": result[3]
-            })
-        
-        return products
-
-    def count_search_results(self, query: str) -> int:
-        search_query = f"%{query}%"
-        statement = "SELECT COUNT(*) FROM products WHERE name LIKE %s OR description LIKE %s"
-        
-        self.cursor.execute(statement, (search_query, search_query))
-        result = self.cursor.fetchone()
-        
-        return result[0]
