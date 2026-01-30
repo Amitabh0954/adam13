@@ -30,16 +30,3 @@ class ShoppingCartService:
         if removed:
             return {"message": "Product removed from cart successfully"}
         return {"error": "Failed to remove product from cart"}
-
-    def update_product_quantity(self, user_id: int, product_id: int, quantity: int) -> dict:
-        cart_id = self.cart_repository.get_active_cart(user_id)
-        if not cart_id:
-            return {"error": "No active cart found"}
-
-        if not self.cart_repository.product_in_cart(cart_id, product_id):
-            return {"error": "Product not found in cart"}
-
-        updated = self.cart_repository.update_product_quantity(cart_id, product_id, quantity)
-        if updated:
-            return {"message": "Product quantity updated successfully"}
-        return {"error": "Failed to update product quantity"}
