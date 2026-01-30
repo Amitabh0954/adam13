@@ -1,4 +1,4 @@
-# Epic Title: User Registration
+# Epic Title: User Login
 
 from account.models.user import User
 from typing import Optional
@@ -22,3 +22,9 @@ class UserRepository:
             return User.objects.get(username=username)
         except User.DoesNotExist:
             return None
+
+    def authenticate_user(self, email: str, password: str) -> Optional[User]:
+        user = self.get_user_by_email(email)
+        if user and user.check_password(password):
+            return user
+        return None
