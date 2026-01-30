@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from typing import Optional
 from shopping_cart_management.models.shopping_cart import ShoppingCart, ShoppingCartItem
