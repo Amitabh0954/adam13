@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from shopping_cart.models.shopping_cart import ShoppingCart, ShoppingCartItem
 from product_catalog_management.models.product import Product
@@ -46,3 +46,9 @@ class ShoppingCartRepository:
                 return None
         except ShoppingCartItem.DoesNotExist:
             return None
+
+    def transfer_cart(self, session_cart: ShoppingCart, user_cart: ShoppingCart):
+        """Transfer items from session-based cart to user-based cart."""
+        for item in session_cart.items.all():
+            self.add_product_to_cart(user_cart, item.product, item.quantity)
+        session_cart.delete()
