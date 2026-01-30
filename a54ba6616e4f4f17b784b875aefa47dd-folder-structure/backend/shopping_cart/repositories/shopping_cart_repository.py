@@ -11,8 +11,8 @@ class ShoppingCartRepository:
         )
         self.cursor = self.connection.cursor()
 
-    def modify_quantity(self, user_id: int, product_id: int, quantity: int) -> bool:
-        query = "UPDATE shopping_cart SET quantity = %s WHERE user_id = %s AND product_id = %s"
-        self.cursor.execute(query, (quantity, user_id, product_id))
+    def remove_from_cart(self, user_id: int, product_id: int) -> bool:
+        query = "DELETE FROM shopping_cart WHERE user_id = %s AND product_id = %s"
+        self.cursor.execute(query, (user_id, product_id))
         self.connection.commit()
         return self.cursor.rowcount > 0
