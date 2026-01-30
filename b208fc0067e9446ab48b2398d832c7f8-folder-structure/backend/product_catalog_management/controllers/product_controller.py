@@ -1,4 +1,4 @@
-# Epic Title: Delete Product
+# Epic Title: Search Products
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -49,4 +49,22 @@ def delete_product(request):
             return JsonResponse({'message': 'Product deleted successfully'}, status=200)
         else:
             return JsonResponse({'error': 'Product not found'}, status=404)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+
+@csrf_exempt
+def search_products(request):
+    if request.method == 'GET':
+        query = request.GET.get('query', '')
+        page = int(request.GET.get('page', 1))
+        items_per_page = int(request.GET.get('items_per_page', 10))
+
+        products = product_service.search_products(query, page, items_per_page)
+        product_list = [{
+            'name': product.name,
+            'price': str(product.price),
+            'description': product.description
+        } for product in products]
+
+        return JsonResponse({'products': product_list}, status=200)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
