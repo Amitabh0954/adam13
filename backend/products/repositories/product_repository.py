@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Update Product Details
 
 from backend.products.models.product import Product
 
@@ -18,3 +18,19 @@ class ProductRepository:
 
     def list_all_products(self) -> list[Product]:
         return Product.objects.all()
+
+    def update_product(self, name: str, new_description: str, new_price: float) -> Product:
+        product = self.get_product_by_name(name)
+        if not product:
+            raise ValueError("Product not found")
+        
+        if new_price <= 0:
+            raise ValueError("Price must be a positive number")
+        
+        if new_description.strip() == "":
+            raise ValueError("Description cannot be empty")
+        
+        product.description = new_description
+        product.price = new_price
+        product.save()
+        return product
