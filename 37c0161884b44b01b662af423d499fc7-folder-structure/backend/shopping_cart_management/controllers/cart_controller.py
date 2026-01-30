@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -60,4 +60,21 @@ def modify_product_quantity(request):
             return JsonResponse({'message': 'Product quantity updated successfully', 'quantity': cart_item.quantity}, status=200)
         else:
             return JsonResponse({'message': 'Product removed from cart successfully'}, status=200)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+@csrf_exempt
+def get_cart(request):
+    if request.method == 'GET':
+        user_id = request.GET.get('user_id')
+        user = User.objects.get(id=user_id)
+        cart = cart_service.get_cart(user)
+        if cart:
+            items = [{
+                'product_id': item.product.id,
+                'product_name': item.product.name,
+                'quantity': item.quantity
+            } for item in cart.items.all()]
+            return JsonResponse({'items': items}, status=200)
+        else:
+            return JsonResponse({'error': 'Cart not found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
