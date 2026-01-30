@@ -1,0 +1,16 @@
+# Epic Title: Add New Product
+
+from product_catalog_management.repositories.product_repository import ProductRepository
+from product_catalog_management.models.product import Product
+from typing import Optional
+
+class ProductService:
+    def __init__(self):
+        self.product_repository = ProductRepository()
+
+    def add_new_product(self, name: str, price: float, description: str) -> Optional[Product]:
+        if price <= 0 or not description.strip():
+            return None
+        if self.product_repository.get_product_by_name(name):
+            return None
+        return self.product_repository.create_product(name, price, description)
