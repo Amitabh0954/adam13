@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Profile Management
 
 import os
 import django
@@ -11,7 +11,6 @@ from backend.services.user_account.user_registration_service import UserRegistra
 from backend.services.user_account.user_login_service import UserLoginService
 from backend.services.user_account.password_reset_service import PasswordResetService
 from backend.services.user_account.user_profile_service import UserProfileService
-from backend.services.product_catalog.product_service import ProductService
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -51,7 +50,6 @@ user_registration_service = UserRegistrationService()
 user_login_service = UserLoginService()
 password_reset_service = PasswordResetService()
 user_profile_service = UserProfileService()
-product_service = ProductService()
 
 @csrf_exempt
 def register_user(request):
@@ -164,35 +162,6 @@ def get_profile(request):
             return JsonResponse({'error': 'Profile not found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def add_product(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        name = data.get('name')
-        price = data.get('price')
-        description = data.get('description')
-        
-        if not name or not price or not description:
-            return JsonResponse({'error': 'All fields are required'}, status=400)
-        
-        success, message = product_service.add_product(name, price, description)
-        
-        if success:
-            return JsonResponse({'message': message}, status=201)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-def list_products(request):
-    if request.method == 'GET':
-        products = product_service.get_all_products()
-        if products:
-            return JsonResponse({'products': products}, status=200)
-        else:
-            return JsonResponse({'message': 'No products found'}, status=404)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
 urlpatterns = [
     path('register/', register_user),
     path('login/', login_user),
@@ -201,8 +170,6 @@ urlpatterns = [
     path('reset-password/<str:token>/', reset_password, name='reset_password'),
     path('update-profile/', update_profile),
     path('get-profile/', get_profile),
-    path('add-product/', add_product),
-    path('list-products/', list_products),
 ]
 
 if __name__ == '__main__':
