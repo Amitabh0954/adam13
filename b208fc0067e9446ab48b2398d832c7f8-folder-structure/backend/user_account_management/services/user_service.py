@@ -1,4 +1,4 @@
-# Epic Title: User Registration
+# Epic Title: User Login
 
 from user_account_management.repositories.user_repository import UserRepository
 from user_account_management.models.user import User
@@ -12,3 +12,6 @@ class UserService:
         if self.user_repository.get_user_by_email(email):
             return None
         return self.user_repository.create_user(username, email, password)
+
+    def login_user(self, email: str, password: str) -> Optional[User]:
+        return self.user_repository.validate_user(email, password)
