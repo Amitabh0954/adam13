@@ -9,18 +9,25 @@ class ProductRepository:
             password="",
             database="product_catalog_db"
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=True)
 
-    def product_name_exists(self, name: str) -> bool:
-        query = "SELECT COUNT(*) FROM products WHERE name = %s"
-        self.cursor.execute(query, (name,))
-        result = self.cursor.fetchone()
-        return result[0] > 0
+    def search_products(self, search_term: str, page: int, page_size: int) -> tuple:
+        offset = (page - 1) * page_size
+        search_term = f"%{search_term}%"
 
-    def create_product(self, name: str, price: float, description: str) -> int:
         query = """
-        INSERT INTO products (name, price, description) VALUES (%s, %s, %s)
+        SELECT * FROM products 
+        WHERE name LIKE %s OR description LIKE %s OR category LIKE %s
+        LIMIT %s OFFSET %s
         """
-        self.cursor.execute(query, (name, price, description))
-        self.connection.commit()
-        return self.cursor.lastrowid
+        self.cursor.execute(query, (search_term, search_term, search_term, page_size, offset))
+        results = self.cursor.fetchall()
+
+        count_query = """
+        SELECT COUNT(*) AS total FROM products 
+        WHERE name LIKE %s OR description LIKE %s OR category LIKE %s
+        """
+        self.cursor.execute(count_query, (search_term, search_term, search_term))
+        total = self.cursor.fetchone()['total']
+
+        return results, total
