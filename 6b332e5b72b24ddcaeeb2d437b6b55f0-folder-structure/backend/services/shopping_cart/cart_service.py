@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from backend.repositories.cart_repository import CartRepository
 from typing import Tuple, Optional
@@ -54,3 +54,27 @@ class CartService:
             return True, 'Product quantity updated successfully'
         else:
             return False, 'Product not found in cart'
+
+    def save_cart_state(self, user_id: int) -> bool:
+        cart = self.cart_repository.get_cart_by_user(user_id)
+        if not cart:
+            return False
+        
+        self.cart_repository.save_cart_state(cart)
+        return True
+
+    def retrieve_cart_state(self, user_id: int) -> Optional[dict]:
+        cart = self.cart_repository.retrieve_cart_state(user_id)
+        if not cart:
+            return None
+        
+        cart_items = cart.items.all()
+        cart_data = {
+            'user_id': cart.user_id if cart.user else None,
+            'session_key': cart.session_key,
+            'items': [
+                {'product_id': item.product_id, 'quantity': item.quantity}
+                for item in cart_items
+            ]
+        }
+        return cart_data
