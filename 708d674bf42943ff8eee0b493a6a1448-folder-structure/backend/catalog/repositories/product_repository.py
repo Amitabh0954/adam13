@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from catalog.models.product import Product
 from typing import Optional, List
@@ -21,6 +21,9 @@ class ProductRepository:
             return Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             return None
+    
+    def delete_product(self, product: Product) -> None:
+        product.delete()
 
     def update_product(self, product: Product, name: Optional[str], description: Optional[str], price: Optional[float]) -> Product:
         if name is not None:
