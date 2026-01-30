@@ -9,7 +9,6 @@ from backend.product_catalog.routes.add_product import add_product_bp
 from backend.product_catalog.routes.update_product import update_product_bp
 from backend.product_catalog.routes.delete_product import delete_product_bp
 from backend.product_catalog.routes.search_product import search_product_bp
-from backend.product_catalog.routes.category_management import category_management_bp
 from flask_login import LoginManager
 
 def create_app() -> Flask:
@@ -28,7 +27,6 @@ def create_app() -> Flask:
     app.register_blueprint(update_product_bp, url_prefix='/api/product_catalog')
     app.register_blueprint(delete_product_bp, url_prefix='/api/product_catalog')
     app.register_blueprint(search_product_bp, url_prefix='/api/product_catalog')
-    app.register_blueprint(category_management_bp, url_prefix='/api/product_catalog')
 
     @app.route('/')
     def index():
