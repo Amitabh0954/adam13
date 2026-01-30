@@ -1,0 +1,4 @@
+# Epic Title: User Registration
+
+Django==3.2
+mysqlclient==2.1.0
