@@ -1,4 +1,4 @@
-# Epic Title: Search Products
+# Epic Title: Delete Product
 
 import os
 import django
@@ -14,7 +14,6 @@ from backend.services.user_account.user_profile_service import UserProfileServic
 from backend.services.product_catalog.product_service import ProductService
 from backend.services.product_catalog.product_update_service import ProductUpdateService
 from backend.services.product_catalog.product_delete_service import ProductDeleteService
-from backend.services.product_catalog.product_search_service import ProductSearchService
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -57,7 +56,6 @@ user_profile_service = UserProfileService()
 product_service = ProductService()
 product_update_service = ProductUpdateService()
 product_delete_service = ProductDeleteService()
-product_search_service = ProductSearchService()
 
 @csrf_exempt
 def register_user(request):
@@ -229,23 +227,6 @@ def delete_product(request):
             return JsonResponse({'error': message}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def search_products(request):
-    if request.method == 'GET':
-        query = request.GET.get('query', '').strip()
-        page = int(request.GET.get('page', 1).strip())
-        page_size = int(request.GET.get('page_size', 10).strip())
-        
-        if not query:
-            return JsonResponse({'error': 'Search query is required'}, status=400)
-        
-        products = product_search_service.search_products(query, page, page_size)
-        if products:
-            return JsonResponse({'products': products}, status=200)
-        else:
-            return JsonResponse({'message': 'No products found'}, status=404)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
 def list_products(request):
     if request.method == 'GET':
         products = product_service.get_all_products()
@@ -266,7 +247,6 @@ urlpatterns = [
     path('add-product/', add_product),
     path('update-product/', update_product),
     path('delete-product/', delete_product),
-    path('search-products/', search_products),
     path('list-products/', list_products),
 ]
 
