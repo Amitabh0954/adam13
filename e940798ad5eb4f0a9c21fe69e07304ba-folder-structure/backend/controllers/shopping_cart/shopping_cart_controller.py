@@ -44,3 +44,19 @@ def clear_cart():
         return jsonify(response), 400
 
     return jsonify(response), 200
+
+@shopping_cart_bp.route('/api/shopping_cart/remove', methods=['DELETE'])
+def remove_product_from_cart():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    product_id = data.get('product_id')
+    confirmation = data.get('confirmation')
+
+    if not user_id or not product_id or not confirmation:
+        return jsonify({"error": "User ID, product ID, and confirmation are required"}), 400
+
+    response = shopping_cart_service.remove_product_from_cart(user_id, product_id, confirmation)
+    if "error" in response:
+        return jsonify(response), 400
+
+    return jsonify(response), 200
