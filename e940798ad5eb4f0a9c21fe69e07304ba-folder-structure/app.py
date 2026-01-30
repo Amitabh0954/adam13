@@ -8,7 +8,6 @@ from backend.controllers.product_catalog.product_controller import product_bp
 from backend.controllers.product_catalog.product_update_controller import product_update_bp
 from backend.controllers.product_catalog.product_deletion_controller import product_deletion_bp
 from backend.controllers.product_catalog.product_search_controller import product_search_bp
-from backend.controllers.product_catalog.category_controller import category_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -21,7 +20,6 @@ app.register_blueprint(product_bp)
 app.register_blueprint(product_update_bp)
 app.register_blueprint(product_deletion_bp)
 app.register_blueprint(product_search_bp)
-app.register_blueprint(category_bp)
 
 @app.route('/')
 def index():
