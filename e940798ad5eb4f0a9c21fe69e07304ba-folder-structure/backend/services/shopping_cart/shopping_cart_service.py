@@ -26,3 +26,13 @@ class ShoppingCartService:
             return {"error": "Failed to clear cart"}
 
         return {"message": "Cart cleared successfully"}
+
+    def remove_product_from_cart(self, user_id: int, product_id: int, confirmation: str) -> dict:
+        if confirmation != "YES":
+            return {"error": "Confirmation required for removing product"}
+
+        success = self.shopping_cart_repository.remove_from_cart(user_id, product_id)
+        if not success:
+            return {"error": "Failed to remove product from cart"}
+
+        return {"message": "Product removed from cart successfully"}
