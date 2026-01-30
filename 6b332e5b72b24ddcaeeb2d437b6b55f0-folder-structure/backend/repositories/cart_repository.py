@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from backend.models.cart import Cart, CartItem
 from backend.models.product import Product
@@ -25,3 +25,11 @@ class CartRepository:
             cart_item.quantity += quantity
         cart_item.save()
         return cart_item
+
+    def remove_item_from_cart(self, cart: Cart, product_id: int) -> bool:
+        try:
+            cart_item = CartItem.objects.get(cart=cart, product_id=product_id)
+            cart_item.delete()
+            return True
+        except CartItem.DoesNotExist:
+            return False
