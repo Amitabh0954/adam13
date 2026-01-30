@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from backend.cart.models.cart import Cart, CartItem
 from backend.products.models.product import Product
@@ -22,12 +22,24 @@ class CartRepository:
         if not created:
             cart_item.quantity += quantity
         cart_item.save()
+        
+        # Update the total price of the cart
+        cart.total_price += product.price * quantity
+        cart.save()
+
         return cart_item
 
     def remove_product(self, cart: Cart, product: Product) -> None:
         cart_item = CartItem.objects.filter(cart=cart, product=product).first()
         if cart_item:
+            # Update the total price of the cart
+            cart.total_price -= product.price * cart_item.quantity
+            cart.total_price = max(cart.total_price, 0)
+            cart.save()
+            
             cart_item.delete()
 
     def clear_cart(self, cart: Cart) -> None:
         CartItem.objects.filter(cart=cart).delete()
+        cart.total_price = 0
+        cart.save()
