@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from backend.models.cart import Cart, CartItem
 from backend.models.product import Product
@@ -46,3 +46,9 @@ class CartRepository:
                 return True
         except CartItem.DoesNotExist:
             return False
+
+    def save_cart_state(self, cart: Cart) -> None:
+        cart.save()
+
+    def retrieve_cart_state(self, user_id: int) -> Optional[Cart]:
+        return self.get_cart_by_user(user_id)
