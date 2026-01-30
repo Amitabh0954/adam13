@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 CREATE TABLE IF NOT EXISTS `cart_cart` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
