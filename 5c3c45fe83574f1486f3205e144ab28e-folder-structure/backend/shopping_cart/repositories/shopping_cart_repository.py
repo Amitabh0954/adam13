@@ -52,9 +52,3 @@ class ShoppingCartRepository:
         self.cursor.execute(query, (cart_id, product_id))
         self.connection.commit()
         return self.cursor.rowcount > 0
-
-    def update_product_quantity(self, cart_id: int, product_id: int, quantity: int) -> bool:
-        query = "UPDATE cart_items SET quantity = %s WHERE cart_id = %s AND product_id = %s"
-        self.cursor.execute(query, (quantity, cart_id, product_id))
-        self.connection.commit()
-        return self.cursor.rowcount > 0
