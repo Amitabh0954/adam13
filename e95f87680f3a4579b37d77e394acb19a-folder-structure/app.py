@@ -4,7 +4,6 @@ from backend.services.product_catalog_management.add_product_service import AddP
 from backend.services.product_catalog_management.update_product_service import UpdateProductService
 from backend.services.product_catalog_management.delete_product_service import DeleteProductService
 from backend.services.product_catalog_management.search_product_service import SearchProductService
-from backend.services.product_catalog_management.category_management_service import CategoryManagementService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -13,7 +12,6 @@ add_product_service = AddProductService()
 update_product_service = UpdateProductService()
 delete_product_service = DeleteProductService()
 search_product_service = SearchProductService()
-category_management_service = CategoryManagementService()
 
 @app.route('/api/product_catalog_management/add_product', methods=['POST'])
 def add_product():
@@ -21,12 +19,12 @@ def add_product():
     name = data.get('name')
     description = data.get('description')
     price = data.get('price')
-    category_id = data.get('category_id')
+    category = data.get('category')
 
-    if not name or not description or price is None or category_id is None:
-        return jsonify({"error": "Name, description, price, and category_id are required"}), 400
+    if not name or not description or price is None:
+        return jsonify({"error": "Name, description, and price are required"}), 400
     
-    response = add_product_service.add_product(name, description, price, category_id)
+    response = add_product_service.add_product(name, description, price, category)
 
     if response.get("error"):
         return jsonify(response), 400
@@ -62,46 +60,6 @@ def search_products():
         return jsonify({"error": "Query parameter is required"}), 400
 
     response = search_product_service.search_products(query, page, per_page)
-    return jsonify(response), 200
-
-@app.route('/api/product_catalog_management/categories', methods=['GET'])
-def get_categories():
-    response = category_management_service.get_all_categories()
-    return jsonify(response), 200
-
-@app.route('/api/product_catalog_management/category', methods=['POST'])
-def create_category():
-    data = request.get_json()
-    name = data.get('name')
-    parent_id = data.get('parent_id')
-
-    if not name:
-        return jsonify({"error": "Category name is required"}), 400
-
-    response = category_management_service.create_category(name, parent_id)
-    return jsonify(response), 200
-
-@app.route('/api/product_catalog_management/category/<int:category_id>', methods=['PUT'])
-def update_category(category_id):
-    data = request.get_json()
-    name = data.get('name')
-    parent_id = data.get('parent_id')
-
-    if not name:
-        return jsonify({"error": "Category name is required"}), 400
-
-    response = category_management_service.update_category(category_id, name, parent_id)
-    if response.get("error"):
-        return jsonify(response), 400
-
-    return jsonify(response), 200
-
-@app.route('/api/product_catalog_management/category/<int:category_id>', methods=['DELETE'])
-def delete_category(category_id):
-    response = category_management_service.delete_category(category_id)
-    if response.get("error"):
-        return jsonify(response), 400
-
     return jsonify(response), 200
 
 @app.route('/')
