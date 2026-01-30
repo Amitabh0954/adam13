@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Update Product Details
 
 from products.repositories.product_repository import ProductRepository
 from products.models.product import Product
@@ -15,3 +15,13 @@ class ProductService:
 
     def get_all_products(self) -> List[Product]:
         return self.product_repository.get_all_products()
+
+    def update_product(self, product_id: int, name: str, description: str, price: float) -> Optional[Product]:
+        product = self.product_repository.get_product_by_id(product_id)
+        if product:
+            product.name = name
+            product.description = description
+            product.price = price
+            product.save()
+            return product
+        return None
