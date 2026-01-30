@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Update Product Details
 
 from product_catalog_management.models.product import Product
 from typing import Optional
@@ -15,3 +15,9 @@ class ProductRepository:
             return Product.objects.get(name=name)
         except Product.DoesNotExist:
             return None
+
+    def update_product(self, product: Product, **kwargs) -> Product:
+        for attr, value in kwargs.items():
+            setattr(product, attr, value)
+        product.save()
+        return product
