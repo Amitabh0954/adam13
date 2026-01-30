@@ -1,0 +1,19 @@
+# Epic Title: Shopping Cart Functionality
+from repositories.shopping_cart_repository import ShoppingCartRepository
+
+class ShoppingCartService:
+    def __init__(self):
+        self.cart_repository = ShoppingCartRepository()
+
+    def add_product_to_cart(self, user_id: int, product_id: int, quantity: int) -> dict:
+        if not self.cart_repository.product_exists(product_id):
+            return {"error": "Product does not exist"}
+
+        cart_id = self.cart_repository.get_active_cart(user_id)
+        if not cart_id:
+            cart_id = self.cart_repository.create_cart(user_id)
+
+        added_to_cart = self.cart_repository.add_product(cart_id, product_id, quantity)
+        if added_to_cart:
+            return {"message": "Product added to cart successfully"}
+        return {"error": "Failed to add product to cart"}
