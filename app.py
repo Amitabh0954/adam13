@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 import logging
 from backend.products.repositories.product_repository import ProductRepository
@@ -12,13 +12,9 @@ def main():
     product_service = ProductService(product_repository=product_repository)
 
     try:
-        # Example to update an existing product
-        updated_product = product_service.update_product(
-            "Test Product",
-            "This is the updated test product description.",
-            79.99
-        )
-        logger.info(f"Product updated: {updated_product.name}")
+        # Example to delete an existing product
+        product_service.delete_product("Test Product")
+        logger.info("Product deleted successfully")
 
     except Exception as e:
         logger.error(f"Error: {e}")
