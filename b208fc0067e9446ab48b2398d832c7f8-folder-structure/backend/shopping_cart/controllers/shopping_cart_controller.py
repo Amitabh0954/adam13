@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -36,4 +36,19 @@ def view_cart(request):
         items = [{'product_id': item.product.id, 'name': item.product.name, 'quantity': item.quantity} for item in cart_items]
         
         return JsonResponse({'cart_items': items}, status=200)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+
+@csrf_exempt
+def remove_from_cart(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        product_id = data.get('product_id')
+        user = request.user if request.user.is_authenticated else None
+        session = Session.objects.get(pk=request.session.session_key)
+
+        product = Product.objects.get(pk=product_id)
+        shopping_cart_service.remove_product_from_cart(user, session, product)
+
+        return JsonResponse({'message': 'Product removed from cart successfully'}, status=200)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
