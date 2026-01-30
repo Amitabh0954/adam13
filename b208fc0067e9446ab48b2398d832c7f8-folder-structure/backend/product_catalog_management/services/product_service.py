@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from product_catalog_management.repositories.product_repository import ProductRepository
 from product_catalog_management.models.product import Product
@@ -20,3 +20,10 @@ class ProductService:
         if product:
             return self.product_repository.update_product(product, **kwargs)
         return None
+
+    def delete_product(self, name: str) -> bool:
+        product = self.product_repository.get_product_by_name(name)
+        if product:
+            self.product_repository.delete_product(product)
+            return True
+        return False
