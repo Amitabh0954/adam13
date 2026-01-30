@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from shopping_cart.models.shopping_cart import ShoppingCart, ShoppingCartItem
 from product_catalog_management.models.product import Product
@@ -26,3 +26,10 @@ class ShoppingCartRepository:
 
     def get_cart_items(self, cart: ShoppingCart):
         return cart.items.all()
+
+    def remove_product_from_cart(self, cart: ShoppingCart, product: Product) -> None:
+        try:
+            cart_item = ShoppingCartItem.objects.get(cart=cart, product=product)
+            cart_item.delete()
+        except ShoppingCartItem.DoesNotExist:
+            pass
