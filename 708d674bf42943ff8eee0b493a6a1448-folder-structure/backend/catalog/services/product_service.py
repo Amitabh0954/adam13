@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from catalog.repositories.product_repository import ProductRepository
 from catalog.models.product import Product
@@ -18,6 +18,13 @@ class ProductService:
         if not product:
             return None
         return self.product_repository.update_product(product, name, description, price)
+
+    def delete_product(self, product_id: int) -> bool:
+        product = self.product_repository.get_product_by_id(product_id)
+        if not product:
+            return False
+        self.product_repository.delete_product(product)
+        return True
 
     def get_all_products(self) -> List[Product]:
         return self.product_repository.get_all_products()
