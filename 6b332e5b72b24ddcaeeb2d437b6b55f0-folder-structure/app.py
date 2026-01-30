@@ -1,4 +1,4 @@
-# Epic Title: Delete Product
+# Epic Title: Update Product Details
 
 import os
 import django
@@ -13,7 +13,6 @@ from backend.services.user_account.password_reset_service import PasswordResetSe
 from backend.services.user_account.user_profile_service import UserProfileService
 from backend.services.product_catalog.product_service import ProductService
 from backend.services.product_catalog.product_update_service import ProductUpdateService
-from backend.services.product_catalog.product_delete_service import ProductDeleteService
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -55,7 +54,6 @@ password_reset_service = PasswordResetService()
 user_profile_service = UserProfileService()
 product_service = ProductService()
 product_update_service = ProductUpdateService()
-product_delete_service = ProductDeleteService()
 
 @csrf_exempt
 def register_user(request):
@@ -209,24 +207,6 @@ def update_product(request):
             return JsonResponse({'error': message}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def delete_product(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        product_id = data.get('product_id')
-        
-        if not product_id:
-            return JsonResponse({'error': 'Product ID is required'}, status=400)
-        
-        success, message = product_delete_service.delete_product(product_id)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
 def list_products(request):
     if request.method == 'GET':
         products = product_service.get_all_products()
@@ -246,7 +226,6 @@ urlpatterns = [
     path('get-profile/', get_profile),
     path('add-product/', add_product),
     path('update-product/', update_product),
-    path('delete-product/', delete_product),
     path('list-products/', list_products),
 ]
 
