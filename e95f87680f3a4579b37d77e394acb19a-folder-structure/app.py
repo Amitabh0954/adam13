@@ -1,11 +1,10 @@
-# Epic Title: Shopping Cart Functionality
+# Epic Title: Product Catalog Management
 from flask import Flask, request, jsonify
 from backend.services.product_catalog_management.add_product_service import AddProductService
 from backend.services.product_catalog_management.update_product_service import UpdateProductService
 from backend.services.product_catalog_management.delete_product_service import DeleteProductService
 from backend.services.product_catalog_management.search_product_service import SearchProductService
 from backend.services.product_catalog_management.category_management_service import CategoryManagementService
-from backend.services.shopping_cart.add_to_cart_service import AddToCartService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -15,7 +14,6 @@ update_product_service = UpdateProductService()
 delete_product_service = DeleteProductService()
 search_product_service = SearchProductService()
 category_management_service = CategoryManagementService()
-add_to_cart_service = AddToCartService()
 
 @app.route('/api/product_catalog_management/add_product', methods=['POST'])
 def add_product():
@@ -106,26 +104,9 @@ def delete_category(category_id):
 
     return jsonify(response), 200
 
-@app.route('/api/shopping_cart/add_to_cart', methods=['POST'])
-def add_to_cart():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    product_id = data.get('product_id')
-    quantity = data.get('quantity')
-
-    if not product_id or quantity is None:
-        return jsonify({"error": "Product ID and quantity are required"}), 400
-
-    response = add_to_cart_service.add_to_cart(user_id, product_id, quantity)
-
-    if response.get("error"):
-        return jsonify(response), 400
-
-    return jsonify(response), 200
-
 @app.route('/')
 def index():
-    return "Welcome to the Product Catalog and Shopping Cart Management System"
+    return "Welcome to the Product Catalog Management System"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
