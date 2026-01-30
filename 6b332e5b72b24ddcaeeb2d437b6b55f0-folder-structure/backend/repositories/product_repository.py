@@ -1,7 +1,7 @@
-# Epic Title: Add New Product
+# Epic Title: Search Products
 
 from backend.models.product import Product
-from typing import Optional, List
+from typing import List, Optional
 
 class ProductRepository:
 
@@ -22,3 +22,7 @@ class ProductRepository:
 
     def get_all_products(self) -> List[Product]:
         return Product.objects.all()
+
+    def search_products(self, query: str, page: int, page_size: int) -> List[Product]:
+        products = Product.objects.filter(name__icontains=query) | Product.objects.filter(description__icontains=query)
+        return products[(page - 1) * page_size: page * page_size]
