@@ -8,6 +8,5 @@ CREATE TABLE IF NOT EXISTS products (
     name VARCHAR(255) NOT NULL UNIQUE,
     price DECIMAL(10, 2) NOT NULL,
     description TEXT NOT NULL,
-    category VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
