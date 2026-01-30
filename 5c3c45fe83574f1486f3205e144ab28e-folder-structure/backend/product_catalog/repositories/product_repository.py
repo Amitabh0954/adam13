@@ -30,15 +30,3 @@ class ProductRepository:
         self.cursor.execute(query, (name, price, description, product_id))
         self.connection.commit()
         return self.cursor.rowcount > 0
-
-    def product_exists(self, product_id: int) -> bool:
-        query = "SELECT COUNT(*) FROM products WHERE id = %s"
-        self.cursor.execute(query, (product_id,))
-        result = self.cursor.fetchone()
-        return result[0] > 0
-
-    def delete_product_by_id(self, product_id: int) -> bool:
-        query = "DELETE FROM products WHERE id = %s"
-        self.cursor.execute(query, (product_id,))
-        self.connection.commit()
-        return self.cursor.rowcount > 0
