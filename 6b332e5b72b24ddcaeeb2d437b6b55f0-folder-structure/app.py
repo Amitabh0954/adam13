@@ -1,4 +1,4 @@
-# Epic Title: Profile Management
+# Epic Title: Password Recovery
 
 import os
 import django
@@ -10,7 +10,6 @@ from django.apps import apps
 from backend.services.user_account.user_registration_service import UserRegistrationService
 from backend.services.user_account.user_login_service import UserLoginService
 from backend.services.user_account.password_reset_service import PasswordResetService
-from backend.services.user_account.user_profile_service import UserProfileService
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -49,7 +48,6 @@ apps.populate(settings.INSTALLED_APPS)
 user_registration_service = UserRegistrationService()
 user_login_service = UserLoginService()
 password_reset_service = PasswordResetService()
-user_profile_service = UserProfileService()
 
 @csrf_exempt
 def register_user(request):
@@ -133,43 +131,12 @@ def reset_password(request, token):
             return JsonResponse({'error': message}, status=400)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
-@csrf_exempt
-def update_profile(request):
-    if request.method == 'POST':
-        user_id = request.session.get('user_id')
-        if not user_id:
-            return JsonResponse({'error': 'User not authenticated'}, status=403)
-        
-        data = json.loads(request.body)
-        success, message = user_profile_service.update_profile(user_id, **data)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-def get_profile(request):
-    if request.method == 'GET':
-        user_id = request.session.get('user_id')
-        if not user_id:
-            return JsonResponse({'error': 'User not authenticated'}, status=403)
-        
-        profile_data = user_profile_service.get_user_profile(user_id)
-        if profile_data:
-            return JsonResponse(profile_data, status=200)
-        else:
-            return JsonResponse({'error': 'Profile not found'}, status=404)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
 urlpatterns = [
     path('register/', register_user),
     path('login/', login_user),
     path('logout/', logout_user),
     path('request-password-reset/', request_password_reset),
     path('reset-password/<str:token>/', reset_password, name='reset_password'),
-    path('update-profile/', update_profile),
-    path('get-profile/', get_profile),
 ]
 
 if __name__ == '__main__':
