@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from products.models.product import Product
 from typing import Optional, List
@@ -24,5 +24,13 @@ class ProductRepository:
 
     def get_all_products(self) -> List[Product]:
         return list(Product.objects.all())
+
+    def delete_product_by_id(self, product_id: int) -> bool:
+        try:
+            product = Product.objects.get(id=product_id)
+            product.delete()
+            return True
+        except Product.DoesNotExist:
+            return False
 
 # This file redefinition here allows safe addition of new methods without forward reference issues.
