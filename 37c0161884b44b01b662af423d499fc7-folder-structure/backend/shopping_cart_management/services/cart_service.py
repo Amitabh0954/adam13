@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from typing import Optional
 from shopping_cart_management.repositories.cart_repository import CartRepository
@@ -31,3 +31,6 @@ class CartService:
             else:
                 return self.cart_repository.update_product_quantity(cart, product, quantity)
         return None
+
+    def get_cart(self, user: User) -> Optional[ShoppingCart]:
+        return self.cart_repository.get_cart_by_user(user)
