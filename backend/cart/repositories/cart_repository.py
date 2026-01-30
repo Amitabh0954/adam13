@@ -1,7 +1,8 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from backend.cart.models.cart import Cart, CartItem
 from backend.products.models.product import Product
+from backend.accounts.models.user import User
 from typing import Optional
 
 class CartRepository:
