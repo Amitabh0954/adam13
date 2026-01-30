@@ -1,4 +1,4 @@
-# Epic Title: User Login
+# Epic Title: Profile Management
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -34,4 +34,18 @@ def login_user(request):
             return JsonResponse({'message': 'Login successful'}, status=200)
         else:
             return JsonResponse({'error': 'Invalid email or password'}, status=400)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+@csrf_exempt
+def update_user_profile(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        update_data = {key: value for key, value in data.items() if key != 'email'}
+
+        user = user_service.update_user_profile(email, **update_data)
+        if user:
+            return JsonResponse({'message': 'Profile updated successfully'}, status=200)
+        else:
+            return JsonResponse({'error': 'User not found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
