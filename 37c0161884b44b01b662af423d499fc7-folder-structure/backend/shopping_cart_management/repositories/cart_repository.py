@@ -1,0 +1,26 @@
+# Epic Title: Add Product to Shopping Cart
+
+from typing import Optional
+from shopping_cart_management.models.shopping_cart import ShoppingCart, ShoppingCartItem
+from user_account_management.models.user import User
+from product_catalog_management.models.product import Product
+
+class CartRepository:
+
+    def get_cart_by_user(self, user: User) -> Optional[ShoppingCart]:
+        try:
+            return ShoppingCart.objects.get(user=user)
+        except ShoppingCart.DoesNotExist:
+            return None
+
+    def create_cart(self, user: User) -> ShoppingCart:
+        cart = ShoppingCart(user=user)
+        cart.save()
+        return cart
+
+    def add_product_to_cart(self, cart: ShoppingCart, product: Product, quantity: int = 1) -> ShoppingCartItem:
+        item, created = ShoppingCartItem.objects.get_or_create(cart=cart, product=product)
+        if not created:
+            item.quantity += quantity
+        item.save()
+        return item
