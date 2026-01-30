@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from typing import Optional
 from shopping_cart_management.repositories.cart_repository import CartRepository
@@ -15,3 +15,9 @@ class CartService:
         if not cart:
             cart = self.cart_repository.create_cart(user)
         return self.cart_repository.add_product_to_cart(cart, product, quantity)
+
+    def remove_product_from_cart(self, user: User, product: Product) -> bool:
+        cart = self.cart_repository.get_cart_by_user(user)
+        if cart:
+            return self.cart_repository.remove_product_from_cart(cart, product)
+        return False
