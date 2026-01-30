@@ -1,9 +1,9 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from cart.models.cart import Cart, CartItem
 from products.models.product import Product
 from django.contrib.auth.models import User
-from typing import Optional
+from typing import Optional, List
 
 class CartRepository:
 
@@ -47,5 +47,5 @@ class CartRepository:
             return True
         return False
 
-    def get_cart_items(self, cart: Cart) -> Cart:
-        return cart.items.all()
+    def get_cart_items(self, cart: Cart) -> List[CartItem]:
+        return list(cart.items.all())
