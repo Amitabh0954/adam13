@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from backend.cart.repositories.cart_repository import CartRepository
 from backend.products.repositories.product_repository import ProductRepository
@@ -52,6 +52,26 @@ class CartService:
         cart_item = self.cart_repository.modify_product_quantity(cart, product, new_quantity)
         logger.info(f"Updated quantity of {product_name} to {new_quantity} in cart {cart.id}")
         return cart_item
+
+    def save_cart_state(self, user: User, session_id: str) -> Cart:
+        session_cart = self.cart_repository.get_cart(session_id=session_id)
+        if not session_cart:
+            raise ValueError("No cart found for the given session")
+
+        user_cart = self.cart_repository.get_cart(user=user)
+        if not user_cart:
+            user_cart = self.cart_repository.create_cart(user=user)
+
+        user_cart.items.all().delete()  # Clear existing items in the user's cart
+
+        for item in session_cart.items.all():
+            self.cart_repository.add_product(user_cart, item.product, item.quantity)
+
+        user_cart.total_price = session_cart.total_price
+        user_cart.save()
+
+        logger.info(f"Cart state saved for user {user.id}")
+        return user_cart
 
     def get_cart_items(self, user: Optional[User], session_id: Optional[str]) -> Optional[Cart]:
         cart = self.cart_repository.get_cart(user=user, session_id=session_id)
