@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from cart.repositories.cart_repository import CartRepository
 from cart.models.cart import Cart, CartItem
@@ -24,3 +24,8 @@ class CartService:
     def get_cart_items(self, user: Optional[User]) -> Cart:
         cart = self.get_or_create_cart(user)
         return self.cart_repository.get_cart_items(cart)
+
+    def remove_product_from_cart(self, user: Optional[User], product_id: int) -> bool:
+        cart = self.get_or_create_cart(user)
+        product = Product.objects.get(id=product_id)
+        return self.cart_repository.remove_cart_item(cart, product)
