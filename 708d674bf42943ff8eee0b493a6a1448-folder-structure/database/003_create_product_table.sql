@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Update Product Details
 
 CREATE TABLE IF NOT EXISTS `catalog_product` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
