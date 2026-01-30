@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 from products.repositories.product_repository import ProductRepository
 from products.models.product import Product
@@ -25,3 +25,10 @@ class ProductService:
             product.save()
             return product
         return None
+
+    def delete_product(self, product_id: int) -> bool:
+        product = self.product_repository.get_product_by_id(product_id)
+        if product:
+            product.delete()
+            return True
+        return False
