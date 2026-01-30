@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 import os
 import django
@@ -12,7 +12,7 @@ from account.controllers.profile_controller import update_profile
 from catalog.controllers.product_controller import add_product, update_product, delete_product
 from catalog.controllers.search_controller import search_products
 from catalog.controllers.category_controller import add_category
-from cart.controllers.cart_controller import add_product_to_cart, remove_product_from_cart
+from cart.controllers.cart_controller import add_product_to_cart, remove_product_from_cart, modify_quantity_in_cart
 
 settings.configure(
     DEBUG=os.getenv('DEBUG', 'on') == 'on',
@@ -60,6 +60,7 @@ urlpatterns = [
     path('add-category/', add_category),
     path('add-product-to-cart/', add_product_to_cart),
     path('remove-product-from-cart/', remove_product_from_cart),
+    path('modify-quantity-in-cart/', modify_quantity_in_cart),
 ]
 
 if __name__ == '__main__':
