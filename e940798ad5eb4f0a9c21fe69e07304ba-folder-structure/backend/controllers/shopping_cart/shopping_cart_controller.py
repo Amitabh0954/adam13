@@ -60,3 +60,19 @@ def remove_product_from_cart():
         return jsonify(response), 400
 
     return jsonify(response), 200
+
+@shopping_cart_bp.route('/api/shopping_cart/update_quantity', methods=['PUT'])
+def update_quantity_in_cart():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if not user_id or not product_id or not quantity:
+        return jsonify({"error": "User ID, product ID, and quantity are required"}), 400
+
+    response = shopping_cart_service.update_quantity_in_cart(user_id, product_id, quantity)
+    if "error" in response:
+        return jsonify(response), 400
+
+    return jsonify(response), 200
