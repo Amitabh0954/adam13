@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from backend.cart.repositories.cart_repository import CartRepository
 from backend.products.repositories.product_repository import ProductRepository
