@@ -8,7 +8,6 @@ from backend.services.product_catalog_management.category_management_service imp
 from backend.services.shopping_cart.add_to_cart_service import AddToCartService
 from backend.services.shopping_cart.remove_from_cart_service import RemoveFromCartService
 from backend.services.shopping_cart.update_cart_item_service import UpdateCartItemService
-from backend.services.shopping_cart.save_cart_service import SaveCartService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -21,7 +20,6 @@ category_management_service = CategoryManagementService()
 add_to_cart_service = AddToCartService()
 remove_from_cart_service = RemoveFromCartService()
 update_cart_item_service = UpdateCartItemService()
-save_cart_service = SaveCartService()
 
 @app.route('/api/product_catalog_management/add_product', methods=['POST'])
 def add_product():
@@ -160,32 +158,6 @@ def update_cart_item():
     if response.get("error"):
         return jsonify(response), 400
 
-    return jsonify(response), 200
-
-@app.route('/api/shopping_cart/save_cart', methods=['POST'])
-def save_cart():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    cart_items = data.get('cart_items')
-
-    if not user_id or not cart_items:
-        return jsonify({"error": "User ID and cart items are required"}), 400
-
-    response = save_cart_service.save_cart_state(user_id, cart_items)
-
-    if response.get("error"):
-        return jsonify(response), 400
-
-    return jsonify(response), 200
-
-@app.route('/api/shopping_cart/retrieve_cart', methods=['GET'])
-def retrieve_cart():
-    user_id = request.args.get('user_id')
-
-    if not user_id:
-        return jsonify({"error": "User ID is required"}), 400
-
-    response = save_cart_service.retrieve_cart_state(int(user_id))
     return jsonify(response), 200
 
 @app.route('/')
