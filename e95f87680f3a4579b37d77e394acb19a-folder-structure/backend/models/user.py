@@ -8,7 +8,7 @@ class User(UserMixin):
 
     @staticmethod
     def get(user_id: int):
-        from backend.repositories.user_repository import UserRepository
+        from repositories.user_repository import UserRepository
         user_repository = UserRepository()
         user_data = user_repository.get_user_by_id(user_id)
         if user_data:
