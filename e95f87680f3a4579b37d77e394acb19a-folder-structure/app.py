@@ -6,7 +6,6 @@ from backend.services.product_catalog_management.delete_product_service import D
 from backend.services.product_catalog_management.search_product_service import SearchProductService
 from backend.services.product_catalog_management.category_management_service import CategoryManagementService
 from backend.services.shopping_cart.add_to_cart_service import AddToCartService
-from backend.services.shopping_cart.remove_from_cart_service import RemoveFromCartService
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -17,7 +16,6 @@ delete_product_service = DeleteProductService()
 search_product_service = SearchProductService()
 category_management_service = CategoryManagementService()
 add_to_cart_service = AddToCartService()
-remove_from_cart_service = RemoveFromCartService()
 
 @app.route('/api/product_catalog_management/add_product', methods=['POST'])
 def add_product():
@@ -119,22 +117,6 @@ def add_to_cart():
         return jsonify({"error": "Product ID and quantity are required"}), 400
 
     response = add_to_cart_service.add_to_cart(user_id, product_id, quantity)
-
-    if response.get("error"):
-        return jsonify(response), 400
-
-    return jsonify(response), 200
-
-@app.route('/api/shopping_cart/remove_from_cart', methods=['POST'])
-def remove_from_cart():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    product_id = data.get('product_id')
-
-    if not product_id or user_id is None:
-        return jsonify({"error": "User ID and Product ID are required"}), 400
-
-    response = remove_from_cart_service.remove_from_cart(user_id, product_id)
 
     if response.get("error"):
         return jsonify(response), 400
