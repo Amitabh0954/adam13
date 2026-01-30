@@ -1,7 +1,8 @@
-# Epic Title: Delete Product
+# Epic Title: Search Products
 
 from product_catalog_management.models.product import Product
-from typing import Optional
+from typing import Optional, List
+from django.db.models import Q
 
 class ProductRepository:
 
@@ -24,3 +25,10 @@ class ProductRepository:
 
     def delete_product(self, product: Product) -> None:
         product.delete()
+
+    def search_products(self, query: str, page: int = 1, items_per_page: int = 10) -> List[Product]:
+        offset = (page - 1) * items_per_page
+        products = Product.objects.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        )[offset: offset + items_per_page]
+        return list(products)
