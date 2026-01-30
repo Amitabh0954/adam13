@@ -2,7 +2,6 @@
 from flask import Flask, session
 from backend.user_account.routes.user_registration import user_registration_bp
 from backend.user_account.routes.user_login import user_login_bp
-from backend.user_account.routes.password_recovery import password_recovery_bp
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -11,7 +10,6 @@ def create_app() -> Flask:
     
     app.register_blueprint(user_registration_bp, url_prefix='/api/user_account')
     app.register_blueprint(user_login_bp, url_prefix='/api/user_account')
-    app.register_blueprint(password_recovery_bp, url_prefix='/api/user_account')
     
     @app.route('/')
     def index():
