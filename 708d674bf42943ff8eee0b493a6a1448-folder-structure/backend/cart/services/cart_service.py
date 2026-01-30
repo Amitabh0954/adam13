@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 from cart.repositories.cart_repository import CartRepository
 from catalog.models.product import Product
@@ -25,3 +25,6 @@ class CartService:
 
     def remove_product_from_cart(self, cart_item_id: int) -> bool:
         return self.cart_repository.remove_product_from_cart(cart_item_id)
+
+    def modify_quantity_in_cart(self, cart_item_id: int, quantity: int) -> bool:
+        return self.cart_repository.modify_quantity_in_cart(cart_item_id, quantity)
