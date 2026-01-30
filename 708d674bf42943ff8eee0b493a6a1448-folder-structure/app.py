@@ -1,4 +1,4 @@
-# Epic Title: Update Product Details
+# Epic Title: Delete Product
 
 import os
 import django
@@ -9,7 +9,7 @@ from django.apps import apps
 from account.controllers.user_controller import register, login_user, logout_user
 from account.controllers.password_reset_controller import request_password_reset, reset_password
 from account.controllers.profile_controller import update_profile
-from catalog.controllers.product_controller import add_product, update_product
+from catalog.controllers.product_controller import add_product, update_product, delete_product
 
 settings.configure(
     DEBUG=os.getenv('DEBUG', 'on') == 'on',
@@ -51,6 +51,7 @@ urlpatterns = [
     path('update-profile/', update_profile),
     path('add-product/', add_product),
     path('update-product/<int:product_id>/', update_product),
+    path('delete-product/<int:product_id>/', delete_product),
 ]
 
 if __name__ == '__main__':
