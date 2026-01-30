@@ -1,4 +1,4 @@
-# Epic Title: Modify Quantity of Products in Shopping Cart
+# Epic Title: Save Shopping Cart for Logged-in Users
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
