@@ -1,4 +1,4 @@
-# Epic Title: Shopping Cart Functionality
+# Epic Title: Product Catalog Management
 
 CREATE DATABASE IF NOT EXISTS product_db;
 USE product_db;
@@ -11,18 +11,18 @@ CREATE TABLE IF NOT EXISTS products (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS categories (
     id INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    name VARCHAR(255) NOT NULL,
+    parent_id INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS shopping_cart (
-    user_id INT NOT NULL,
+CREATE TABLE IF NOT EXISTS product_categories (
     product_id INT NOT NULL,
-    quantity INT NOT NULL,
-    PRIMARY KEY (user_id, product_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+    category_id INT NOT NULL,
+    PRIMARY KEY (product_id, category_id),
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
