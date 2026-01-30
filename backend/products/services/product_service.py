@@ -1,4 +1,4 @@
-# Epic Title: Add New Product
+# Epic Title: Update Product Details
 
 from backend.products.repositories.product_repository import ProductRepository
 from backend.products.models.product import Product
@@ -31,3 +31,8 @@ class ProductService:
         products = self.product_repository.list_all_products()
         logger.info("Retrieved all products")
         return products
+
+    def update_product(self, name: str, new_description: str, new_price: float) -> Product:
+        product = self.product_repository.update_product(name, new_description, new_price)
+        logger.info(f"Product {name} updated with new price: {new_price} and new description")
+        return product
