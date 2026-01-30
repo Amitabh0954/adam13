@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 import logging
 from backend.products.repositories.product_repository import ProductRepository
@@ -19,10 +19,8 @@ def main():
         # Add product to cart
         cart_service.add_to_cart(user=None, session_id=session_id, product_name="iPhone 13", quantity=1)
 
-        # Remove product from cart with confirmation
-        if input("Are you sure you want to remove the product from the cart? (yes/no): ").strip().lower() == "yes":
-            cart_service.remove_from_cart(user=None, session_id=session_id, product_name="iPhone 13")
-            logger.info("Product removed from cart")
+        # Modify quantity of product in cart
+        cart_service.modify_quantity(user=None, session_id=session_id, product_name="iPhone 13", new_quantity=2)
 
         # List cart items
         cart = cart_service.get_cart_items(user=None, session_id=session_id)
