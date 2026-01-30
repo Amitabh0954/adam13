@@ -1,12 +1,11 @@
-# Epic Title: Product Categorization
+# Epic Title: Search Products
 
 from products.models.product import Product
-from categories.models.category import Category
 from typing import Optional, List
 
 class ProductRepository:
 
-    def add_product(self, name: str, description: str, price: float, category: Category) -> Product:
+    def add_product(self, name: str, description: str, price: float, category: str) -> Product:
         product = Product(name=name, description=description, price=price, category=category)
         product.save()
         return product
