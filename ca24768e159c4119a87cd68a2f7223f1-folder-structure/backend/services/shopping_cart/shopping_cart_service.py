@@ -1,6 +1,6 @@
 # Epic Title: Shopping Cart Functionality
 import mysql.connector
-from typing import Dict
+from typing import Dict, List
 
 class ShoppingCartService:
     def __init__(self):
@@ -62,3 +62,34 @@ class ShoppingCartService:
         if self.cursor.rowcount == 0:
             return {"error": "Failed to update product quantity or product not found in cart"}
         return {"message": "Product quantity updated successfully"}
+
+    def save_cart_state(self, user_id: int) -> dict:
+        query = "SELECT product_id, quantity FROM shopping_cart WHERE user_id = %s"
+        self.cursor.execute(query, (user_id,))
+        cart_items = self.cursor.fetchall()
+        
+        if not cart_items:
+            return {"error": "No items in cart to save"}
+        
+        self.cursor.execute("DELETE FROM saved_cart WHERE user_id = %s", (user_id,))
+        
+        for item in cart_items:
+            query = "INSERT INTO saved_cart (user_id, product_id, quantity) VALUES (%s, %s, %s)"
+            self.cursor.execute(query, (user_id, item['product_id'], item['quantity']))
+        self.connection.commit()
+        
+        return {"message": "Cart state saved successfully"}
+
+    def load_cart_state(self, user_id: int) -> dict:
+        self.cursor.execute("DELETE FROM shopping_cart WHERE user_id = %s", (user_id,))
+        
+        query = "SELECT product_id, quantity FROM saved_cart WHERE user_id = %s"
+        self.cursor.execute(query, (user_id,))
+        saved_items = self.cursor.fetchall()
+        
+        for item in saved_items:
+            query = "INSERT INTO shopping_cart (user_id, product_id, quantity) VALUES (%s, %s, %s)"
+            self.cursor.execute(query, (user_id, item['product_id'], item['quantity']))
+        self.connection.commit()
+        
+        return {"message": "Cart state loaded successfully"}
