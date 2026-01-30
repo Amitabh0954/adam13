@@ -1,4 +1,4 @@
-# Epic Title: Remove Product from Shopping Cart
+# Epic Title: Modify Quantity of Products in Shopping Cart
 
 from typing import Optional
 from shopping_cart_management.models.shopping_cart import ShoppingCart, ShoppingCartItem
@@ -32,3 +32,12 @@ class CartRepository:
             return True
         except ShoppingCartItem.DoesNotExist:
             return False
+
+    def update_product_quantity(self, cart: ShoppingCart, product: Product, quantity: int) -> Optional[ShoppingCartItem]:
+        try:
+            item = ShoppingCartItem.objects.get(cart=cart, product=product)
+            item.quantity = quantity
+            item.save()
+            return item
+        except ShoppingCartItem.DoesNotExist:
+            return None
