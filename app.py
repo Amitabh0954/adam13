@@ -1,21 +1,27 @@
-# Epic Title: User Registration
+# Epic Title: Update Product Details
 
 import logging
-from backend.accounts.repositories.user_repository import UserRepository
-from backend.accounts.services.user_service import UserService
+from backend.products.repositories.product_repository import ProductRepository
+from backend.products.services.product_service import ProductService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def main():
-    user_repository = UserRepository()
-    user_service = UserService(user_repository=user_repository)
+    product_repository = ProductRepository()
+    product_service = ProductService(product_repository=product_repository)
 
     try:
-        user_service.register_user("test@example.com", "SecurePass123")
-        logger.info("User registration successful")
+        # Example to update an existing product
+        updated_product = product_service.update_product(
+            "Test Product",
+            "This is the updated test product description.",
+            79.99
+        )
+        logger.info(f"Product updated: {updated_product.name}")
+
     except Exception as e:
-        logger.error(f"User registration failed: {e}")
+        logger.error(f"Error: {e}")
 
 if __name__ == "__main__":
     main()
