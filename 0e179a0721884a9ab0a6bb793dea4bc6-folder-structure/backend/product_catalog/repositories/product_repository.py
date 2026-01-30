@@ -9,16 +9,22 @@ class ProductRepository:
             password="",
             database="product_catalog_db"
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=True)
 
-    def is_name_taken(self, name: str) -> bool:
-        query = "SELECT COUNT(*) FROM products WHERE name = %s"
-        self.cursor.execute(query, (name,))
-        count = self.cursor.fetchone()[0]
-        return count > 0
+    def search_products(self, query: str, page: int, per_page: int) -> list:
+        offset = (page - 1) * per_page
+        wild_query = f"%{query}%"
+        search_query = """
+            SELECT id, name, price, description 
+            FROM products 
+            WHERE name LIKE %s OR description LIKE %s 
+            LIMIT %s OFFSET %s
+        """
+        self.cursor.execute(search_query, (wild_query, wild_query, per_page, offset))
+        return self.cursor.fetchall()
 
-    def create_product(self, name: str, price: float, description: str) -> int:
-        query = "INSERT INTO products (name, price, description) VALUES (%s, %s, %s)"
-        self.cursor.execute(query, (name, price, description))
-        self.connection.commit()
-        return self.cursor.lastrowid
+    def count_search_results(self, query: str) -> int:
+        wild_query = f"%{query}%"
+        count_query = "SELECT COUNT(*) AS count FROM products WHERE name LIKE %s OR description LIKE %s"
+        self.cursor.execute(count_query, (wild_query, wild_query))
+        return self.cursor.fetchone()['count']
