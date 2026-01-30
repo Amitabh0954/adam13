@@ -1,6 +1,6 @@
 # Epic Title: Shopping Cart Functionality
 import mysql.connector
-from backend.models.shopping_cart.cart_item.py import CartItem
+from backend.models.shopping_cart.cart_item import CartItem
 
 class ShoppingCartRepository:
     def __init__(self):
@@ -27,5 +27,10 @@ class ShoppingCartRepository:
 
     def clear_cart(self, user_id: int) -> bool:
         self.cursor.execute("DELETE FROM shopping_cart WHERE user_id = %s", (user_id,))
+        self.connection.commit()
+        return self.cursor.rowcount > 0
+
+    def remove_from_cart(self, user_id: int, product_id: int) -> bool:
+        self.cursor.execute("DELETE FROM shopping_cart WHERE user_id = %s AND product_id = %s", (user_id, product_id))
         self.connection.commit()
         return self.cursor.rowcount > 0
