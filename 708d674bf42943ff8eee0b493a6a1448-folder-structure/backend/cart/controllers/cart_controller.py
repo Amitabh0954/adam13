@@ -1,4 +1,4 @@
-# Epic Title: Add Product to Shopping Cart
+# Epic Title: Remove Product from Shopping Cart
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,12 +17,33 @@ def add_product_to_cart(request):
         product_id = data.get('product_id')
         quantity = data.get('quantity', 1)
 
-        product = Product.objects.get(id=product_id)
-        cart = cart_service.get_or_create_cart(user=request.user)
+        if not product_id:
+            return JsonResponse({'error': 'Product ID is required'}, status=400)
 
-        if not product:
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
             return JsonResponse({'error': 'Product not found'}, status=404)
 
+        cart = cart_service.get_or_create_cart(user=request.user)
         cart_item = cart_service.add_product_to_cart(cart, product, quantity)
         return JsonResponse({'message': 'Product added to cart', 'cart_item_id': cart_item.id, 'quantity': cart_item.quantity}, status=201)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+
+@csrf_exempt
+@login_required
+def remove_product_from_cart(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        cart_item_id = data.get('cart_item_id')
+        confirmation = data.get('confirmation')
+
+        if confirmation != 'yes':
+            return JsonResponse({'error': 'Removal not confirmed'}, status=400)
+
+        success = cart_service.remove_product_from_cart(cart_item_id)
+        if success:
+            return JsonResponse({'message': 'Product removed from cart'}, status=200)
+        return JsonResponse({'error': 'Cart item not found'}, status=404)
     return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
