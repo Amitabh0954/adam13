@@ -1,4 +1,4 @@
-# Epic Title: Password Recovery
+# Epic Title: User Login
 
 import os
 import django
@@ -9,8 +9,8 @@ from django.apps import apps
 
 from backend.services.user_account.user_registration_service import UserRegistrationService
 from backend.services.user_account.user_login_service import UserLoginService
-from backend.services.user_account.password_reset_service import PasswordResetService
 from django.http import JsonResponse
+from django.middleware.csrf import CsrfViewMiddleware
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -47,7 +47,6 @@ apps.populate(settings.INSTALLED_APPS)
 
 user_registration_service = UserRegistrationService()
 user_login_service = UserLoginService()
-password_reset_service = PasswordResetService()
 
 @csrf_exempt
 def register_user(request):
@@ -95,48 +94,10 @@ def logout_user(request):
         return JsonResponse({'message': 'Logout successful'}, status=200)
     return JsonResponse({'error': 'User not logged in'}, status=400)
 
-@csrf_exempt
-def request_password_reset(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        email = data.get('email')
-        
-        if not email:
-            return JsonResponse({'error': 'Email is required'}, status=400)
-        
-        success, message = password_reset_service.request_password_reset(email)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
-@csrf_exempt
-def reset_password(request, token):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        new_password = data.get('new_password')
-        
-        if not new_password:
-            return JsonResponse({'error': 'New password is required'}, status=400)
-        
-        success, message = password_reset_service.reset_password(token, new_password)
-        
-        if success:
-            return JsonResponse({'message': message}, status=200)
-        else:
-            return JsonResponse({'error': message}, status=400)
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
 urlpatterns = [
     path('register/', register_user),
     path('login/', login_user),
     path('logout/', logout_user),
-    path('request-password-reset/', request_password_reset),
-    path('reset-password/<str:token>/', reset_password, name='reset_password'),
 ]
 
 if __name__ == '__main__':
