@@ -1,4 +1,4 @@
-# Epic Title: Search Products
+# Epic Title: Add New Product
 
 Django==3.2
 mysqlclient==2.1.0
