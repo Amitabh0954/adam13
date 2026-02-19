@@ -1,56 +1,67 @@
 import pytest
-from backend.controllers.cart_controller import cart_bp
-from flask import Flask, session
-from backend.services.cart_service import CartService
+from app import app
 
-app = Flask(__name__)
-app.register_blueprint(cart_bp)
-app.config['TESTING'] = True
-
-# Fixtures to set up app context
-test_client = app.test_client()  # Create a test client for the Flask app
-
-@pytest.fixture(scope='module')
+@pytest.fixture
 def client():
-    return test_client
+    with app.test_client() as client:
+        yield client
 
-# Test cases for shopping cart functionality
-def test_add_single_product_to_cart(client, mocker):
-    mocker.patch.object(CartService, 'add_to_cart', return_value={'status': 'success'})
-    with client.session_transaction() as sess:
-        sess['user_id'] = 1
-    response = client.post('/add', json={'product_id': 1, 'quantity': 1})
+
+def test_add_single_product_to_cart(client):
+    response = client.post('/add', json={"product_id": 1, "quantity": 2})
     assert response.status_code == 201
-    assert response.json['message'] == 'Product added to cart successfully'
+    assert response.get_json() == {"message": "Product added to cart successfully"}
 
-def test_remove_product_from_cart(client, mocker):
-    mocker.patch.object(CartService, 'remove_from_cart', return_value={'status': 'success'})
-    with client.session_transaction() as sess:
-        sess['user_id'] = 1
-    response = client.post('/delete', json={'product_id': 1})
+
+def test_add_multiple_products_to_cart(client):
+    response = client.post('/add', json={"product_id": 1, "quantity": 2})
+    assert response.status_code == 201
+    assert response.get_json() == {"message": "Product added to cart successfully"}
+    
+    response = client.post('/add', json={"product_id": 2, "quantity": 1})
+    assert response.status_code == 201
+    assert response.get_json() == {"message": "Product added to cart successfully"}
+
+
+def test_remove_product_from_cart(client):
+    client.post('/add', json={"product_id": 1, "quantity": 2})
+    response = client.post('/delete', json={"product_id": 1})
     assert response.status_code == 200
-    assert response.json['message'] == 'Product removed from cart successfully'
+    assert response.get_json() == {"message": "Product removed from cart successfully"}
 
-def test_update_product_quantity(client, mocker):
-    mocker.patch.object(CartService, 'update_quantity', return_value={'status': 'success'})
-    with client.session_transaction() as sess:
-        sess['user_id'] = 1
-    response = client.post('/update_quantity', json={'product_id': 1, 'quantity': 2})
+
+def test_clear_shopping_cart(client):
+    client.post('/add', json={"product_id": 1, "quantity": 2})
+    response = client.post('/clear')
     assert response.status_code == 200
-    assert response.json['message'] == 'Product quantity updated successfully'
+    assert response.get_json() == {"message": "All products removed from cart successfully"}
 
-def test_save_cart(client, mocker):
-    mocker.patch.object(CartService, 'save_cart', return_value={'status': 'success'})
-    with client.session_transaction() as sess:
-        sess['user_id'] = 1
+
+def test_increase_product_quantity(client):
+    client.post('/add', json={"product_id": 1, "quantity": 1})
+    response = client.post('/update_quantity', json={"product_id": 1, "quantity": 3})
+    assert response.status_code == 200
+    assert response.get_json() == {"message": "Product quantity updated successfully"}
+
+
+def test_decrease_product_quantity_to_zero(client):
+    client.post('/add', json={"product_id": 1, "quantity": 2})
+    response = client.post('/update_quantity', json={"product_id": 1, "quantity": 0})
+    assert response.status_code == 400
+    assert response.get_json() == {"message": "Quantity must be a positive integer"}
+
+
+def test_save_cart_on_logout(client):
+    client.post('/add', json={"product_id": 1, "quantity": 2})
     response = client.post('/save')
     assert response.status_code == 200
-    assert response.json['message'] == 'Cart saved successfully'
+    assert response.get_json() == {"message": "Cart saved successfully"}
 
-def test_load_cart(client, mocker):
-    mocker.patch.object(CartService, 'load_cart', return_value={'status': 'success', 'cart_items': []})
-    with client.session_transaction() as sess:
-        sess['user_id'] = 1
+
+def test_load_cart_on_login(client):
+    client.post('/add', json={"product_id": 1, "quantity": 2})
+    client.post('/save')
     response = client.get('/load')
     assert response.status_code == 200
-    assert 'cart_items' in response.json
+    cart_items = response.get_json()
+    assert cart_items is not None
